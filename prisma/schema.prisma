@@ -1,0 +1,184 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+enum List_Types {
+  sold
+  sale
+}
+model Agent {
+  agent_id  String    @id @unique @default(uuid())
+  name  String    @unique  @db.VarChar(255)
+  email String    @unique
+  isSubscribed Boolean 
+  agent_bio_id String @unique 
+  agent_subscription_id String @unique
+  createdAt DateTime  @default(now())
+  password  String
+}
+
+
+model Agent_Subscription {
+  subscription_id     String    @id @unique @default(uuid())
+  name_of_subscription  String  
+  date_created DateTime  @default(now())
+  date_modified DateTime      @updatedAt @default(now())
+  created_by String
+  isSubscribed Boolean 
+  agent_bio_id String @unique 
+  agent_subscription_id String @unique
+  agent_id String @unique
+  @@unique([subscription_id,agent_id])//uptimised query indexing Agent_subscription_id and belonging to Agent 
+  createdAt DateTime  @default(now())
+
+}
+
+
+model AgentBio {
+bio_id String @id @unique @default(uuid())
+bio_name String 
+date_created DateTime  @default(now())
+date_modified DateTime      @updatedAt @default(now())
+modified_by String
+created_by String
+isActive Boolean
+}
+
+model Agent_Listing {
+listing_id String @id @unique @default(uuid())
+ratings String 
+rating_info String 
+date_created DateTime @default(now())
+reported_status String
+agent_id String @unique
+@@unique([listing_id,agent_id])//uptimised query indexing Agent_subscription_id and belonging to Agent 
+}
+
+ model Agent_Listings {
+  listing_id String  @id @unique @default(uuid())
+  listings_type1_id String  @unique 
+  type_of_listing List_Types @default(sale)
+  date_created DateTime @default(now())
+  created_by DateTime @default(now())
+  date_modified DateTime  @updatedAt @default(now())
+  modified_by String
+  is_Active Boolean
+ }
+
+model Agent_Listings_sale{
+listing_id String // link this to fieled
+listings_type1_id String @id @unique @default(uuid())
+type_of_listing List_Types @default(sale)
+created_by DateTime @default(now())
+@@unique([listing_id,listings_type1_id])//uptimised query indexing Agent_subscription_id and belonging to Agent 
+date_modified DateTime  @updatedAt @default(now())
+modified_by String
+is_Active Boolean
+
+}
+
+model Agent_Listings_rent{
+listing_id String // link this  
+listing_type2_id String  @id @unique @default(uuid())
+@@unique([listing_id,listing_type2_id])//uptimised query indexing Agent_subscription_id and belonging to Agent 
+date_created String 
+created_by DateTime @default(now())
+date_modified DateTime  @updatedAt @default(now())
+modified_by String
+is_Active Boolean
+}
+
+model Agent_BRn {
+  BRn_id String @id @unique @default(uuid())
+agent_id String  @unique  
+date_created String 
+created_by DateTime @default(now())
+@@unique([BRn_id,agent_id])//uptimised query indexing Agent_subscription_id and belonging to Agent 
+date_modified DateTime  @updatedAt @default(now())
+modified_by String
+is_Active Boolean
+}
+
+
+model AgentSpecialties {
+specialties_id String @id @unique @default(uuid())
+agent_id String  
+@@unique([specialties_id,agent_id])//uptimised query indexing Agent_subscription_id and belonging to Agent 
+description String 
+date_created String 
+created_by DateTime @default(now())
+date_modified DateTime  @updatedAt @default(now())
+modified_by String
+is_Active Boolean
+}
+
+
+model Agent_ORn {
+ORn_id String @id @unique @default(uuid())
+agent_id String  
+@@unique([ORn_id,agent_id])//uptimised query indexing Agent_subscription_id and belonging to Agent 
+date_created String 
+created_by DateTime @default(now())
+date_modified DateTime  @updatedAt @default(now())
+modified_by String
+is_Active Boolean
+
+}
+
+
+
+model Agents_Language {
+language_id String @id @unique @default(uuid())
+agent_id String 
+@@unique([language_id,agent_id])//uptimised query indexing Agent_subscription_id and belonging to Agent 
+date_created String 
+created_by DateTime @default(now())
+date_modified DateTime  @updatedAt @default(now())
+modified_by String
+is_Active Boolean
+}
+
+model Agent_About {
+about_id String @id @unique @default(uuid())
+bio_id String 
+date_created String 
+created_by DateTime @default(now())
+date_modified DateTime  @updatedAt @default(now())
+modified_by String
+is_Active Boolean
+}
+
+
+
+model Agent_Photo {
+photo_id String @id @unique @default(uuid())
+agent_id String 
+@@unique([photo_id,agent_id])//uptimised query indexing Agent_subscription_id and belonging to Agent 
+date_created String 
+created_by DateTime @default(now())
+date_modified DateTime  @updatedAt @default(now())
+modified_by String
+is_Active Boolean
+}
+
+model AgentExperience {
+years_id String @id @unique @default(uuid())
+agent_id String 
+@@unique([years_id,agent_id])//uptimised query indexing Agent_subscription_id and belonging to Agent 
+date_created String 
+created_by DateTime @default(now())
+date_modified DateTime  @updatedAt @default(now())
+modified_by String
+is_Active Boolean
+}
+
+

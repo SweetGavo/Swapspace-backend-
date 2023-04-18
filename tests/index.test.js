@@ -1,17 +1,9 @@
-const request = require('supertest')
-const app = require('../src/index')
+const request = require("supertest");
+const app = require("../src/index");
 
-describe("Test /users route", () => {
-
-   it("GET: /users should return 200 response", async () => {
-      const res = await request(app).get('/v1/users')
-      expect(res.statusCode).toBe(200)
-   })
-
-   it("GET /users should return an object containing users aray", async () => {
-      const res = await request(app).get('/v1/users')
-      expect(res.body).toEqual(expect.objectContaining({
-         users: []
-      }))
-   })
-})
+describe("Test /agent route", () => {
+  it("GET: /agent should return 200 response", async () => {
+    const res = await request(app).get("/api/v1/agent");
+    expect(res.statusCode).toBe(200);
+  });
+});
