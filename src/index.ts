@@ -12,5 +12,5 @@ process.on("uncaughtException", (e) => {
 });
 
 app.listen(config.port, () => {
-  console.log(`Server running on port ${config.port}`);
+  console.log(`Server Running On Port ${config.port}`);
 });
