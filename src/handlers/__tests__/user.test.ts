@@ -3,7 +3,17 @@ import * as user from "../agent";
 
 describe("userHandler", () => {
   it("should create a new user", async () => {
-    const req = { body: { username: "joeboyw", password: "1234we" } }; //mocking the data to test imitating request object from the user handler function
+    const req = {
+      body: {
+        name: `${Math.random() * 10000}joshua`,
+        password: "emason",
+        email: `${Math.random() * 10000}emason.tech@gmail.com`,
+        isSubscribed: false,
+        agent_id: `${Math.random() * 10000}qweqw`,
+        agent_bio_id: `${Math.random() * 10000}qwerwerw`,
+        agent_subscription_id: `${Math.random() * 10000}erwer`,
+      },
+    }; //mocking the data to test imitating request object from the user handler function
     //spie is a function that check when others interact with it
     const next = (error: any) => {
       expect(error.code).toBe(400);
@@ -18,6 +28,6 @@ describe("userHandler", () => {
         expect(code).toBe(201);
       },
     };
-    await user.createNewUser(req, res, next);
+    await user.createAgent(req, res, next);
   });
 });
