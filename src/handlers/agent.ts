@@ -62,7 +62,7 @@ export const test = async (
 ) => {
   try {
     // const agents = await prisma.agent.findMany();
-    res.status(200).json({ code: 200, data: {} });
+    return res.status(200).json({ code: 200, data: {} });
   } catch (error: any) {
     next({
       code: 400,
