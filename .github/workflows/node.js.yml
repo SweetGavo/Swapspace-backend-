@@ -5,14 +5,12 @@ name: Node.js CI
 
 on:
   push:
-  
-    branches: [ "Production" ] # Use lowercase letters for branch names
+    branches: ["Production"] # Use lowercase letters for branch names
   pull_request:
-    branches: [ "Production" ] # Use lowercase letters for branch names
+    branches: ["Production"] # Use lowercase letters for branch names
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -24,9 +22,9 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
+          cache: "yarn"
       - name: Install dependencies
-        run: yarn install  # Use 'yarn install' instead of 'yarn' for consistency and add '--frozen-lockfile' for deterministic builds
+        run: yarn install # Use 'yarn install' instead of 'yarn' for consistency and add '--frozen-lockfile' for deterministic builds
       - name: Build and test
         run: |
           yarn run build
@@ -34,6 +32,6 @@ jobs:
       - name: Install TypeScript
         run: yarn add typescript
       - name: Build with TypeScript
-        run: tsc
+        run: yarn run build
       - name: Start the app
-        run: node dist/index.js
+        run: yarn run start
