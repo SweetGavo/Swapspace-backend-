@@ -27,7 +27,7 @@ jobs:
         run: yarn install # Use 'yarn install' instead of 'yarn' for consistency and add '--frozen-lockfile' for deterministic builds
       - name: Build with TypeScript
         run: yarn run build
-      - name: Build and test
+      - name: Test
         run: |
           yarn run build
           yarn test
