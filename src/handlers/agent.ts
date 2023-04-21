@@ -62,10 +62,10 @@ export const test = async (
 ) => {
   try {
     // const agents = await prisma.agent.findMany();
-    return res.status(200).json({ code: 200, data: {} });
+    res.status(200).json({ code: 200, data: {} });
   } catch (error: any) {
     next({
-      code: 400,
+      code: 500,
       error: "internal server error",
     });
   }

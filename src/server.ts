@@ -3,7 +3,6 @@ import morgan from "morgan";
 import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config();
-import config from "./config";
 const app = express();
 
 // middlewares::::::::::

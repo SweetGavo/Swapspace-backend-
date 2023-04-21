@@ -4,7 +4,7 @@ import app from "../src/server";
 describe("Test /agent route", () => {
   it("GET: /agents should return 200 response", () => {
     request(app)
-      .get("/api/v1/agent")
+      .get("/api/v1/agent/test")
       .then((data) => {
         expect(data.statusCode).toEqual(200);
       });
