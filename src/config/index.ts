@@ -21,7 +21,7 @@ export default merge(
     //default setting of app in dev
     stage,
     env: process.env.NODE_ENV,
-    BASE_PATH: process.env.BASE_PATH,
+    BASE_PATH: process.env.BASE_PATH || "/api/v1",
     port: 3000,
     secrete: {
       JWT: process.env.JWT_SECRETE,
