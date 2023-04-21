@@ -17,6 +17,6 @@ app.use(express.urlencoded({ extended: true })); //help urlencoded data to be re
 import Agent from "./router";
 //end of import routes:::::::
 
-app.use(`${config.BASE_PATH}/agent`, Agent);
+app.use(`/api/v1/agent`, Agent);
 
 export default app;
