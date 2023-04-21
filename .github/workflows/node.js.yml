@@ -25,13 +25,9 @@ jobs:
           cache: "yarn"
       - name: Install dependencies
         run: yarn install # Use 'yarn install' instead of 'yarn' for consistency and add '--frozen-lockfile' for deterministic builds
+      - name: Build with TypeScript
+        run: yarn run build
       - name: Build and test
         run: |
           yarn run build
           yarn test
-      - name: Install TypeScript
-        run: yarn add typescript
-      - name: Build with TypeScript
-        run: yarn run build
-      - name: Start the app
-        run: yarn run start
