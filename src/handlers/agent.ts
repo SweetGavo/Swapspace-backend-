@@ -54,3 +54,19 @@ export const allAgent = async (
     });
   }
 };
+
+export const test = async (
+  req: Request | any,
+  res: Response | any,
+  next: any
+) => {
+  try {
+    // const agents = await prisma.agent.findMany();
+    res.status(200).json({ code: 200, data: {} });
+  } catch (error: any) {
+    next({
+      code: 400,
+      error: "internal server error",
+    });
+  }
+};

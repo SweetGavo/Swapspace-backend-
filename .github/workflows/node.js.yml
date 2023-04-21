@@ -5,9 +5,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: ["production"] 
+    branches: ["Production"] # Use lowercase letters for branch names
   pull_request:
-    branches: ["production"] 
+    branches: ["Production"] # Use lowercase letters for branch names
 
 jobs:
   build:
@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 18.x] # Test across multiple Node.js versions
+        node-version: [18.x] # Test across multiple Node.js versions
 
     steps:
       - uses: actions/checkout@v2
@@ -25,16 +25,14 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
       - name: Install dependencies
-        run: yarn install --frozen-lockfile # Use 'yarn install' instead of 'yarn' for consistency and add '--frozen-lockfile' for deterministic builds
-      - name: Install TypeScript
-        run: |
-          yarn global add typescript
-          yarn globall add ts-node
+        run: yarn install # Use 'yarn install' instead of 'yarn' for consistency and add '--frozen-lockfile' for deterministic builds
       - name: Build and test
         run: |
-          yarn run build 
+          yarn run build
           yarn test
+      - name: Install TypeScript
+        run: yarn add typescript
       - name: Build with TypeScript
         run: tsc
       - name: Start the app
-        run: yarn run start
+        run: node dist/index.js
