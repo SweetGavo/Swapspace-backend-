@@ -28,8 +28,8 @@ jobs:
         run: yarn install  # Use 'yarn install' instead of 'yarn' for consistency and add '--frozen-lockfile' for deterministic builds
       - name: Install TypeScript
         run: |
-          yarn global add typescript
-          yarn globall add ts-node
+          yarn add -g typescript
+          yarn add -g ts-node
       - name: Build and test
         run: |
           yarn run build 
