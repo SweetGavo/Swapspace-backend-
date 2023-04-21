@@ -5,6 +5,7 @@ name: Node.js CI
 
 on:
   push:
+  
     branches: [ "Production" ] # Use lowercase letters for branch names
   pull_request:
     branches: [ "Production" ] # Use lowercase letters for branch names
@@ -16,8 +17,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 18.x] # Test across multiple Node.js versions
-
+        node-version: [18.x] # Test across multiple Node.js versions
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
