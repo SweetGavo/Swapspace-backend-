@@ -14,6 +14,7 @@ import helmet from "helmet";
 
 // import routes
 import AuthRouter from './router/authRouter';
+import ProfileRouter from './router/profileRouter'
 
 
 app.use(cors());
@@ -30,7 +31,8 @@ app.get("/", (req, res) => {
 
 // USE ROUTES
 
-app.use('/api/v1/auth', AuthRouter)
+app.use('/api/v1/auth', AuthRouter);
+app.use('/api/v1/profiles' ,ProfileRouter);
 
 
 //ErrorHandlerMiddleware
