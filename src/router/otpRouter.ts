@@ -15,6 +15,16 @@ router
 .post(OtpController.verifyOtpEmail)
 
 
+router
+.route('/phone')
+.post(OtpController.sendOtpToPhone)
+
+
+router
+.route('/verify-phone')
+.post(OtpController.verifyOtpPhone)
+
+
 
 export default router;
 

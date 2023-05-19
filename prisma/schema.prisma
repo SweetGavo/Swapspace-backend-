@@ -100,7 +100,7 @@ model Otp {
   user       User      @relation(fields: [userId], references: [id])
   otp        String
   createdAt  DateTime  @default(now())
-  expiresAt  DateTime  @default(now())
+  otp_expiry DateTime  
   date_modified DateTime  @updatedAt @default(now())
 
   @@index([userId])
