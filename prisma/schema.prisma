@@ -10,34 +10,88 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Specalty_Type {
+  Property_Investment
+  Property_Contractor 
+  Leasing_Executive
+  Realtor
+  Property_Consultant
+  Real_Estate_Consultant
+  Property_Manager
+  Real_Estate_Agent
+  Sales_Leasing_Agent
+  Other
+  Selecte
+
+}
+
+enum Status_type {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 enum List_Types {
   USER
   AGENT
   ADMIN
 }
 
+enum Agent_type {
+  REALTOR
+  CO_REALTOR
+}
+
 model User {
   id             String      @id @unique @default(uuid())
   email          String      @unique
+  number         String      @unique
   password       String
   profile        Profile?
   otp            Otp?
   type           List_Types  @default(USER)
   createdAt      DateTime    @default(now())
+  date_modified DateTime  @updatedAt @default(now())
   verifiedEmail  Boolean     @default(false)
+  verifiedNumber Boolean     @default(false)
+  realtor        Realtor?    
+  realtorId      String?     @unique
 }
+
+
 
 model Profile {
   id            String    @id @unique @default(uuid())
   fullname      String
-  number        String
   address       String
   image         String
   userId        String    @unique
   user          User      @relation(fields: [userId], references: [id])
   createdAt     DateTime  @default(now())
+  date_modified DateTime  @updatedAt @default(now())
 
   @@index([userId])
+}
+
+model Realtor {
+  id            String    @id @unique @default(uuid())
+  compant_name  String 
+  address       String
+  broker_BRN    String
+  agent_ORN     String
+  years_of_experience String
+  specialty     String[]
+  role          Agent_type
+  language      String[]
+  description   String
+  license_number String
+  broker_card_image String[]
+  image         String
+  status        Status_type  @default(PENDING)
+  user          User?     @relation(fields: [userId], references: [id])
+  userId        String?   @unique
+  createdAt     DateTime  @default(now())
+  date_modified DateTime  @updatedAt @default(now())
 }
 
 model Otp {
@@ -46,6 +100,8 @@ model Otp {
   user       User      @relation(fields: [userId], references: [id])
   otp        String
   createdAt  DateTime  @default(now())
+  expiresAt  DateTime  @default(now())
+  date_modified DateTime  @updatedAt @default(now())
 
   @@index([userId])
 }

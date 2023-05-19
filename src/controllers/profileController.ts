@@ -8,9 +8,9 @@ import { StatusCodes } from 'http-status-codes';
 const profileController = {
      createProfile: async (req: Request, res: Response): Promise<Response> => {
        try {
-         const { fullname, number, address, userId } = req.body;
+         const { fullname,  address, userId } = req.body;
    
-         if (!fullname || !number || !address || !userId) {
+         if (!fullname || !address || !userId) {
            return res.status(StatusCodes.BAD_REQUEST).json({
              message: 'Please provide all the required details.',
            });
@@ -32,7 +32,7 @@ const profileController = {
          const profile = await prisma.profile.create({
            data: {
              fullname,
-             number,
+             
              address,
              image: '', // Provide a default value for the 'image' field if needed
              user: {

@@ -14,7 +14,9 @@ import helmet from "helmet";
 
 // import routes
 import AuthRouter from './router/authRouter';
-import ProfileRouter from './router/profileRouter'
+import ProfileRouter from './router/profileRouter';
+import RectorRouter from './router/rectorRouter';
+import OtpRouter from './router/otpRouter';
 
 
 app.use(cors());
@@ -24,7 +26,7 @@ app.use(cookieParser(process.env.JWT_COOKIE));
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.get("/", (req, res) => {
-     res.json({ message: "Welcome to SWAP SPACE App" });
+  res.json({ message: "Welcome to SWAP SPACE App" });
 
 });
 
@@ -32,7 +34,9 @@ app.get("/", (req, res) => {
 // USE ROUTES
 
 app.use('/api/v1/auth', AuthRouter);
-app.use('/api/v1/profiles' ,ProfileRouter);
+app.use('/api/v1/profiles', ProfileRouter);
+app.use('/api/v1/agents', RectorRouter);
+app.use('/api/v1/otp', OtpRouter);
 
 
 //ErrorHandlerMiddleware
@@ -51,14 +55,14 @@ app.use(errorHandlerMiddleware);
 //port
 const port = 6001;
 const start = async () => {
-     try {
-       
-       app.listen(port, () => {
-         console.log(`Listing on port ${port}...`);
-       });
-     } catch (error) {
-       console.log(error)
-     }
-   };
-   
-   start()
+  try {
+
+    app.listen(port, () => {
+      console.log(`Listing on port ${port}...`);
+    });
+  } catch (error) {
+    console.log(error)
+  }
+};
+
+start()
