@@ -1,6 +1,14 @@
 import { Request, Response } from 'express';
 import prisma from '../DB/prisma';
 import { StatusCodes } from 'http-status-codes';
+import { v2 as cloudinary } from 'cloudinary';
+
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET
+});
 
 
 
@@ -55,6 +63,34 @@ const profileController = {
          });
        }
      },
+
+     updateProfileImage: async (req: Request, res: Response) => {
+      try {
+        const { profileId } = req.params;
+        const { image } = req.body;
+  
+        if (!profileId) {
+          return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Profile ID is required' });
+        }
+
+        // Upload the image to Cloudinary
+        const result = await cloudinary.uploader.upload(image);
+  
+        // Update the profile image URL in the database
+        const updatedProfile = await prisma.profile.update({
+          where: { id: profileId },
+          data: { image: result.secure_url },
+        });
+  
+        res.status(StatusCodes.OK).json(updatedProfile);
+      } catch (error) {
+        console.error('Error updating profile image:', error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to update profile image' });
+      }
+    }
+  
+
+     
    };
    
    export default profileController;

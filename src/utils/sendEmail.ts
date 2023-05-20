@@ -1,26 +1,40 @@
-import nodemailer from 'nodemailer';
-import { SentMessageInfo } from 'nodemailer/lib/sendmail-transport';
-import { Transporter } from 'nodemailer/lib/smtp-transport';
+import nodemailer, { Transporter } from 'nodemailer';
 
-const sendEmail = async (email: string, subject: string, text: string): Promise<void> => {
+interface EmailOptions {
+  email: string;
+  subject: string;
+  html: string;
+}
+
+const sendEmail = async ({ email, subject, html }: EmailOptions): Promise<void> => {
   try {
-    const transporter: Transporter<SentMessageInfo> = nodemailer.createTransport({
-      host: process.env.HOST,
-      service: process.env.SERVICE,
+    // const transporter: Transporter = nodemailer.createTransport({
+    //   host: 'smtp.ethereal.email',
+    //   port: 587,
+    //   auth: {
+    //     user: 'nelda.kuhn57@ethereal.email',
+    //     pass: 'CJERtmVFfqGXd3TuGj',
+    //   },
+    // });
+
+    const transporter: Transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      service: 'gmail',
       port: 587,
       secure: true,
       auth: {
-        user: process.env.USER,
-        pass: process.env.PASS,
+        user: 'slimnfine22@gmail.com',
+        pass: 'zizyftdzapcvvhsw',
       },
     });
 
     await transporter.sendMail({
-      from: `"SWAPSPACE" ${process.env.USER}`,
+      from: '"SWAP SPACE" <slimnfine22@gmail.com>',
       to: email,
       subject: subject,
-      text: text,
+      html: html,
     });
+
     console.log('Email sent successfully');
   } catch (error) {
     console.log('Email not sent');

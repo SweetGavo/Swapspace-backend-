@@ -4,7 +4,8 @@ import { StatusCodes } from 'http-status-codes';
 import { Request, Response } from 'express';
 import randaomGeneratorId from '../utils/otpGenerator';
 import getOtpExpiryTime from '../utils/timeGenerator';
-import { log } from 'console';
+import sendEmail from '../utils/sendEmail';
+import request from'request';
 
 
 
@@ -59,8 +60,16 @@ const OtpController = {
 
       console.log(createdOtp);
 
-      // Send the OTP to the user's email (implementation not included).
-
+      const emailOptions = {
+        email: user.email,
+        subject: "Verify Your Email with your OTP",
+        html: `<p>Enter <b>${otp}</b> in the app to verify your email address and complete your registration.</p>
+          <p>This code <b>expires in 5 minutes</b>.</p>`,
+      };
+  
+      // Send the OTP to the user's email using the sendEmail function
+      await sendEmail(emailOptions);
+    
       return res.status(StatusCodes.OK).json({
         message: 'OTP sent to your email',
       });
@@ -174,6 +183,30 @@ const OtpController = {
       console.log('Phone OTP:', createdOtp);
   
       // Send the OTP to PHONE NUMBER (implementation not included).
+
+      const options = {
+        'method': 'POST',
+        'url': 'https://api.sendchamp.com/api/v1/sms/send',
+        'headers': {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${process.env.ACCESS_KEY}`, 
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          "to":[user.number],  
+          "message":  `Hi this is your OTP it expires in 5 Minutes ${otp}`,
+          "sender_name":"SAlert", // change this
+          "route":"non_dnd"
+        })
+       
+      };
+      
+      request(options, function (error, response) {
+        if (error) return res.status(StatusCodes.NOT_FOUND).json({
+          message: `check your config`,
+        });
+        console.log(response.body);
+      });
   
       return res.status(StatusCodes.OK).json({
         message: 'OTP sent to your phone number',
@@ -227,7 +260,7 @@ const OtpController = {
   
       return res.status(StatusCodes.OK).json({
         status: 'VERIFIED',
-        message: 'Email verified successfully',
+        message: 'Phone Number verified successfully',
       });
     } catch (error) {
       console.error(error);

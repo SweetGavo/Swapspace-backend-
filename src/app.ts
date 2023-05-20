@@ -17,6 +17,7 @@ import AuthRouter from './router/authRouter';
 import ProfileRouter from './router/profileRouter';
 import RectorRouter from './router/rectorRouter';
 import OtpRouter from './router/otpRouter';
+import UserRouter from './router/userRouter';
 
 
 app.use(cors());
@@ -37,6 +38,7 @@ app.use('/api/v1/auth', AuthRouter);
 app.use('/api/v1/profiles', ProfileRouter);
 app.use('/api/v1/agents', RectorRouter);
 app.use('/api/v1/otp', OtpRouter);
+app.use('/api/v1/users', UserRouter);
 
 
 //ErrorHandlerMiddleware
