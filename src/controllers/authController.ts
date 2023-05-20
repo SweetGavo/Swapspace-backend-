@@ -7,6 +7,8 @@ import jwt from 'jsonwebtoken';
 import Joi from 'joi';
 
 
+
+
 const createUserSchema = Joi.object({
      email: Joi.string().email().required(),
      password: Joi.string().required(),
@@ -34,13 +36,21 @@ const authController = {
 
           try {
 
+                  const { error } = createUserSchema.validate(req.body)
+
+                  if (error) {
+                    return res.status(StatusCodes.BAD_REQUEST).json({
+                      message: 'Invalid request body',
+                      error: error.details[0].message,
+                    });
+                  }
 
                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-               const { email, password, number, } = req.body;
+               const { email, password, number, image } = req.body;
 
                if (!email && !password && !number) {
-                    res.status(StatusCodes.BAD_REQUEST).json({ 
+                    res.status(StatusCodes.BAD_REQUEST).json({
                          message: "Provied all required fields"
                     });
                }
@@ -65,8 +75,8 @@ const authController = {
                if (numberAlreadyExists) {
                     return res.status(StatusCodes.CONFLICT).json({
                          message: 'Number already exists',
-                    }); 
-                
+                    });
+
                }
 
                validatePasswordString(password);
@@ -80,6 +90,7 @@ const authController = {
                          email,
                          password: hashedPassword,
                          number,
+                         
                     },
                });
 
@@ -175,7 +186,7 @@ const authController = {
           }
      },
      createAgent: async (req: Request, res: Response): Promise<Response> => {
-          
+
           try {
 
 
@@ -239,6 +250,44 @@ const authController = {
                });
           }
      },
+
+     // updateProfileImage: async (req: Request, res: Response) => {
+     //      try {
+     //           const file = req.file;
+
+     //           if (!file) {
+     //                return res.status(StatusCodes.NOT_FOUND).json("Please upload an image");
+     //           }
+
+     //           const { id: userId } = req.body;
+
+     //           // Upload the image to Cloudinary
+     //           const result = await cloudinary.uploader.upload(file.path);
+     //           const existingProfile = await prisma.user.findUnique({
+     //                where: {
+     //                  id: userId, // Replace `userId` with the actual user ID
+     //                },
+     //              });
+
+     //           if (!existingProfile) {
+     //                return res.status(StatusCodes.NOT_FOUND).json({
+     //                     error: 'Profile not found',
+     //                });
+     //           }
+
+     //           const updatedProfile = await prisma.user.update({
+     //                where: { id: userId },
+     //                data: { image: result.secure_url },
+     //           });
+
+     //           console.log(req);
+     //           return res.status(StatusCodes.OK).json(updatedProfile);
+     //      } catch (error) {
+     //           console.error('Error updating profile image:', error);
+     //           return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to update profile image' });
+     //      }
+     // },
+
 
 
 };

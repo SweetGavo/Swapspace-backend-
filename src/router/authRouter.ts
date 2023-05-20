@@ -1,7 +1,8 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 const router = express.Router();
-
 import authController from '../controllers/authController';
+
+
 
 
 router
@@ -20,6 +21,9 @@ router
 router
 .route('/signup/agent')
 .post(authController.createAgent)
+
+
+
 
 
 export default router;

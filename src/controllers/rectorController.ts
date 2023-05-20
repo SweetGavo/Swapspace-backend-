@@ -4,11 +4,6 @@ import Joi from 'joi';
 import { StatusCodes } from 'http-status-codes';
 
 
-const Specalty_Type = ['Property_Investment', 'Property_Contractor', 'Leasing_Executive', 'Realtor', 'Property_Consultant', 'Real_Estate_Consultant', 'Property_Manager', 'Real_Estate_Agent', 'Sales_Leasing_Agent', 'Other'];
-
-
-
-const Agent_type = ['REALTOR', 'CO_REALTOR'];
 
 const createAgentProfileSchema = Joi.object({
      compant_name: Joi.string().required(),
@@ -22,9 +17,9 @@ const createAgentProfileSchema = Joi.object({
      description: Joi.string().required(),
      license_number: Joi.string().required(),
      userId: Joi.string().required(),
-     broker_card_image: Joi.array().items(Joi.string()),
+     broker_card_image:  Joi.array().items(Joi.string()).default([]),
      status: Joi.string(),
-     image: Joi.string()
+     image: Joi.string().allow('')
 
 });
 
@@ -40,7 +35,7 @@ const rectorController = {
            });
          }
    
-         const { userId, compant_name, address, broker_BRN, agent_ORN, years_of_experience, specialty, role, language, description, license_number, image } = req.body;
+         const { userId, compant_name, address, broker_BRN, agent_ORN, years_of_experience, specialty, role, language, description, license_number, image, broker_card_image } = req.body;
    
          // Check if user exists
          const userExists = await prisma.user.findUnique({
@@ -66,7 +61,7 @@ const rectorController = {
              language,
              description,
              license_number,
-             broker_card_image: [],
+             broker_card_image: ['', ''],
              userId,
              status: 'PENDING',
              image: ''
