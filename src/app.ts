@@ -18,6 +18,8 @@ import ProfileRouter from './router/profileRouter';
 import RectorRouter from './router/rectorRouter';
 import OtpRouter from './router/otpRouter';
 import UserRouter from './router/userRouter';
+import resetPasswordRouter from './router/resetPasswordRouter'
+import PropertyRouter from './router/propertyRouter';
 
 
 app.use(cors());
@@ -39,6 +41,8 @@ app.use('/api/v1/profiles', ProfileRouter);
 app.use('/api/v1/agents', RectorRouter);
 app.use('/api/v1/otp', OtpRouter);
 app.use('/api/v1/users', UserRouter);
+app.use('/api/v1/auth/password', resetPasswordRouter);
+app.use('/api/v1/properties', PropertyRouter);
 
 
 //ErrorHandlerMiddleware

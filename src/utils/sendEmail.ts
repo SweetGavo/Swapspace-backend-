@@ -8,15 +8,7 @@ interface EmailOptions {
 
 const sendEmail = async ({ email, subject, html }: EmailOptions): Promise<void> => {
   try {
-    // const transporter: Transporter = nodemailer.createTransport({
-    //   host: 'smtp.ethereal.email',
-    //   port: 587,
-    //   auth: {
-    //     user: 'nelda.kuhn57@ethereal.email',
-    //     pass: 'CJERtmVFfqGXd3TuGj',
-    //   },
-    // });
-
+  
     const transporter: Transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       service: 'gmail',

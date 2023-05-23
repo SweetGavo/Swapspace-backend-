@@ -10,9 +10,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum PROPERTY_TYPES {
+  commercial_Villa
+  offices
+  shops
+  apartment
+  villa
+  town_House
+  pent_House
+  select
+  Apartment_Hotel
+  apartment_Residential
+  warehouse
+  showroom
+  bulk_Unit
+  commercial_Floor
+  residential_Floor
+  land
+}
+
 enum Specalty_Type {
   Property_Investment
-  Property_Contractor 
+  Property_Contractor
   Leasing_Executive
   Realtor
   Property_Consultant
@@ -22,7 +41,6 @@ enum Specalty_Type {
   Sales_Leasing_Agent
   Other
   Selecte
-
 }
 
 enum Status_type {
@@ -43,67 +61,116 @@ enum Agent_type {
 }
 
 model User {
-  id             String      @id @unique @default(uuid())
-  email          String      @unique
-  number         String      @unique
+  id             String     @id @unique @default(uuid())
+  email          String     @unique
+  number         String     @unique
   password       String
   profile        Profile?
   otp            Otp?
-  type           List_Types  @default(USER)
-  createdAt      DateTime    @default(now())
-  date_modified DateTime  @updatedAt @default(now())
-  verifiedEmail  Boolean     @default(false)
-  verifiedNumber Boolean     @default(false)
-  realtor        Realtor?    
-  realtorId      String?     @unique
-      
+  type           List_Types @default(USER)
+  createdAt      DateTime   @default(now())
+  date_modified  DateTime   @default(now()) @updatedAt
+  verifiedEmail  Boolean    @default(false)
+  verifiedNumber Boolean    @default(false)
+  realtor        Realtor?
+  realtorId      String?    @unique
 }
 
-
-
 model Profile {
-  id            String    @id @unique @default(uuid())
+  id            String   @id @unique @default(uuid())
   fullname      String
   address       String
-  image         String    
-  userId        String    @unique
-  user          User      @relation(fields: [userId], references: [id])
-  createdAt     DateTime  @default(now())
-  date_modified DateTime  @updatedAt @default(now())
+  image         String
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id])
+  createdAt     DateTime @default(now())
+  date_modified DateTime @default(now()) @updatedAt
 
   @@index([userId])
 }
 
 model Realtor {
-  id            String    @id @unique @default(uuid())
-  compant_name  String 
-  address       String
-  broker_BRN    String
-  agent_ORN     String
+  id                  String      @id @unique @default(uuid())
+  compant_name        String
+  address             String
+  broker_BRN          String
+  agent_ORN           String
   years_of_experience String
-  specialty     String[]
-  role          Agent_type
-  language      String[]
-  description   String
-  license_number String
-  broker_card_image String[]
-  image         String
-  status        Status_type  @default(PENDING)
-  user          User?     @relation(fields: [userId], references: [id])
-  userId        String?   @unique
-  createdAt     DateTime  @default(now())
-  date_modified DateTime  @updatedAt @default(now())
+  specialty           String[]
+  role                Agent_type
+  language            String[]
+  description         String
+  license_number      String
+  broker_card_image   String[]
+  image               String
+  status              Status_type @default(PENDING)
+  user                User?       @relation(fields: [userId], references: [id])
+  userId              String?     @unique
+  properties          Property[]  @relation("RealtorProperties")
+  createdAt           DateTime    @default(now())
+  date_modified       DateTime    @default(now()) @updatedAt
 }
 
 model Otp {
-  id         String    @id @unique @default(uuid())
-  userId     String    @unique
-  user       User      @relation(fields: [userId], references: [id])
-  otp        String
-  createdAt  DateTime  @default(now())
-  otp_expiry DateTime  
-  date_modified DateTime  @updatedAt @default(now())
+  id            String   @id @unique @default(uuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id])
+  otp           String
+  createdAt     DateTime @default(now())
+  otp_expiry    DateTime
+  date_modified DateTime @default(now()) @updatedAt
 
   @@index([userId])
 }
 
+model Property {
+  id                                  String         @id @unique @default(uuid())
+  property_title                      String
+  property_type                       PROPERTY_TYPES
+  structure                           String
+  listing_type                        String
+  style                               String
+  view                                String
+  utility_payment                     String
+  year_built                          String
+  pets_allowed                        String
+  available                           String
+  sale_or_rent_price                  String
+  price_prefix                        String
+  payment_frequency                   String
+  payment_plan                        String
+  langitude                           Float
+  latitude                            Float
+  country                             String
+  street_Number                       String
+  locality                            String
+  postal_code                         String
+  logistics                           String
+  parking_lot                         String
+  parking_slots                       String
+  fire_place                          String
+  entry_floor                         String
+  room_list                           String
+  bedroom                             String
+  bathroom                            String
+  pool                                String
+  building_unit                       String
+  unit_amenities                      String[]
+  specification                       String
+  images                              String[]
+  video_url                           String
+  video_url_tour                      String
+  utilities                           String[]
+  date_posted                         String
+  property_price                      String
+  total_lessee                        String
+  permit                              String
+  description                         String
+  additional_details                  String
+  additional_facilities_and_amenities String
+  proximate_landmark                  String
+  realtor                             Realtor?       @relation("RealtorProperties", fields: [realtorId], references: [id])
+  realtorId                           String?        
+  createdAt                           DateTime       @default(now())
+  date_modified                       DateTime       @default(now()) @updatedAt
+}
