@@ -42,4 +42,17 @@ router.route('/image-upload').post(upload.single('image'),rectorController.updat
 
 
 
+router
+.route('/')
+.get(rectorController.getAllRealtor)
+
+
+
+
+router
+.route('/:id')
+.get(rectorController.getOneRealtor)
+
+
+
 export default router;

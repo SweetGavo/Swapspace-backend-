@@ -164,6 +164,55 @@ const rectorController = {
       });
     }
   },
+
+  getAllRealtor: async (req: Request, res:Response ) => {
+    try {
+      const realtors = await prisma.realtor.findMany({})
+      
+      return res.status(StatusCodes.OK).json({
+        count: realtors.length,
+        message: 'Fetched ',
+        realtors
+      })
+
+    } catch (error) {
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: "Failed to fetch all agents profile ",
+      });
+    }
+  },
+  getOneRealtor: async (req: Request, res: Response) => {
+       try  {
+          const { id } = req.params;
+
+          const realtor = await prisma.realtor.findFirst({
+              where: {
+                id: id
+              },
+              include: {
+                user: true
+              }
+          })
+           // Exclude password and broker id
+          if (!realtor) {
+            return res.status(StatusCodes.NOT_FOUND).json({
+              message: 'FatcRealtor not found ',
+              
+            })
+          }
+
+          return res.status(StatusCodes.OK).json({
+            message: 'Fatched',
+            realtor,
+          })
+       } catch (error) {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+          message: "Failed to fetch  agent profile ",
+        });
+       }
+  },
+
+  //todo  DELETE AND UPDATE, PAGENATING
 };
 
 export default rectorController;

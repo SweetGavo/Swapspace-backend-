@@ -62,6 +62,61 @@ const profileController = {
       });
     }
   },
+
+  getOneProfile: async (req: Request, res: Response) => {
+
+    try {
+     
+      const { id } = req.params;
+
+      const profile = await prisma.profile.findFirst({
+        where: {
+          id: id,
+          
+        },
+        include: {
+          user: true
+        },
+      })
+
+     if(!profile) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        message: "user not found"
+      })
+     }
+
+
+     res.status(StatusCodes.OK).json({
+      user: profile
+     })
+
+
+    } catch (error) {
+      console.error("Error retrieving users:", error);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Failed to retrieve profile" });
+    }
+  },
+
+  getAllProfile: async (req: Request, res: Response) => {
+    try{
+
+      const profilies = await prisma.profile.findMany({
+
+      })
+
+      res.status(StatusCodes.OK).json({
+        count: profilies.length,
+        profilies
+      })
+
+    } catch (error) {
+      res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Failed to retrieve profilies" });
+    }
+  }
 };
 
 

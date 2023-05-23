@@ -214,10 +214,10 @@ const OtpController = {
       }
 
       console.log("Phone OTP:", createdOtp);
-
+      console.log(otp);
       // Send the OTP to PHONE NUMBER (implementation not included).
 
-      const options = {
+      var options = {
         method: "POST",
         url: "https://api.sendchamp.com/api/v1/sms/send",
         headers: {
@@ -228,16 +228,19 @@ const OtpController = {
         body: JSON.stringify({
           to: [user.number],
           message: `Hi this is your OTP it expires in 5 Minutes ${otp}`,
-          sender_name: "SAlert", // change this
+          sender_name: "Sendchamp",
           route: "non_dnd",
         }),
       };
 
       request(options, function (error, response) {
-        if (error)
-          return res.status(StatusCodes.NOT_FOUND).json({
+        if (error) {
+          console.error(error);
+          return res.status(StatusCodes.BAD_REQUEST).json({
             message: `check your config`,
+            error: error,
           });
+        }
         console.log(response.body);
       });
 
@@ -246,6 +249,7 @@ const OtpController = {
       });
     } catch (error) {
       console.error(error);
+
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         message: "Failed to send OTP",
         error: error,
@@ -320,3 +324,25 @@ const OtpController = {
 };
 
 export default OtpController;
+
+// var options = {
+//   method: "POST",
+//   url: "https://api.sendchamp.com/api/v1/verification/create",
+//   headers: {
+//     Accept: "application/json",
+//     "Content-Type": "application/json",
+//     Authorization: `Bearer ${process.env.ACCESS_KEY}`,
+//   },
+//   body: JSON.stringify({
+//     channel: "sms",
+//     token_type: "numeric",
+//     sender: "DAlert",
+//     token_length: "5",
+//     expiration_time: 10,
+//     to: [user.number],
+
+//     customer_mobile_number: user.number,
+//     meta_data: { email: "user.email", name: "user.name" },
+//   }),
+// };
+// console.log(options);

@@ -26,4 +26,14 @@ const upload = multer({ storage, fileFilter, limits: { fileSize: 1024 * 1024 * 5
 router.post('/', upload.single('file'), profileController.createProfile);
 
 
+router
+.route('/')
+.get(profileController.getAllProfile)
+
+
+
+router
+.route('/:id')
+.get(profileController.getOneProfile)
+
 export default router;

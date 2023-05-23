@@ -112,6 +112,7 @@ const passwordController = {
       const otpInstance = await prisma.otp.findFirst({
           where: {
             otp: otp,
+            userId: userId
           },
         });
 
