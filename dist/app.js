@@ -43,6 +43,7 @@ const otpRouter_1 = __importDefault(require("./router/otpRouter"));
 const userRouter_1 = __importDefault(require("./router/userRouter"));
 const resetPasswordRouter_1 = __importDefault(require("./router/resetPasswordRouter"));
 const propertyRouter_1 = __importDefault(require("./router/propertyRouter"));
+const groupRouter_1 = __importDefault(require("./router/groupRouter"));
 app.use((0, cors_1.default)());
 app.use((0, morgan_1.default)("dev"));
 app.use(body_parser_1.default.json());
@@ -59,6 +60,7 @@ app.use('/api/v1/otp', otpRouter_1.default);
 app.use('/api/v1/users', userRouter_1.default);
 app.use('/api/v1/auth/password', resetPasswordRouter_1.default);
 app.use('/api/v1/properties', propertyRouter_1.default);
+app.use('/api/v1/members', groupRouter_1.default);
 //ErrorHandlerMiddleware
 const not_found_1 = __importDefault(require("./middleware/not-found"));
 const error_handler_1 = __importDefault(require("./middleware/error-handler"));

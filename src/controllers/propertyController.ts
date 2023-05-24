@@ -208,6 +208,51 @@ const propertyController = {
       });
     }
   },
+
+  getAllProperties: async (req: Request, res: Response) => {
+    try {
+       const properties = await prisma.property.findMany({})
+
+       res.status(StatusCodes.OK).json({
+        message: `fetched`,
+        count: properties.length,
+        data: properties
+       })
+    } catch (error) {
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: "Failed to fatch properties",
+    })
+  }
+},
+
+getOneProperty: async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const property = await prisma.property.findFirst({
+      where: {
+        id: id
+      }
+    })
+
+    if(!property) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        message: 'Property not found'
+      })
+    }
+
+    return res.status(StatusCodes.OK).json({
+      message: 'Fatched',
+      property,
+    })
+
+  } catch (error) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: "Failed to fatch property",
+    })
+  }
+}
+
 };
 
 export default propertyController;

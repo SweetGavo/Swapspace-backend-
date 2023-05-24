@@ -6,13 +6,6 @@ import randaomGeneratorId from "../utils/otpGenerator";
 import getOtpExpiryTime from "../utils/timeGenerator";
 import sendEmail from "../utils/sendEmail";
 
-// const checkIfOtpHasExpired = (otp_expiry: Date): boolean => {
-//   const currentTime = new Date().getTime();
-//   const expiryTimeFullFormat = new Date(otp_expiry).getTime();
-
-//   if (currentTime > expiryTimeFullFormat) return true; // OTP has expired
-//   return false; // OTP has not expired
-// };
 
 const passwordController = {
   forgetPassword: async (req: Request, res: Response): Promise<Response> => {
@@ -34,8 +27,7 @@ const passwordController = {
       const otp = randaomGeneratorId;
       const otp_expiry = getOtpExpiryTime;
 
-      const salt = await bcrypt.genSalt(16);
-      const hashedOtp = await bcrypt.hash(otp, salt);
+     
       let createdOtp;
 
       const existingOtp = await prisma.otp.findFirst({
@@ -50,7 +42,7 @@ const passwordController = {
             id: existingOtp.id,
           },
           data: {
-            otp: hashedOtp,
+            otp: otp,
             otp_expiry,
           },
         });
@@ -58,7 +50,7 @@ const passwordController = {
         createdOtp = await prisma.otp.create({
           data: {
             userId: user.id,
-            otp: hashedOtp,
+            otp: otp,
             otp_expiry,
           },
         });
@@ -110,11 +102,11 @@ const passwordController = {
       const hashedpw = await bcrypt.hash(newpassword, salt);
 
       const otpInstance = await prisma.otp.findFirst({
-          where: {
-            otp: otp,
-            userId: userId
-          },
-        });
+        where: {
+          otp,
+          userId,
+        },
+      });
 
       if (!otpInstance) {
         return res.status(StatusCodes.UNAUTHORIZED).json({
@@ -123,37 +115,29 @@ const passwordController = {
       }
 
       const currentTime = Date.now();
-      const expiryTime = otpInstance.otp_expiry.getTime(); // Convert to number
+      const expiryTime = otpInstance.otp_expiry.getTime();
 
-      // Check if OTP has expired
       if (currentTime > expiryTime) {
-        // Delete the expired OTP
-        await prisma.otp.delete({
-          where: {
-            id: otpInstance.id,
-          },
-        });
+        await prisma.$transaction([
+          prisma.otp.delete({ where: { id: otpInstance.id } }),
+          prisma.user.update({
+            where: { id: userId },
+            data: { password: hashedpw },
+          }),
+        ]);
 
         return res.status(StatusCodes.BAD_REQUEST).json({
           message: "OTP has expired",
         });
       }
 
-      await prisma.user.update({
-        where: {
-          id: userId,
-        },
-        data: {
-          password: hashedpw,
-        },
-      });
-
-      // Delete the used OTP
-      await prisma.otp.delete({
-        where: {
-          id: otpInstance.id,
-        },
-      });
+      await prisma.$transaction([
+        prisma.otp.delete({ where: { id: otpInstance.id } }),
+        prisma.user.update({
+          where: { id: userId },
+          data: { password: hashedpw },
+        }),
+      ]);
 
       return res.status(StatusCodes.OK).json({
         message: "Password reset successful",

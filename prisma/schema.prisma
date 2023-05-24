@@ -66,7 +66,7 @@ model User {
   number         String     @unique
   password       String
   profile        Profile?
-  otp            Otp?
+  otp            Otp[]     @relation("Otpproperties")
   type           List_Types @default(USER)
   createdAt      DateTime   @default(now())
   date_modified  DateTime   @default(now()) @updatedAt
@@ -100,11 +100,12 @@ model Realtor {
   role                Agent_type
   language            String[]
   description         String
-  license_number      String
+  license_number      String    @unique
   broker_card_image   String[]
   image               String
   status              Status_type @default(PENDING)
   user                User?       @relation(fields: [userId], references: [id])
+  groups              Group[]     @relation("GroupMembers")
   userId              String?     @unique
   properties          Property[]  @relation("RealtorProperties")
   createdAt           DateTime    @default(now())
@@ -114,7 +115,7 @@ model Realtor {
 model Otp {
   id            String   @id @unique @default(uuid())
   userId        String   @unique
-  user          User     @relation(fields: [userId], references: [id])
+  user          User ?     @relation   ("Otpproperties",fields: [userId], references: [id])
   otp           String
   createdAt     DateTime @default(now())
   otp_expiry    DateTime
@@ -173,4 +174,15 @@ model Property {
   realtorId                           String?        
   createdAt                           DateTime       @default(now())
   date_modified                       DateTime       @default(now()) @updatedAt
+}
+
+
+model Group {
+  id            String    @id @unique @default(uuid())
+  name          String
+  realtorId     String
+  status        String    @default("CREATOR")
+  members       Realtor[] @relation("GroupMembers")
+  createdAt     DateTime  @default(now())
+  date_modified DateTime  @default(now()) @updatedAt
 }

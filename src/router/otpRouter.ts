@@ -12,7 +12,7 @@ router
 
 router
 .route('/verify-email')
-.post(OtpController.verifyOtpEmail)
+.patch(OtpController.verifyOtpEmail)
 
 
 router

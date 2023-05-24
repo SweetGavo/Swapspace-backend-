@@ -196,7 +196,7 @@ const rectorController = {
            // Exclude password and broker id
           if (!realtor) {
             return res.status(StatusCodes.NOT_FOUND).json({
-              message: 'FatcRealtor not found ',
+              message: 'Realtor not found ',
               
             })
           }

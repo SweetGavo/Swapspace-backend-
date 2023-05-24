@@ -6,6 +6,7 @@ import randaomGeneratorId from "../utils/otpGenerator";
 import getOtpExpiryTime from "../utils/timeGenerator";
 import sendEmail from "../utils/sendEmail";
 import request from "request";
+import cron from 'node-cron';
 
 const checkIfOtpHasExpired = (otp_expiry: Date): boolean => {
   const currentTime = new Date().getTime();
@@ -35,8 +36,8 @@ const OtpController = {
       const otp = randaomGeneratorId;
       const otp_expiry = getOtpExpiryTime;
 
-      const salt = await bcrypt.genSalt(16);
-      const hashedOtp = await bcrypt.hash(otp, salt);
+      // const salt = await bcrypt.genSalt(16);
+      // const hashedOtp = await bcrypt.hash(otp, salt);
       let createdOtp;
 
       const existingOtp = await prisma.otp.findFirst({
@@ -51,7 +52,7 @@ const OtpController = {
             id: existingOtp.id,
           },
           data: {
-            otp: hashedOtp,
+            otp: otp,
             otp_expiry,
           },
         });
@@ -59,7 +60,7 @@ const OtpController = {
         createdOtp = await prisma.otp.create({
           data: {
             userId: user.id,
-            otp: hashedOtp,
+            otp: otp,
             otp_expiry,
           },
         });
@@ -92,62 +93,45 @@ const OtpController = {
   verifyOtpEmail: async (req: Request, res: Response): Promise<Response> => {
     try {
       const { userId, otp } = req.body;
-
+  
       if (!userId || !otp) {
         return res.status(StatusCodes.BAD_REQUEST).json({
           message: "Empty OTP details are not allowed",
         });
       }
-
+  
       const otpInstance = await prisma.otp.findFirst({
         where: {
-          userId: userId,
-          otp: otp,
+          userId,
+          otp,
+        },
+        include: {
+          user: true,
         },
       });
-
-      if (!otpInstance) {
-        return res.status(StatusCodes.BAD_REQUEST).json({
-          message: "Invalid OTP",
-        });
-      }
-
-      // Check if OTP has expired
-      if (checkIfOtpHasExpired(otpInstance.otp_expiry)) {
-        // Delete the expired OTP
-        await prisma.otp.delete({
+  if(otpInstance == null) {
+    return res.status(StatusCodes.UNAUTHORIZED).json({
+      message: "Invalid OTP",
+    });
+  }
+     
+  
+      await prisma.$transaction([
+        prisma.user.update({
           where: {
-            id: otpInstance.id,
+            id: userId,
           },
-        });
-
-        return res.status(StatusCodes.BAD_REQUEST).json({
-          message: "OTP has expired",
-        });
-      }
-
-      const isOtpMatched = await bcrypt.compare(otp, otpInstance.otp);
-      if (!isOtpMatched) {
-        return res.status(StatusCodes.BAD_REQUEST).json({
-          message: "Invalid OTP",
-        });
-      }
-
-      await prisma.user.update({
-        where: {
-          id: userId,
-        },
-        data: {
-          verifiedEmail: true,
-        },
-      });
-
-      await prisma.otp.delete({
-        where: {
-          id: otpInstance.id,
-        },
-      });
-
+          data: {
+            verifiedEmail: true,
+          },
+        }),
+        prisma.otp.deleteMany({
+          where: {
+            userId,
+          },
+        }),
+      ]);
+  
       return res.status(StatusCodes.OK).json({
         status: "VERIFIED",
         message: "Email verified successfully",
@@ -160,6 +144,9 @@ const OtpController = {
       });
     }
   },
+  
+  
+  
 
   sendOtpToPhone: async (
     req: Request,
@@ -183,8 +170,7 @@ const OtpController = {
       const otp = randaomGeneratorId;
       const otpExpiry = getOtpExpiryTime;
 
-      const salt = await bcrypt.genSalt(16);
-      const hashedOtp = await bcrypt.hash(otp, salt);
+      
       let createdOtp;
 
       const existingOtp = await prisma.otp.findFirst({
@@ -199,7 +185,7 @@ const OtpController = {
             id: existingOtp.id,
           },
           data: {
-            otp: hashedOtp,
+            otp: otp,
             otp_expiry: otpExpiry,
           },
         });
@@ -207,7 +193,7 @@ const OtpController = {
         createdOtp = await prisma.otp.create({
           data: {
             userId: user.id,
-            otp: hashedOtp,
+            otp: otp,
             otp_expiry: otpExpiry,
           },
         });
@@ -321,7 +307,40 @@ const OtpController = {
       });
     }
   },
+   removeExpiredOtps:  async () => {
+    try {
+      // Find expired OTPs and delete them
+      const expiredOtps = await prisma.otp.findMany({
+        where: {
+          otp_expiry: {
+            lte: new Date(), // Find OTPs that have expired
+          },
+        },
+      });
+  
+      await prisma.otp.deleteMany({
+        where: {
+          id: {
+            in: expiredOtps.map((otp) => otp.id),
+          },
+        },
+      });
+  
+      console.log('Expired OTPs removed successfully.');
+    } catch (error) {
+      console.error('Failed to remove expired OTPs:', error);
+    }
+
+  }
+
+  
+
 };
+
+
+cron.schedule('59 23 * * *', () => {
+  OtpController.removeExpiredOtps();
+});
 
 export default OtpController;
 
