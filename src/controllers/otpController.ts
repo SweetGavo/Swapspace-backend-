@@ -98,7 +98,7 @@ const OtpController = {
         return res.status(StatusCodes.BAD_REQUEST).json({
           message: "Empty OTP details are not allowed",
         });
-      }
+      }597702
   
       const otpInstance = await prisma.otp.findFirst({
         where: {

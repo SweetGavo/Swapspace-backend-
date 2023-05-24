@@ -5,7 +5,7 @@ import { StatusCodes } from "http-status-codes";
 const groupMembersController = {
   createGroup: async (req: Request, res: Response) => {
     try {
-      const { name, realtorId } = req.body;
+      const { name, realtorId, status } = req.body;
 
       const checkCrator = await prisma.realtor.findUnique({
         where: {
@@ -23,6 +23,7 @@ const groupMembersController = {
         data: {
           name: name,
           realtorId: realtorId,
+          status: "CREATOR",
         },
       });
 
@@ -40,7 +41,11 @@ const groupMembersController = {
 
   getAllGroups: async (req: Request, res: Response) => {
     try {
-      const groups = await prisma.group.findMany({});
+      const groups = await prisma.group.findMany({
+        include: {
+          members: true,
+        },
+      });
 
       res.status(StatusCodes.OK).json({
         data: groups,
@@ -53,31 +58,51 @@ const groupMembersController = {
     }
   },
 
-  addmembersToGroup: async (req: Request, res: Response) => {
+  addMembersToGroup: async (req: Request, res: Response) => {
     try {
       const { groupId, memberId } = req.body;
 
-      const checkId = await prisma.group.findUnique({
+      const group = await prisma.group.findUnique({
         where: {
           id: groupId,
         },
+        include: {
+          members: true,
+        },
       });
 
-      if (!checkId) {
-        res.status(StatusCodes.NOT_FOUND).json({
-          messagea: "realtor not found",
+      if (!group) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+          message: "Group not found",
+        });
+      }
+      const isCreator = group.status === "CREATOR";
+
+      if (!isCreator) {
+        return res.status(StatusCodes.FORBIDDEN).json({
+          message: "Only the group creator can add members",
         });
       }
 
-      const checkmemberId = await prisma.realtor.findUnique({
+      const memberExists = group.members.some(
+        (member) => member.id === memberId
+      );
+
+      if (memberExists) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          message: "Member is already added to the group",
+        });
+      }
+
+      const member = await prisma.realtor.findUnique({
         where: {
           id: memberId,
         },
       });
 
-      if (!checkmemberId) {
-        res.status(StatusCodes.NOT_FOUND).json({
-          messagea: "realtor not found",
+      if (!member) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+          message: "Realtor not found",
         });
       }
 
@@ -94,9 +119,14 @@ const groupMembersController = {
           },
         },
       });
+
+      return res.status(StatusCodes.OK).json({
+        message: "Member added to the group successfully",
+      });
     } catch (error) {
+      console.error("Failed to add member to group:", error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: "Failed to add member to group ",
+        message: "Failed to add member to group",
         error: error,
       });
     }

@@ -181,7 +181,7 @@ model Group {
   id            String    @id @unique @default(uuid())
   name          String
   realtorId     String
-  status        String    @default("CREATOR")
+  status        String    
   members       Realtor[] @relation("GroupMembers")
   createdAt     DateTime  @default(now())
   date_modified DateTime  @default(now()) @updatedAt

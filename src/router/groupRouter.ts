@@ -17,7 +17,7 @@ router
 
 router
 .route('/add')
-.patch(groupMembersController.addmembersToGroup);
+.patch(groupMembersController.addMembersToGroup);
 
 
 
