@@ -251,7 +251,54 @@ getOneProperty: async (req: Request, res: Response) => {
       message: "Failed to fatch property",
     })
   }
+},
+
+deleteProperty: async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params
+    const deletedProperty = await prisma.property.delete({
+      where: {
+        id: id
+      },
+    })
+
+    return res.status(StatusCodes.OK).json({
+      message: "Property deleted"
+    })
+  } catch (error) {
+    
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: "Failed to delete property.",
+    });
+  }
+},
+
+updateProperty: async( req: Request, res: Response,) => {
+  try {
+    const propertyId = req.params.propertyId;
+const updatedProperty = await prisma.property.update({
+  where : {
+    id: propertyId
+  },
+  data : req.body
+    
+  
+})
+
+
+
+return res.status(StatusCodes.OK).json({
+  message: "Property updated successfully.",
+  updatedProperty,
+});
+    
+  } catch (error) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: "Failed to update property.",
+    });
+  }
 }
+
 
 };
 

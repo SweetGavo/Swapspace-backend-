@@ -11,13 +11,15 @@ const userController = {
           number: true,
           email: true,
           type: true,
+         
         },
-      }); // Fetch all users from the database using Prisma
+        
+      }); 
 
       res.status(StatusCodes.OK).json({
         count: users.length,
         users,
-      }); // Send the users as a JSON response
+      }); 
     } catch (error) {
       console.error("Error retrieving users:", error);
       res
@@ -37,6 +39,7 @@ const userController = {
           number: true,
           email: true,
           type: true,
+          realtor: true,
         },
       });
 
@@ -63,13 +66,29 @@ const userController = {
           number: true,
           email: true,
           type: true,
+          profile: {
+            select: {
+              fullname: true,
+              address: true,
+              image: true,
+            },
+          },
         },
       });
-
+  
+      const sanitizedUsers = users.map((user) => ({
+        ...user,
+        profile: user.profile ?? {
+          fullname: null,
+          address: null,
+          image: null,
+        },
+      }));
+  
       res.status(StatusCodes.OK).json({
-        count: users.length,
-        user: users,
-      }); // Send the users as a JSON response
+        count: sanitizedUsers.length,
+        users: sanitizedUsers,
+      });
     } catch (error) {
       console.error("Error retrieving users:", error);
       res
@@ -77,7 +96,7 @@ const userController = {
         .json({ error: "Failed to retrieve users" });
     }
   },
-
+  
   getOneUser: async (req: Request, res: Response): Promise<Response> => {
     try {
       const { id } = req.params;

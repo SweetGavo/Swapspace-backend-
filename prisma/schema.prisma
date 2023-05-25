@@ -74,6 +74,7 @@ model User {
   verifiedNumber Boolean    @default(false)
   realtor        Realtor?
   realtorId      String?    @unique
+  ratingsGiven Rating[]
 }
 
 model Profile {
@@ -110,6 +111,7 @@ model Realtor {
   properties          Property[]  @relation("RealtorProperties")
   createdAt           DateTime    @default(now())
   date_modified       DateTime    @default(now()) @updatedAt
+  ratingsReceived Rating[]
 }
 
 model Otp {
@@ -185,4 +187,17 @@ model Group {
   members       Realtor[] @relation("GroupMembers")
   createdAt     DateTime  @default(now())
   date_modified DateTime  @default(now()) @updatedAt
+}
+
+
+model Rating {
+  id         String   @id @unique @default(uuid())
+  value      Int
+  comment    String
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  realtorId  String
+  realtor    Realtor  @relation(fields: [realtorId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }

@@ -21,6 +21,7 @@ import UserRouter from './router/userRouter';
 import resetPasswordRouter from './router/resetPasswordRouter'
 import PropertyRouter from './router/propertyRouter';
 import GroupRouter from './router/groupRouter';
+import RatingRouter from './router/ratingRouter'
 
 
 app.use(cors());
@@ -45,6 +46,7 @@ app.use('/api/v1/users', UserRouter);
 app.use('/api/v1/auth/password', resetPasswordRouter);
 app.use('/api/v1/properties', PropertyRouter);
 app.use('/api/v1/members', GroupRouter);
+app.use('/api/v1/ratings', RatingRouter);
 
 
 //ErrorHandlerMiddleware

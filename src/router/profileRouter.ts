@@ -36,4 +36,15 @@ router
 .route('/:id')
 .get(profileController.getOneProfile)
 
+
+router
+.route('/:profileId')
+.patch(profileController.updateProfile)
+
+
+
+router
+.route('/:profileId')
+.delete(profileController.deleteProfile);
+
 export default router;
