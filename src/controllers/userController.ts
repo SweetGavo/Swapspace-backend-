@@ -76,7 +76,7 @@ const userController = {
         },
       });
   
-      const sanitizedUsers = users.map((user) => ({
+      const sanitizedUsers = users.map((user: any) => ({
         ...user,
         profile: user.profile ?? {
           fullname: null,
