@@ -85,7 +85,7 @@ const groupMembersController = {
       }
 
       const memberExists = group.members.some(
-        (member) => member.id === memberId
+        (member: any) => member.id === memberId
       );
 
       if (memberExists) {

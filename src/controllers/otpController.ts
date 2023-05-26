@@ -321,7 +321,7 @@ const OtpController = {
       await prisma.otp.deleteMany({
         where: {
           id: {
-            in: expiredOtps.map((otp) => otp.id),
+            in: expiredOtps.map((otp: any) => otp.id),
           },
         },
       });

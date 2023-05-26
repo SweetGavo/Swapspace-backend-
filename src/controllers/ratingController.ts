@@ -155,7 +155,7 @@ const ratingController = {
       }
 
       const totalRating = ratings.reduce(
-        (sum, rating) => sum + rating.value,
+        (sum: any, rating: any) => sum + rating.value,
         0
       );
       const averageRating = totalRating / ratings.length;
@@ -193,7 +193,7 @@ const ratingController = {
         });
       }
   
-      const commentTexts = comments.map((comment) => comment.comment);
+      const commentTexts = comments.map((comment: any) => comment.comment);
   
       return res.status(StatusCodes.OK).json({
         comments: commentTexts,

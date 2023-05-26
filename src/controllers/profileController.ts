@@ -138,7 +138,7 @@ const profileController = {
     //const userId = req.user.id; // Assuming the user ID is available in the request object (e.g., from authentication middleware)
   
     try {
-      await prisma.$transaction(async (prisma) => {
+      await prisma.$transaction(async (prisma: any) => {
         const deletedProfile = await prisma.profile.delete({
           where: {
             id: profileId,
