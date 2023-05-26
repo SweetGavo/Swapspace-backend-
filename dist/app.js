@@ -35,6 +35,8 @@ const morgan_1 = __importDefault(require("morgan"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const helmet_1 = __importDefault(require("helmet"));
+const rateLimitPromise = import('express-rate-limit');
+const xss_clean_1 = __importDefault(require("xss-clean"));
 // import routes
 const authRouter_1 = __importDefault(require("./router/authRouter"));
 const profileRouter_1 = __importDefault(require("./router/profileRouter"));
@@ -50,6 +52,19 @@ app.use((0, morgan_1.default)("dev"));
 app.use(body_parser_1.default.json());
 app.use((0, cookie_parser_1.default)(process.env.JWT_COOKIE));
 app.use(body_parser_1.default.urlencoded({ extended: true }));
+const applyRateLimiter = async (req, res, next) => {
+    const { default: rateLimit } = await rateLimitPromise;
+    const limiter = rateLimit({
+        windowMs: 15 * 60 * 1000,
+        max: 50,
+        standardHeaders: true,
+        legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    });
+    limiter(req, res, next);
+};
+app.use((0, xss_clean_1.default)());
+app.use(applyRateLimiter);
+app.use((0, helmet_1.default)());
 app.get("/", (req, res) => {
     res.json({ message: "Welcome to SWAP SPACE App" });
 });
@@ -66,7 +81,6 @@ app.use('/api/v1/ratings', ratingRouter_1.default);
 //ErrorHandlerMiddleware
 const not_found_1 = __importDefault(require("./middleware/not-found"));
 const error_handler_1 = __importDefault(require("./middleware/error-handler"));
-app.use((0, helmet_1.default)());
 app.use(not_found_1.default);
 app.use(error_handler_1.default);
 //port

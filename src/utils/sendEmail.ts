@@ -10,18 +10,18 @@ const sendEmail = async ({ email, subject, html }: EmailOptions): Promise<void> 
   try {
   
     const transporter: Transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      service: 'gmail',
+      host: process.env.HOST,
+      service: process.env.SERVICE,
       port: 587,
       secure: true,
       auth: {
-        user: 'slimnfine22@gmail.com',
-        pass: 'zizyftdzapcvvhsw',
+        user: process.env.USER,
+        pass: process.env.PASS,
       },
     });
 
     await transporter.sendMail({
-      from: '"SWAP SPACE" <slimnfine22@gmail.com>',
+      from: `"SWAP SPACE" ${process.env.USER}`,
       to: email,
       subject: subject,
       html: html,

@@ -47,6 +47,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
   };
   app.use(xss());
   app.use(applyRateLimiter);
+  app.use(helmet());
 
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to SWAP SPACE App" });
@@ -74,7 +75,7 @@ import errorHandlerMiddleware from "./middleware/error-handler";
 
 
 
-app.use(helmet());
+
 
 
 app.use(notFoundMiddleware);
