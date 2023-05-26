@@ -192,9 +192,11 @@ const ratingController = {
           message: `No comments found for realtor with ID: ${realtorId}`,
         });
       }
-      
+  
+      const commentTexts = comments.map((comment) => comment.comment);
+  
       return res.status(StatusCodes.OK).json({
-        comments: comments,
+        comments: commentTexts,
       });
     } catch (error) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -202,6 +204,7 @@ const ratingController = {
       });
     }
   },
+  
 };
 
 export default ratingController;

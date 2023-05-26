@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
-import express, { Application } from 'express';
+import express, { Application, Request, Response, NextFunction } from 'express';
 const app: Application = express();
 
 import cors from "cors";
@@ -9,7 +9,8 @@ import cookieParser from 'cookie-parser';
 import bodyParser from "body-parser";
 
 import helmet from "helmet";
-
+const rateLimitPromise = import('express-rate-limit');
+import xss from 'xss-clean';
 
 
 // import routes
@@ -29,6 +30,23 @@ app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(cookieParser(process.env.JWT_COOKIE));
 app.use(bodyParser.urlencoded({ extended: true }))
+
+ 
+
+  const applyRateLimiter = async (req: Request, res: Response, next: NextFunction) => {
+    const { default: rateLimit } = await rateLimitPromise;
+  
+    const limiter = rateLimit({
+      windowMs: 15 * 60 * 1000, // 15 minutes
+      max: 50, // limit each IP to 100 requests per windowMs
+      standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+      legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    });
+  
+    limiter(req, res, next);
+  };
+  app.use(xss());
+  app.use(applyRateLimiter);
 
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to SWAP SPACE App" });
