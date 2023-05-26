@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../DB/prisma';
-import { PrismaClient, List_Types } from '@prisma/client';
+
 import { StatusCodes } from 'http-status-codes';
 import { hashPassword, comparePassword } from '../utils/password';
 import jwt from 'jsonwebtoken';
@@ -228,8 +228,8 @@ const authController = {
                          email,
                          password: hashedPassword,
                          number,
-                         type: List_Types.AGENT
-                    },
+                         type: "AGENT"
+                 },
                });
 
                return res.status(StatusCodes.CREATED).json({
