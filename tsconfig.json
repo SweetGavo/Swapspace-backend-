@@ -108,6 +108,7 @@
   },
   "include": [
     "src/**/*.ts",
-    "xss-clean.d.ts" 
+    "xss-clean.d.ts",
+   " webpack.config.ts"
   ]
 }
