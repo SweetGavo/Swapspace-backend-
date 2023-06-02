@@ -1,19 +1,25 @@
-// import { StatusCodes } from "http-status-codes";
-// import { User } from "@prisma/client"; 
-// import { Response } from 'express';
+import { Response, NextFunction } from 'express';
+import { User } from '@prisma/client';
+import { StatusCodes } from 'http-status-codes';
 
-// const checkPermission = (requestUser: User, resourceUserId: string): any | Response => {
-//   console.log(requestUser);
-//   console.log(resourceUserId);
-//   console.log(typeof resourceUserId);
-//   if (requestUser.type === "ADMIN") return;
-//   if (requestUser.type === "AGENT") return;
-//   if (requestUser.type === "USER") return;
-//   if (requestUser.id === resourceUserId.toString()) return;
-//   return {
-//     status: StatusCodes.BAD_REQUEST,
-//     message: "Not authorized to access this route",
-//   };
-// };
+const checkPermission = (allowedTypes: string[]) => {
+  return (req: any, res: Response, next: NextFunction) => {
+    const requestUser = req.user as User;
+    const resourceUserId = req.params.userId;
 
-// export default checkPermission;
+    console.log(requestUser);
+    console.log(resourceUserId);
+    console.log(typeof resourceUserId);
+
+    if (
+      allowedTypes.includes(requestUser.type) ||
+      requestUser.id === resourceUserId
+    ) {
+      next(); 
+    } else {
+      res.status(StatusCodes.BAD_REQUEST).json({ message: 'Not authorized to access this route' });
+    }
+  };
+};
+
+export default checkPermission;
