@@ -22,7 +22,7 @@ import UserRouter from './router/userRouter';
 import resetPasswordRouter from './router/resetPasswordRouter'
 import PropertyRouter from './router/propertyRouter';
 import GroupRouter from './router/groupRouter';
-import RatingRouter from './router/ratingRouter';
+import RatingRouter from './router/ratingRouter'
 
 
 app.use(cors());
@@ -82,7 +82,7 @@ app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
 //port
-const port = process.env.PORT || 6001;
+const port = 6001;
 const start = async () => {
   try {
 
