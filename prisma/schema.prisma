@@ -66,7 +66,7 @@ model User {
   number         String     @unique
   password       String
   profile        Profile?
-  otp            Otp[]     @relation("Otpproperties")
+  otp            Otp[]      @relation("Otpproperties")
   type           List_Types @default(USER)
   createdAt      DateTime   @default(now())
   date_modified  DateTime   @default(now()) @updatedAt
@@ -74,7 +74,8 @@ model User {
   verifiedNumber Boolean    @default(false)
   realtor        Realtor?
   realtorId      String?    @unique
-  ratingsGiven Rating[]
+  ratingsGiven   Rating[]
+  offers         Offers[]
 }
 
 model Profile {
@@ -101,7 +102,7 @@ model Realtor {
   role                Agent_type
   language            String[]
   description         String
-  license_number      String    @unique
+  license_number      String      @unique
   broker_card_image   String[]
   image               String
   status              Status_type @default(PENDING)
@@ -111,13 +112,13 @@ model Realtor {
   properties          Property[]  @relation("RealtorProperties")
   createdAt           DateTime    @default(now())
   date_modified       DateTime    @default(now()) @updatedAt
-  ratingsReceived Rating[]
+  ratingsReceived     Rating[]
 }
 
 model Otp {
   id            String   @id @unique @default(uuid())
   userId        String   @unique
-  user          User ?     @relation   ("Otpproperties",fields: [userId], references: [id])
+  user          User?    @relation("Otpproperties", fields: [userId], references: [id])
   otp           String
   createdAt     DateTime @default(now())
   otp_expiry    DateTime
@@ -173,31 +174,55 @@ model Property {
   additional_facilities_and_amenities String
   proximate_landmark                  String
   realtor                             Realtor?       @relation("RealtorProperties", fields: [realtorId], references: [id])
-  realtorId                           String?        
+  offers                              Offers[]
+  realtorId                           String?
   createdAt                           DateTime       @default(now())
   date_modified                       DateTime       @default(now()) @updatedAt
 }
-
 
 model Group {
   id            String    @id @unique @default(uuid())
   name          String
   realtorId     String
-  status        String    
+  status        String
   members       Realtor[] @relation("GroupMembers")
   createdAt     DateTime  @default(now())
   date_modified DateTime  @default(now()) @updatedAt
 }
 
-
 model Rating {
-  id         String   @id @unique @default(uuid())
-  value      Int
-  comment    String
-  userId     String
-  user       User     @relation(fields: [userId], references: [id])
-  realtorId  String
-  realtor    Realtor  @relation(fields: [realtorId], references: [id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id        String   @id @unique @default(uuid())
+  value     Int
+  comment   String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  realtorId String
+  realtor   Realtor  @relation(fields: [realtorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
+
+enum OfferStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model Offers {
+  id         String      @id @unique @default(uuid())
+  userId     String
+  propertyId String
+  status     OfferStatus @default(PENDING)
+  user       User        @relation(fields: [userId], references: [id])
+  property   Property    @relation(fields: [propertyId], references: [id])
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+// model Task {
+//   id String @id @unique @default(uuid())
+//   deal_objective String
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }

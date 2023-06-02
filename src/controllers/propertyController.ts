@@ -197,7 +197,7 @@ const propertyController = {
       return res.status(StatusCodes.OK).json({
         message: "Images have been uploaded",
         data: {
-          image: updatedProperty.images
+          image: updatedProperty.images,
         },
       });
     } catch (error) {
@@ -211,95 +211,86 @@ const propertyController = {
 
   getAllProperties: async (req: Request, res: Response) => {
     try {
-       const properties = await prisma.property.findMany({})
+      const properties = await prisma.property.findMany({});
 
-       res.status(StatusCodes.OK).json({
+      res.status(StatusCodes.OK).json({
         message: `fetched`,
         count: properties.length,
-        data: properties
-       })
+        data: properties,
+      });
     } catch (error) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         message: "Failed to fatch properties",
-    })
-  }
-},
-
-getOneProperty: async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-
-    const property = await prisma.property.findFirst({
-      where: {
-        id: id
-      }
-    })
-
-    if(!property) {
-      return res.status(StatusCodes.NOT_FOUND).json({
-        message: 'Property not found'
-      })
+      });
     }
-
-    return res.status(StatusCodes.OK).json({
-      message: 'Fatched',
-      property,
-    })
-
-  } catch (error) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: "Failed to fatch property",
-    })
-  }
-},
-
-deleteProperty: async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params
-    const deletedProperty = await prisma.property.delete({
-      where: {
-        id: id
-      },
-    })
-
-    return res.status(StatusCodes.OK).json({
-      message: "Property deleted"
-    })
-  } catch (error) {
-    
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: "Failed to delete property.",
-    });
-  }
-},
-
-updateProperty: async( req: Request, res: Response,) => {
-  try {
-    const propertyId = req.params.propertyId;
-const updatedProperty = await prisma.property.update({
-  where : {
-    id: propertyId
   },
-  data : req.body
-    
-  
-})
 
+  getOneProperty: async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
 
+      const property = await prisma.property.findFirst({
+        where: {
+          id: id,
+        },
+      });
 
-return res.status(StatusCodes.OK).json({
-  message: "Property updated successfully.",
-  updatedProperty,
-});
-    
-  } catch (error) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: "Failed to update property.",
-    });
-  }
-}
+      if (!property) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+          message: "Property not found",
+        });
+      }
 
+      return res.status(StatusCodes.OK).json({
+        message: "Fatched",
+        property,
+      });
+    } catch (error) {
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: "Failed to fatch property",
+      });
+    }
+  },
 
+  deleteProperty: async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const deletedProperty = await prisma.property.delete({
+        where: {
+          id: id,
+        },
+      });
+
+      return res.status(StatusCodes.OK).json({
+        message: "Property deleted",
+      });
+    } catch (error) {
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: "Failed to delete property.",
+      });
+    }
+  },
+
+  updateProperty: async (req: Request, res: Response) => {
+    try {
+      const propertyId = req.params.propertyId;
+      const updatedProperty = await prisma.property.update({
+        where: {
+          id: propertyId,
+        },
+        data: req.body,
+      });
+
+      return res.status(StatusCodes.OK).json({
+        message: "Property updated successfully.",
+        updatedProperty,
+      });
+    } catch (error) {
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: "Failed to update property.",
+      });
+    }
+  },
 };
 
 export default propertyController;
