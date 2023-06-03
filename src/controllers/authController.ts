@@ -6,291 +6,280 @@ import { hashPassword, comparePassword } from '../utils/password';
 import jwt from 'jsonwebtoken';
 import Joi from 'joi';
 
-
-
-
 const createUserSchema = Joi.object({
-     email: Joi.string().email().required(),
-     password: Joi.string().required(),
-     number: Joi.string().required(),
+  email: Joi.string().email().required(),
+  password: Joi.string().required(),
+  number: Joi.string().required(),
 });
 
-
 const validatePasswordString = (password: string): any | Response => {
-     const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$/;
+  const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$/;
 
-     if (!password.match(regex)) {
-          return {
-               status: StatusCodes.BAD_REQUEST,
-               message: 'Password must contain a capital letter, number, special character, and be between 8 and 20 characters long.',
-          };
-     }
-     return true;
+  if (!password.match(regex)) {
+    return {
+      status: StatusCodes.BAD_REQUEST,
+      message:
+        'Password must contain a capital letter, number, special character, and be between 8 and 20 characters long.',
+    };
+  }
+  return true;
 };
 
-
 const authController = {
-     createUser: async (req: Request, res: Response): Promise<Response> => {
+  createUser: async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const { error } = createUserSchema.validate(req.body);
 
+      if (error) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          message: 'Invalid request body',
+          error: error.details[0].message,
+        });
+      }
 
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-          try {
+      const { email, password, number, image } = req.body;
 
-                  const { error } = createUserSchema.validate(req.body)
+      if (!email && !password && !number) {
+        res.status(StatusCodes.BAD_REQUEST).json({
+          message: 'Provide all required fields',
+        });
+      }
+      // Check if email is valid
+      if (!email.match(emailRegex)) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          message: 'Invalid email address',
+        });
+      }
 
-                  if (error) {
-                    return res.status(StatusCodes.BAD_REQUEST).json({
-                      message: 'Invalid request body',
-                      error: error.details[0].message,
-                    });
-                  }
+      const emailAlreadyExists = await prisma.user.findUnique({
+        where: { email },
+      });
+      if (emailAlreadyExists) {
+        return res.status(StatusCodes.CONFLICT).json({
+          message: 'Email already exists',
+        });
+      }
+      // Check if number is unique
+      const numberAlreadyExists = await prisma.user.findUnique({
+        where: { number },
+      });
 
-               const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (numberAlreadyExists) {
+        return res.status(StatusCodes.CONFLICT).json({
+          message: 'Number already exists',
+        });
+      }
 
-               const { email, password, number, image } = req.body;
+      const passwordValidationResult = validatePasswordString(password);
+      if (typeof passwordValidationResult !== 'boolean') {
+        return res
+          .status(StatusCodes.BAD_REQUEST)
+          .json(passwordValidationResult);
+      }
 
-               if (!email && !password && !number) {
-                    res.status(StatusCodes.BAD_REQUEST).json({
-                         message: "Provied all required fields"
-                    });
-               }
-               // Check if email is valid
-               if (!email.match(emailRegex)) {
-                    return res.status(StatusCodes.BAD_REQUEST).json({
-                         message: 'Invalid email address',
-                    });
-               }
+      // Hash the password
+      const hashedPassword = await hashPassword(password);
 
-               const emailAlreadyExists = await prisma.user.findUnique({ where: { email } });
-               if (emailAlreadyExists) {
-                    return res.status(StatusCodes.CONFLICT).json({
-                         message: 'Email already exists',
-                    });
-               }
-               // Check if number is unique
-               const numberAlreadyExists = await prisma.user.findUnique({
-                    where: { number },
-               });
+      // Create the user if password validation passes
+      if (passwordValidationResult) {
+        const createdUser = await prisma.user.create({
+          data: {
+            email,
+            password: hashedPassword,
+            number,
+          },
+        });
 
-               if (numberAlreadyExists) {
-                    return res.status(StatusCodes.CONFLICT).json({
-                         message: 'Number already exists',
-                    });
+        return res.status(StatusCodes.CREATED).json({
+          message: 'User created successfully',
+          user: {
+            id: createdUser.id,
+            email: createdUser.email,
+            number: createdUser.number,
+            type: createdUser.type,
+            createdAt: createdUser.createdAt,
+          },
+        });
+      } else {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          message: 'Invalid password',
+        });
+      }
+    } catch (error) {
+      console.log(error);
 
-               }
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: 'Failed to create user',
+      });
+    }
+  },
 
-               validatePasswordString(password);
+  loginUser: async (req: Request, res: Response): Promise<Response> => {
+    const { email, password } = req.body;
 
-               // Hash the password
-               const hashedPassword = await hashPassword(password);
+    try {
+      const user = await prisma.user.findUnique({ where: { email } });
 
-               // Create the user
-               const createdUser = await prisma.user.create({
-                    data: {
-                         email,
-                         password: hashedPassword,
-                         number,
-                         
-                    },
-               });
+      if (!user) {
+        return res.status(StatusCodes.UNAUTHORIZED).json({
+          message: 'Invalid email or password',
+        });
+      }
 
-               return res.status(StatusCodes.CREATED).json({
-                    message: 'User created successfully',
-                    user: {
-                         id: createdUser.id,
-                         email: createdUser.email,
-                         number: createdUser.number,
-                         type: createdUser.type,
-                         createdAt: createdUser.createdAt,
-                    },
-               });
-          } catch (error) {
-               console.log(error);
+      const isPasswordValid = await comparePassword(password, user.password);
 
-               return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-                    message: 'Failed to create user',
-               });
-          }
-     },
+      if (!isPasswordValid) {
+        return res.status(StatusCodes.UNAUTHORIZED).json({
+          message: 'Invalid email or password',
+        });
+      }
 
+      // Generate a JWT token
 
+      console.log(process.env.JWT_SECRET);
 
-     loginUser: async (req: Request, res: Response): Promise<Response> => {
-          const { email, password } = req.body;
+      const token = jwt.sign(
+        { userId: user.id, type: user.type },
+        process.env.JWT_SECRET || '', // Provide a default value if process.env.JWT_SECRET is undefined
+        { expiresIn: '1h' }
+      );
 
-          try {
-               const user = await prisma.user.findUnique({ where: { email } });
+      return res.status(StatusCodes.OK).json({
+        message: 'Login successful',
+        user: {
+          email: user.email,
+          number: user.number,
+          type: user.type,
+        },
+        token: token,
+      });
+    } catch (error) {
+      console.log(error);
 
-               if (!user) {
-                    return res.status(StatusCodes.UNAUTHORIZED).json({
-                         message: 'Invalid email or password',
-                    });
-               }
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: 'Failed to login',
+      });
+    }
+  },
 
-               const isPasswordValid = await comparePassword(password, user.password);
+  logoutUser: async (req: Request, res: Response): Promise<Response> => {
+    try {
+      res.clearCookie('token');
 
-               if (!isPasswordValid) {
-                    return res.status(StatusCodes.UNAUTHORIZED).json({
-                         message: 'Invalid email or password',
-                    });
-               }
+      return res.status(StatusCodes.OK).json({
+        message: 'Logout successful',
+      });
+    } catch (error) {
+      console.log(error);
 
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: 'Failed to logout',
+      });
+    }
+  },
+  createAgent: async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+      const { email, password, number, type } = req.body;
+      // Check if email is valid
+      if (!email.match(emailRegex)) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          message: 'Invalid email address',
+        });
+      }
 
-               // Generate a JWT token
+      const emailAlreadyExists = await prisma.user.findUnique({
+        where: { email },
+      });
+      if (emailAlreadyExists) {
+        return res.status(StatusCodes.CONFLICT).json({
+          message: 'Email already exists',
+        });
+      }
+      // Check if number is unique
+      const numberAlreadyExists = await prisma.user.findUnique({
+        where: { number },
+      });
 
-               console.log(process.env.JWT_SECRET);
+      if (numberAlreadyExists) {
+        return res.status(StatusCodes.CONFLICT).json({
+          message: 'Number already exists',
+        });
+      }
 
+      validatePasswordString(password);
 
+      // Hash the password
+      const hashedPassword = await hashPassword(password);
 
-               const token = jwt.sign(
-                    { userId: user.id, type: user.type },
-                    process.env.JWT_SECRET || '', // Provide a default value if process.env.JWT_SECRET is undefined
-                    { expiresIn: '1h' }
-               );
+      // Create the user
+      const createdUser = await prisma.user.create({
+        data: {
+          email,
+          password: hashedPassword,
+          number,
+          type: 'AGENT',
+        },
+      });
 
+      return res.status(StatusCodes.CREATED).json({
+        message: 'Agent created successfully',
+        user: {
+          id: createdUser.id,
+          email: createdUser.email,
+          number: createdUser.number,
+          type: createdUser.type,
+          createdAt: createdUser.createdAt,
+        },
+      });
+    } catch (error) {
+      console.log(error);
 
-               return res.status(StatusCodes.OK).json({
-                    message: 'Login successful',
-                    user: {
-                         email: user.email,
-                         number: user.number,
-                         type: user.type
-                    },
-                    token: token,
-               });
-          } catch (error) {
-               console.log(error);
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: 'Failed to create agent',
+      });
+    }
+  },
 
-               return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-                    message: 'Failed to login',
-               });
-          }
-     },
+  // updateProfileImage: async (req: Request, res: Response) => {
+  //      try {
+  //           const file = req.file;
 
-     logoutUser: async (req: Request, res: Response): Promise<Response> => {
-          try {
+  //           if (!file) {
+  //                return res.status(StatusCodes.NOT_FOUND).json("Please upload an image");
+  //           }
 
-               res.clearCookie('token');
+  //           const { id: userId } = req.body;
 
+  //           // Upload the image to Cloudinary
+  //           const result = await cloudinary.uploader.upload(file.path);
+  //           const existingProfile = await prisma.user.findUnique({
+  //                where: {
+  //                  id: userId, // Replace `userId` with the actual user ID
+  //                },
+  //              });
 
-               return res.status(StatusCodes.OK).json({
-                    message: 'Logout successful',
-               });
-          } catch (error) {
-               console.log(error);
+  //           if (!existingProfile) {
+  //                return res.status(StatusCodes.NOT_FOUND).json({
+  //                     error: 'Profile not found',
+  //                });
+  //           }
 
-               return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-                    message: 'Failed to logout',
-               });
-          }
-     },
-     createAgent: async (req: Request, res: Response): Promise<Response> => {
+  //           const updatedProfile = await prisma.user.update({
+  //                where: { id: userId },
+  //                data: { image: result.secure_url },
+  //           });
 
-          try {
-
-
-               const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-               const { email, password, number, type } = req.body;
-               // Check if email is valid
-               if (!email.match(emailRegex)) {
-                    return res.status(StatusCodes.BAD_REQUEST).json({
-                         message: 'Invalid email address',
-                    });
-               }
-
-               const emailAlreadyExists = await prisma.user.findUnique({ where: { email } });
-               if (emailAlreadyExists) {
-                    return res.status(StatusCodes.CONFLICT).json({
-                         message: 'Email already exists',
-                    });
-               }
-               // Check if number is unique
-               const numberAlreadyExists = await prisma.user.findUnique({
-                    where: { number },
-               });
-
-               if (numberAlreadyExists) {
-                    return res.status(StatusCodes.CONFLICT).json({
-                         message: 'Number already exists',
-                    });
-               }
-
-               validatePasswordString(password);
-
-               // Hash the password
-               const hashedPassword = await hashPassword(password);
-
-               // Create the user
-               const createdUser = await prisma.user.create({
-                    data: {
-                         email,
-                         password: hashedPassword,
-                         number,
-                         type: "AGENT"
-                 },
-               });
-
-               return res.status(StatusCodes.CREATED).json({
-                    message: 'Agent created successfully',
-                    user: {
-                         id: createdUser.id,
-                         email: createdUser.email,
-                         number: createdUser.number,
-                         type: createdUser.type,
-                         createdAt: createdUser.createdAt,
-                    },
-               });
-          } catch (error) {
-               console.log(error);
-
-               return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-                    message: 'Failed to create agent',
-               });
-          }
-     },
-
-     // updateProfileImage: async (req: Request, res: Response) => {
-     //      try {
-     //           const file = req.file;
-
-     //           if (!file) {
-     //                return res.status(StatusCodes.NOT_FOUND).json("Please upload an image");
-     //           }
-
-     //           const { id: userId } = req.body;
-
-     //           // Upload the image to Cloudinary
-     //           const result = await cloudinary.uploader.upload(file.path);
-     //           const existingProfile = await prisma.user.findUnique({
-     //                where: {
-     //                  id: userId, // Replace `userId` with the actual user ID
-     //                },
-     //              });
-
-     //           if (!existingProfile) {
-     //                return res.status(StatusCodes.NOT_FOUND).json({
-     //                     error: 'Profile not found',
-     //                });
-     //           }
-
-     //           const updatedProfile = await prisma.user.update({
-     //                where: { id: userId },
-     //                data: { image: result.secure_url },
-     //           });
-
-     //           console.log(req);
-     //           return res.status(StatusCodes.OK).json(updatedProfile);
-     //      } catch (error) {
-     //           console.error('Error updating profile image:', error);
-     //           return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to update profile image' });
-     //      }
-     // },
-
-
-
+  //           console.log(req);
+  //           return res.status(StatusCodes.OK).json(updatedProfile);
+  //      } catch (error) {
+  //           console.error('Error updating profile image:', error);
+  //           return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to update profile image' });
+  //      }
+  // },
 };
 
 export default authController;
-
