@@ -219,10 +219,45 @@ model Offers {
   updatedAt  DateTime    @updatedAt
 }
 
-// model Task {
-//   id String @id @unique @default(uuid())
-//   deal_objective String
+enum Completed_Type {
+  PENDING
+  COMPLETED
+  OVERDUE
+}
 
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
+enum Action_Type {
+  CALL
+  EMAIL
+  MESSAGE
+  DEAL
+  OTHERS
+}
+
+model Task {
+  id                    String         @id @unique @default(uuid())
+  title                 String
+  action                Action_Type
+  assignee              String
+  collaborator          String
+  contact               String[]
+  description           String
+  start_date            DateTime
+  due_date_and_time     DateTime
+  closing_date_and_time DateTime
+  completed             Completed_Type @default(PENDING)
+  responses             Response[]    @relation("TaskResponses")
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+}
+
+model Response {
+  id        String    @id @unique @default(uuid())
+  outcome   String
+  note      String
+  comment   String
+  taskId    String
+  task      Task?      @relation("TaskResponses",fields: [taskId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
