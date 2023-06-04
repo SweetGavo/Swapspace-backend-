@@ -181,13 +181,14 @@ model Property {
 }
 
 model Group {
-  id            String    @id @unique @default(uuid())
+  id            String      @id @unique @default(uuid())
   name          String
   realtorId     String
-  status        String
-  members       Realtor[] @relation("GroupMembers")
-  createdAt     DateTime  @default(now())
-  date_modified DateTime  @default(now()) @updatedAt
+  status        String      @default("CREATOR")
+  members       Realtor[]   @relation("GroupMembers")
+  createdAt     DateTime    @default(now())
+  date_modified DateTime    @default(now()) @updatedAt
+  coRealtors    CoRealtor[]
 }
 
 model Rating {
@@ -245,19 +246,38 @@ model Task {
   due_date_and_time     DateTime
   closing_date_and_time DateTime
   completed             Completed_Type @default(PENDING)
-  responses             Response[]    @relation("TaskResponses")
+  responses             Response[]     @relation("TaskResponses")
   createdAt             DateTime       @default(now())
   updatedAt             DateTime       @updatedAt
 }
 
 model Response {
-  id        String    @id @unique @default(uuid())
+  id        String   @id @unique @default(uuid())
   outcome   String
   note      String
   comment   String
   taskId    String
-  task      Task?      @relation("TaskResponses",fields: [taskId], references: [id])
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  task      Task?    @relation("TaskResponses", fields: [taskId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
+model CoRealtor {
+  id        String   @id @unique @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  group     Group    @relation(fields: [groupId], references: [id])
+  groupId   String
+  token     String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Invitation {
+  id        String   @id @unique @default(uuid())
+  email     String
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
