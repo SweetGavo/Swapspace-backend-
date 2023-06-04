@@ -5,6 +5,7 @@ import { StatusCodes } from 'http-status-codes';
 import { hashPassword, comparePassword } from '../utils/password';
 import jwt from 'jsonwebtoken';
 import Joi from 'joi';
+import validatePasswordString from '../utils/passwordValidator';
 
 const createUserSchema = Joi.object({
   email: Joi.string().email().required(),
@@ -12,18 +13,7 @@ const createUserSchema = Joi.object({
   number: Joi.string().required(),
 });
 
-const validatePasswordString = (password: string): any | Response => {
-  const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$/;
 
-  if (!password.match(regex)) {
-    return {
-      status: StatusCodes.BAD_REQUEST,
-      message:
-        'Password must contain a capital letter, number, special character, and be between 8 and 20 characters long.',
-    };
-  }
-  return true;
-};
 
 const authController = {
   createUser: async (req: Request, res: Response): Promise<Response> => {
