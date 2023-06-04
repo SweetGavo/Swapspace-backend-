@@ -107,7 +107,7 @@ model Realtor {
   image               String
   status              Status_type @default(PENDING)
   user                User?       @relation(fields: [userId], references: [id])
-  groups              Group[]     @relation("GroupMembers")
+  groups              Group[]     @relation("RealtorGroups")
   userId              String?     @unique
   properties          Property[]  @relation("RealtorProperties")
   createdAt           DateTime    @default(now())
@@ -185,10 +185,10 @@ model Group {
   name          String
   realtorId     String
   status        String      @default("CREATOR")
-  members       Realtor[]   @relation("GroupMembers")
+  members       CoRealtor[] @relation("GroupMembers")
+  createdBy     Realtor     @relation("RealtorGroups", fields: [realtorId], references: [id])
   createdAt     DateTime    @default(now())
   date_modified DateTime    @default(now()) @updatedAt
-  coRealtors    CoRealtor[]
 }
 
 model Rating {
@@ -264,12 +264,14 @@ model Response {
 
 model CoRealtor {
   id        String   @id @unique @default(uuid())
-  name      String
+  full_name String
   email     String   @unique
+  number    String
   password  String
-  group     Group    @relation(fields: [groupId], references: [id])
-  groupId   String
+  type      String   @default("CO_REALTOR")
   token     String?  @unique
+  image     String
+  groups    Group[]  @relation("GroupMembers")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
