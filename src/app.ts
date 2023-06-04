@@ -25,6 +25,7 @@ import PropertyRouter from './router/propertyRouter';
 import GroupRouter from './router/groupRouter';
 import RatingRouter from './router/ratingRouter';
 import OfferRouter from './router/offerRouter';
+import InvitationRouter from './router/invitationRouter';
 
 app.use(cors());
 app.use(morgan('dev'));
@@ -68,6 +69,7 @@ app.use('/api/v1/properties', PropertyRouter);
 app.use('/api/v1/members', GroupRouter);
 app.use('/api/v1/ratings', RatingRouter);
 app.use('/api/v1/offers', OfferRouter);
+app.use('/api/v1/invitations', InvitationRouter);
 
 //ErrorHandlerMiddleware
 import notFoundMiddleware from './middleware/not-found';

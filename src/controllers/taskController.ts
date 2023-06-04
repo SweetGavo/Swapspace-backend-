@@ -52,9 +52,9 @@ const taskConroller = {
       },
     });
 
-    //  Notification or MAIL to assignee & collaborator
+    TODO: //  Notification or MAIL to assignee & collaborator
 
-    TODO: return res.status(StatusCodes.CREATED).json({
+     return res.status(StatusCodes.CREATED).json({
       message: `Tasks created`,
       task: task,
     });
