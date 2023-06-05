@@ -154,14 +154,12 @@ const propertyController = {
         },
       })
       if (propertyId) {
-        const filteredproperty = properties.filter(item => { item.id === id })
-        return res.status(StatusCodes.OK).json({
-        filteredproperty
-      });
+        const filteredproperty = properties.filter(item => {item.p})
       }
       return res.status(StatusCodes.OK).json({
         count: properties.length,
         properties,
+        filteredproperty
       });
        
     } catch (error) {

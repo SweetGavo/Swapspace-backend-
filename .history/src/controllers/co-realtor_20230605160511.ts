@@ -132,8 +132,8 @@ const coRealtorController = {
         message: 'Login successful',
         co_Realtor: {
           email: co_Realtor.email,
-          // number: co_Realtor.number,
-          // type: co_Realtor.type,
+          number: co_Realtor.number,
+          type: co_Realtor,
         },
         token,
       });

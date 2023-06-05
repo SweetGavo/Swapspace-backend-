@@ -146,31 +146,18 @@ const propertyController = {
 
   getAllProperty: async (req: Request, res: Response): Promise<Response> => {
     try {
-      const {id}:any = req.params.propertyId
       const properties = await prisma.property.findMany({});
-      const propertyId = await prisma.property.findMany({
-        where: {
-          id:id
-        },
-      })
-      if (propertyId) {
-        const filteredproperty = properties.filter(item => { item.id === id })
-        return res.status(StatusCodes.OK).json({
-        filteredproperty
-      });
-      }
       return res.status(StatusCodes.OK).json({
         count: properties.length,
         properties,
       });
-       
     } catch (error) {
       console.error("Error retrieving users:", error);
       return res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ error: "Failed to retrieve properties" });
     }
-   
+
 
   },
 
@@ -273,7 +260,7 @@ const propertyController = {
       const deletedProperty = await prisma.property.delete({
         where: {
           id: id,
-          
+          de
         },
       });
 

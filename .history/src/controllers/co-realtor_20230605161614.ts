@@ -76,12 +76,12 @@ const coRealtorController = {
 
       const newAccount = await prisma.coRealtor.create({
         data: {
-          full_name,
+          // full_name,
           email,
           password: hashedPassword,
-          number,
+          // number,
           token,
-          image: uploadedImage.secure_url,
+          // image: uploadedImage.secure_url,
         },
       });
 

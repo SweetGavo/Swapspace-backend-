@@ -75,6 +75,7 @@ const coRealtorController = {
       const uploadedImage = await cloudinary.uploader.upload(file.path);
 
       const newAccount = await prisma.coRealtor.create({
+        const 
         data: {
           full_name,
           email,

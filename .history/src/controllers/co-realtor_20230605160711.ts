@@ -133,7 +133,7 @@ const coRealtorController = {
         co_Realtor: {
           email: co_Realtor.email,
           // number: co_Realtor.number,
-          // type: co_Realtor.type,
+          type: co_Realtor.type,
         },
         token,
       });

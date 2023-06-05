@@ -81,7 +81,7 @@ const coRealtorController = {
           password: hashedPassword,
           number,
           token,
-          image: uploadedImage.secure_url,
+          // image: uploadedImage.secure_url,
         },
       });
 

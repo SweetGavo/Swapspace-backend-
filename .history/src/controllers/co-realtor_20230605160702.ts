@@ -131,9 +131,9 @@ const coRealtorController = {
       return res.status(StatusCodes.OK).json({
         message: 'Login successful',
         co_Realtor: {
-          email: co_Realtor.email,
-          // number: co_Realtor.number,
-          // type: co_Realtor.type,
+          email: co_Realtor.,
+          number: co_Realtor.number,
+          type: co_Realtor.type,
         },
         token,
       });

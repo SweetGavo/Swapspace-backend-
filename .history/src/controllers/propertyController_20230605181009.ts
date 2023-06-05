@@ -156,6 +156,7 @@ const propertyController = {
       if (propertyId) {
         const filteredproperty = properties.filter(item => { item.id === id })
         return res.status(StatusCodes.OK).json({
+        count: properties.length,
         filteredproperty
       });
       }

@@ -146,19 +146,9 @@ const propertyController = {
 
   getAllProperty: async (req: Request, res: Response): Promise<Response> => {
     try {
-      const {id}:any = req.params.propertyId
       const properties = await prisma.property.findMany({});
-      const propertyId = await prisma.property.findMany({
-        where: {
-          id:id
-        },
-      })
-      if (propertyId) {
-        const filteredproperty = properties.filter(item => { item.id === id })
-        return res.status(StatusCodes.OK).json({
-        filteredproperty
-      });
-      }
+
+      const filteredproperty = await prisma.property.fin
       return res.status(StatusCodes.OK).json({
         count: properties.length,
         properties,
