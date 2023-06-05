@@ -1,5 +1,5 @@
 import { Response, NextFunction } from 'express';
-import  { User }  from '@prisma/client';
+import  { User } from '@prisma/client';
 import { StatusCodes } from 'http-status-codes';
 
 const checkPermission = (allowedTypes: string[]) => {
