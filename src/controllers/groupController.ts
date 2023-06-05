@@ -5,7 +5,7 @@ import { StatusCodes } from "http-status-codes";
 const groupMembersController = {
   createGroup: async (req: Request, res: Response) => {
     try {
-      const { name, realtorId, status } = req.body;
+      const { name, realtorId } = req.body;
 
       const checkCrator = await prisma.realtor.findUnique({
         where: {
@@ -94,7 +94,7 @@ const groupMembersController = {
         });
       }
 
-      const member = await prisma.realtor.findUnique({
+      const member = await prisma.coRealtor.findUnique({
         where: {
           id: memberId,
         },
@@ -102,7 +102,7 @@ const groupMembersController = {
 
       if (!member) {
         return res.status(StatusCodes.NOT_FOUND).json({
-          message: "Realtor not found",
+          message: "co-Realtor not found",
         });
       }
 

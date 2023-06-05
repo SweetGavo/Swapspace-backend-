@@ -16,7 +16,7 @@ import xss from 'xss-clean';
 
 // import routes
 import AuthRouter from './router/authRouter';
-import ProfileRouter from './router/profileRouter';
+import ProfileRouters from './router/profileRouter';
 import RectorRouter from './router/rectorRouter';
 import OtpRouter from './router/otpRouter';
 import UserRouter from './router/userRouter';
@@ -26,6 +26,8 @@ import GroupRouter from './router/groupRouter';
 import RatingRouter from './router/ratingRouter';
 import OfferRouter from './router/offerRouter';
 import InvitationRouter from './router/invitationRouter';
+import CorealtorRouter from './router/coRealtorRouter';
+import TaskRouter from './router/taskRouter';
 
 app.use(cors());
 app.use(morgan('dev'));
@@ -60,7 +62,7 @@ app.get('/', (req, res) => {
 // USE ROUTES
 
 app.use('/api/v1/auth', AuthRouter);
-app.use('/api/v1/profiles', ProfileRouter);
+app.use('/api/v1/profiles', ProfileRouters);
 app.use('/api/v1/agents', RectorRouter);
 app.use('/api/v1/otp', OtpRouter);
 app.use('/api/v1/users', UserRouter);
@@ -70,6 +72,8 @@ app.use('/api/v1/members', GroupRouter);
 app.use('/api/v1/ratings', RatingRouter);
 app.use('/api/v1/offers', OfferRouter);
 app.use('/api/v1/invitations', InvitationRouter);
+app.use('/api/v1/auth/co-realtor', CorealtorRouter);
+app.use('/api/v1/tasks', TaskRouter);
 
 //ErrorHandlerMiddleware
 import notFoundMiddleware from './middleware/not-found';
