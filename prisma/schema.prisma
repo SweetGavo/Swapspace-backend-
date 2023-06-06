@@ -280,7 +280,7 @@ model Invitation {
   id         String   @id @unique @default(uuid())
   email      String
   token      String   @unique
-  otp_expiry DateTime 
+  otp_expiry DateTime @default(now())
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
