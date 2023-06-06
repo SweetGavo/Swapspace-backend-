@@ -5,6 +5,7 @@ import Joi from 'joi';
 import { hashPassword, comparePassword } from '../utils/password';
 import validatePasswordString from '../utils/passwordValidator';
 import jwt from 'jsonwebtoken';
+import { addMinutes, isAfter } from 'date-fns';
 
 const createCoRealtorSchema = Joi.object({
   full_name: Joi.string().min(3).max(50).required(),
@@ -13,6 +14,14 @@ const createCoRealtorSchema = Joi.object({
   number: Joi.number().required(),
   token: Joi.string().token().required(),
 });
+
+const checkIfOtpHasExpired = (otp_expiry: Date): boolean => {
+  const currentTime = new Date().getTime();
+  const expiryTimeFullFormat = new Date(otp_expiry).getTime();
+
+  if (currentTime > expiryTimeFullFormat) return true; // OTP has expired
+  return false; // OTP has not expired
+};
 
 import { v2 as cloudinary } from 'cloudinary';
 
@@ -56,6 +65,16 @@ const coRealtorController = {
       });
     }
 
+    // Check if token has expired
+    const currentDate = new Date();
+    const otpExpiryDate = new Date(checkTokenExists.otp_expiry);
+
+    if (isAfter(currentDate, otpExpiryDate)) {
+      return res.status(StatusCodes.FORBIDDEN).json({
+        message: 'Invitation token has expired',
+      });
+    }
+
     const passwordValidationResult = validatePasswordString(password);
     if (typeof passwordValidationResult !== 'boolean') {
       return res.status(StatusCodes.BAD_REQUEST).json(passwordValidationResult);
@@ -89,9 +108,10 @@ const coRealtorController = {
         .status(StatusCodes.CREATED)
         .json({ message: 'Created successfully', data: newAccount });
     } catch (error) {
+      console.log(error);
       return res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ message: 'Error uploading image' });
+        .json({ message: 'Error creating profile' });
     }
   },
 

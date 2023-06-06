@@ -277,9 +277,10 @@ model CoRealtor {
 }
 
 model Invitation {
-  id        String   @id @unique @default(uuid())
-  email     String
-  token     String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @unique @default(uuid())
+  email      String
+  token      String   @unique
+  otp_expiry DateTime 
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
