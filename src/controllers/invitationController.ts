@@ -26,7 +26,7 @@ const invitationController = {
       html: `<p>Click on the link <b>${invitationLink}</b>  and complete your registration.</p>
      <p>This code <b>link expires in 7 days </b>.</p>`,
     };
-
+    console.log(invitationToken, invitationLink)
     await sendEmail(emailOptions);
 
     return res.status(StatusCodes.CREATED).json({
