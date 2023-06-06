@@ -5,6 +5,7 @@ import Joi from 'joi';
 import { hashPassword, comparePassword } from '../utils/password';
 import validatePasswordString from '../utils/passwordValidator';
 import jwt from 'jsonwebtoken';
+
 const createCoRealtorSchema = Joi.object({
   full_name: Joi.string().min(3).max(50).required(),
   email: Joi.string().email().required(),
@@ -122,7 +123,7 @@ const coRealtorController = {
       //Generate a JWT token
 
       const token = jwt.sign(
-        { userId: co_Realtor.id, type: co_Realtor.type },
+        { userId: co_Realtor.id, type: co_Realtor },
         process.env.JWT_SECRET || '',
         { expiresIn: '1h' }
       );

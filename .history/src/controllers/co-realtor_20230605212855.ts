@@ -5,6 +5,7 @@ import Joi from 'joi';
 import { hashPassword, comparePassword } from '../utils/password';
 import validatePasswordString from '../utils/passwordValidator';
 import jwt from 'jsonwebtoken';
+
 const createCoRealtorSchema = Joi.object({
   full_name: Joi.string().min(3).max(50).required(),
   email: Joi.string().email().required(),
@@ -75,7 +76,7 @@ const coRealtorController = {
 
       const newAccount = await prisma.coRealtor.create({
         data: {
-          full_name,
+          full_ndame,
           email,
           password: hashedPassword,
           number,

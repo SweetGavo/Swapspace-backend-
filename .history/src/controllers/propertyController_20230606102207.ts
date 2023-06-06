@@ -147,7 +147,7 @@ const propertyController = {
   getAllProperty: async (req: Request, res: Response): Promise<Response> => {
     try {
       const properties = await prisma.property.findMany({});
-        return res.status(StatusCodes.OK).json({
+ return res.status(StatusCodes.OK).json({
         count: properties.length,
         properties,
       });
