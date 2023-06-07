@@ -1,8 +1,8 @@
-import express, { Request, Response } from "express";
-import multer from "multer";
+import express, { Request, Response } from 'express';
+import multer from 'multer';
 const router = express.Router();
 
-import propertyController from "../controllers/propertyController";
+import propertyController from '../controllers/propertyController';
 
 // Set up multer storage and file filter
 const storage = multer.diskStorage({});
@@ -11,11 +11,16 @@ const fileFilter = (
   file: Express.Multer.File,
   cb: multer.FileFilterCallback
 ) => {
-  const allowedMimeTypes = ["image/jpg", "image/gif", "image/jpeg", "image/png"];
+  const allowedMimeTypes = [
+    'image/jpg',
+    'image/gif',
+    'image/jpeg',
+    'image/png',
+  ];
 
   if (!allowedMimeTypes.includes(file.mimetype)) {
-    const error: any = new Error("Please provide a valid image file");
-    error.code = "LIMIT_UNEXPECTED_FILE";
+    const error: any = new Error('Please provide a valid image file');
+    error.code = 'LIMIT_UNEXPECTED_FILE';
     return cb(error, false);
   }
 
@@ -29,14 +34,16 @@ const upload = multer({
   limits: { fileSize: 1024 * 1024 * 5 },
 });
 
-
-
-router.route("/").post(propertyController.addProperty);
+router.route('/').post(propertyController.addProperty);
 
 router
-  .route("/:propertyId/images")
-  .post(upload.array("image", 20), propertyController.uploadImages);
+  .route('/:propertyId/images')
+  .post(upload.array('image', 20), propertyController.uploadImages);
 
-router.route("/").get(propertyController.getAllProperty);
+router.route('/').get(propertyController.getAllProperty);
+
+router.route('/:id').patch(propertyController.updateProperty);
+
+router.route('/leads').patch(propertyController.leads);
 
 export default router;

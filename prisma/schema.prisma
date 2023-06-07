@@ -121,7 +121,7 @@ model Otp {
   user          User?    @relation("Otpproperties", fields: [userId], references: [id])
   otp           String
   createdAt     DateTime @default(now())
-  otp_expiry    DateTime
+  otp_expiry    DateTime @default(now())
   date_modified DateTime @default(now()) @updatedAt
 
   @@index([userId])
@@ -175,6 +175,8 @@ model Property {
   proximate_landmark                  String
   realtor                             Realtor?       @relation("RealtorProperties", fields: [realtorId], references: [id])
   offers                              Offers[]
+  view_count                          Int            @default(0)
+  view_by_user                        String[]
   realtorId                           String?
   createdAt                           DateTime       @default(now())
   date_modified                       DateTime       @default(now()) @updatedAt
@@ -283,4 +285,11 @@ model Invitation {
   otp_expiry DateTime @default(now())
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+model Admin {
+  id       String @id @unique @default(uuid())
+  email    String
+  password String
+  type     String @default("ADMIN")
 }

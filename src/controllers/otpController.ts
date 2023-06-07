@@ -34,7 +34,7 @@ const OtpController = {
       }
 
       const otp = randaomGeneratorId;
-      const otp_expiry = getOtpExpiryTime;
+      const otp_expiry = getOtpExpiryTime();
 
       // const salt = await bcrypt.genSalt(16);
       // const hashedOtp = await bcrypt.hash(otp, salt);
@@ -53,7 +53,7 @@ const OtpController = {
           },
           data: {
             otp: otp,
-            otp_expiry,
+            otp_expiry: otp_expiry,
           },
         });
       } else {
@@ -61,7 +61,7 @@ const OtpController = {
           data: {
             userId: user.id,
             otp: otp,
-            otp_expiry,
+            otp_expiry: otp_expiry,
           },
         });
       }
@@ -168,7 +168,7 @@ const OtpController = {
       }
 
       const otp = randaomGeneratorId;
-      const otpExpiry = getOtpExpiryTime;
+      const otpExpiry = getOtpExpiryTime();
 
       
       let createdOtp;

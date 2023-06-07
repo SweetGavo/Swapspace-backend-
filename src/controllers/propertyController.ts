@@ -291,6 +291,44 @@ const propertyController = {
       });
     }
   },
+
+  leads: async(req: Request, res: Response): Promise<Response> => {
+    const { userId, propertyId } = req.body;
+
+   const  checkUserId = await prisma.user.findUnique({
+    where: {
+      id: userId
+    }
+   })
+
+   if (!checkUserId) return  res.status(StatusCodes.NOT_FOUND)
+   .json({ message: `User not found`})
+
+   const existingProperty  = await prisma.property.findUnique({
+    where:{
+     id:propertyId,
+    } 
+  })
+    if (!existingProperty) return  res.status(StatusCodes.NOT_FOUND)
+    .json({ message: `Property not found`})
+
+   const updateViewAndCount = await prisma.property.update({
+    where: {
+      id: propertyId
+    },
+    data: {
+      view_count: {increment: 1},
+       view_by_user:{push: userId},
+    }
+   })
+
+   // TODO: Email& Notifications
+
+   return res.status(StatusCodes.OK).json({
+    message:"Property Count has been increased"
+  });
+
+  }
 };
 
 export default propertyController;
