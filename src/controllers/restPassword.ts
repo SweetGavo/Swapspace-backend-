@@ -25,7 +25,7 @@ const passwordController = {
       }
 
       const otp = randaomGeneratorId;
-      const otp_expiry = getOtpExpiryTime;
+      const otp_expiry = getOtpExpiryTime();
 
      
       let createdOtp;
@@ -43,7 +43,7 @@ const passwordController = {
           },
           data: {
             otp: otp,
-            otp_expiry,
+            otp_expiry: otp_expiry,
           },
         });
       } else {
@@ -51,7 +51,7 @@ const passwordController = {
           data: {
             userId: user.id,
             otp: otp,
-            otp_expiry,
+            otp_expiry: otp_expiry,
           },
         });
       }
