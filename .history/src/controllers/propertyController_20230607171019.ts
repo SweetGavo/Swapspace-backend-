@@ -232,7 +232,6 @@ const propertyController = {
         filters.bathrooms = number + 1
         filters.bathrooms++
       }
-
       
       if (pets) filters.pets = ['None', 'Cat', "Dogs", 'Bird'];
 

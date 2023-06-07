@@ -232,8 +232,6 @@ const propertyController = {
         filters.bathrooms = number + 1
         filters.bathrooms++
       }
-
-      
       if (pets) filters.pets = ['None', 'Cat', "Dogs", 'Bird'];
 
       if (renovation) filters.renovation = 'Yes' || 'No';
@@ -241,7 +239,7 @@ const propertyController = {
       if(views) filters.views = 'Views'
       if (proximity) filters.proximity = 'Proximity'
       
-
+      
       if (add) {
         const addfilter = await prisma.property.create({
            ...filters

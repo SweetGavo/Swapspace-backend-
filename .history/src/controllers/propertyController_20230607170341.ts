@@ -156,14 +156,7 @@ const propertyController = {
         area_Range,
         payment_frequency,
         property_type,
-        specification,
-        bedrooms,
-        bathrooms,
-        pets,
-        renovation,
-        views,
-        proximity,
-        add } = req.query
+        specification, bedrooms, bathrooms, pets, renovation, views, proximity, add } = req.query
       
       if (for_Rent) filters.for_Rent = for_Rent;
       if (for_Sale) filters.for_Sale = for_Sale;
@@ -232,8 +225,6 @@ const propertyController = {
         filters.bathrooms = number + 1
         filters.bathrooms++
       }
-
-      
       if (pets) filters.pets = ['None', 'Cat', "Dogs", 'Bird'];
 
       if (renovation) filters.renovation = 'Yes' || 'No';
@@ -242,16 +233,6 @@ const propertyController = {
       if (proximity) filters.proximity = 'Proximity'
       
 
-      if (add) {
-        const addfilter = await prisma.property.create({
-           ...filters
-        })
-
-        return res.status(StatusCodes.CREATED).json({
-      message: "Filterd properties has been added",
-      data: addfilter,
-      })
-      }
       
       return res.status(StatusCodes.OK).json({
         count: properties.length,
