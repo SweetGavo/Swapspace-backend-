@@ -28,6 +28,7 @@ import OfferRouter from './router/offerRouter';
 import InvitationRouter from './router/invitationRouter';
 import CorealtorRouter from './router/coRealtorRouter';
 import TaskRouter from './router/taskRouter';
+import AdminRouter from './router/adminRouter';
 
 app.use(cors());
 app.use(morgan('dev'));
@@ -74,6 +75,7 @@ app.use('/api/v1/offers', OfferRouter);
 app.use('/api/v1/invitations', InvitationRouter);
 app.use('/api/v1/auth/co-realtor', CorealtorRouter);
 app.use('/api/v1/tasks', TaskRouter);
+app.use('/api/v1/auth/admins', AdminRouter);
 
 //ErrorHandlerMiddleware
 import notFoundMiddleware from './middleware/not-found';

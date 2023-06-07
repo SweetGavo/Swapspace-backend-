@@ -139,6 +139,7 @@ const authController = {
       return res.status(StatusCodes.OK).json({
         message: 'Login successful',
         user: {
+          id: user.id,
           email: user.email,
           number: user.number,
           type: user.type,

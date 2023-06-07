@@ -12,16 +12,10 @@ const createCoRealtorSchema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().min(8).max(20).required(),
   number: Joi.number().required(),
-  token: Joi.string().token().required(),
+  token: Joi.string().token(),
 });
 
-const checkIfOtpHasExpired = (otp_expiry: Date): boolean => {
-  const currentTime = new Date().getTime();
-  const expiryTimeFullFormat = new Date(otp_expiry).getTime();
 
-  if (currentTime > expiryTimeFullFormat) return true; // OTP has expired
-  return false; // OTP has not expired
-};
 
 import { v2 as cloudinary } from 'cloudinary';
 
@@ -99,8 +93,14 @@ const coRealtorController = {
           email,
           password: hashedPassword,
           number,
-          token,
           image: uploadedImage.secure_url,
+        },
+      });
+
+      // Delete the invitation token
+      await prisma.invitation.delete({
+        where: {
+          token: token,
         },
       });
 

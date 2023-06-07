@@ -3,18 +3,19 @@ import prisma from '../DB/prisma';
 import { StatusCodes } from 'http-status-codes';
 import generateInvitationToken from '../utils/randomtoken';
 import sendEmail from '../utils/sendEmail';
-import getOtpExpiryTime from '../utils/timeGenerator';
+import getTokenExpiryTime from "../utils/tokenTimeGen"
 
 const invitationController = {
   inviteTeamMember: async (req: Request, res: Response): Promise<Response> => {
-    const { email, otp_expiry } = req.body;
+    const { email } = req.body;
 
     const invitationToken = generateInvitationToken();
+    const otpExpiry = getTokenExpiryTime();
 
     await prisma.invitation.create({
       data: {
         email,
-        otp_expiry: getOtpExpiryTime,
+        otp_expiry: otpExpiry,
         token: invitationToken,
       },
     });
@@ -36,5 +37,6 @@ const invitationController = {
     });
   },
 };
+
 
 export default invitationController;
