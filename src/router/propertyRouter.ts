@@ -43,7 +43,13 @@ router
 router.route('/').get(propertyController.getAllProperty);
 
 router.route('/:id').patch(propertyController.updateProperty);
+router.route('/:id').get(propertyController.getOneProperty);
 
-router.route('/leads').patch(propertyController.leads);
+router.route('/updateleads').patch(propertyController.updateLeads);
+
+router.route('/filters').get(propertyController.filterProperties);
+
+
+router.route('/leads/:realtorId').get(propertyController.leads);
 
 export default router;
