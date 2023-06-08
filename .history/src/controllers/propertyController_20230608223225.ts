@@ -176,8 +176,7 @@ const propertyController = {
         gte: minPrice,
         lte: maxPrice,
       };
-      }
-      
+    }
         switch (payment_frequency) {
           case 'Yearly':
             filters.payment_frequency = 'Yearly'
@@ -327,7 +326,6 @@ const propertyController = {
     }
   },
 
-
   getAllProperties: async (req: Request, res: Response) => {
     try {
       const properties = await prisma.property.findMany({});
@@ -344,7 +342,6 @@ const propertyController = {
     }
   },
 
-  
   getOneProperty: async (req: Request, res: Response) => {
     try {
       const { id } = req.params;

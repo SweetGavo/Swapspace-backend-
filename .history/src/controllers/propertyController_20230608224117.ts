@@ -327,7 +327,7 @@ const propertyController = {
     }
   },
 
-
+  
   getAllProperties: async (req: Request, res: Response) => {
     try {
       const properties = await prisma.property.findMany({});
@@ -344,7 +344,6 @@ const propertyController = {
     }
   },
 
-  
   getOneProperty: async (req: Request, res: Response) => {
     try {
       const { id } = req.params;

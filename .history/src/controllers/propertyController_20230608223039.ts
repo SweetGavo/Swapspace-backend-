@@ -170,14 +170,13 @@ const propertyController = {
       if (Short_let) filters.Short_let = Short_let;
      
 
-      if (price_Range) {
-      const [minPrice, maxPrice] = (price_Range as string).split('-').map(Number);
+      if (property_price) {
+      const [minPrice, maxPrice] = (property_price as string).split('-').map(Number);
       filters.price = {
         gte: minPrice,
         lte: maxPrice,
       };
-      }
-      
+    }
         switch (payment_frequency) {
           case 'Yearly':
             filters.payment_frequency = 'Yearly'
@@ -327,7 +326,6 @@ const propertyController = {
     }
   },
 
-
   getAllProperties: async (req: Request, res: Response) => {
     try {
       const properties = await prisma.property.findMany({});
@@ -344,7 +342,6 @@ const propertyController = {
     }
   },
 
-  
   getOneProperty: async (req: Request, res: Response) => {
     try {
       const { id } = req.params;

@@ -26,7 +26,7 @@ const responseController = {
         outcome,
       },
     });
-    
+
     return res.status(StatusCodes.CREATED).json(response);
   },
 };
