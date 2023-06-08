@@ -93,7 +93,7 @@ model Profile {
 
 model Realtor {
   id                  String      @id @unique @default(uuid())
-  compant_name        String
+  company_name        String
   address             String
   broker_BRN          String
   agent_ORN           String

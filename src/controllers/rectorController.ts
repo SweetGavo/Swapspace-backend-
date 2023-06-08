@@ -11,7 +11,7 @@ cloudinary.config({
 });
 
 const createAgentProfileSchema = Joi.object({
-  compant_name: Joi.string().required(),
+  company_name: Joi.string().required(),
   address: Joi.string().required(),
   broker_BRN: Joi.string().required(),
   agent_ORN: Joi.string().required(),
@@ -24,7 +24,7 @@ const createAgentProfileSchema = Joi.object({
   userId: Joi.string().required(),
   addProperty: Joi.array().items(Joi.string()),
   status: Joi.string(),
-  image: Joi.string().allow(""),
+  image: Joi.string()
 });
 
 const rectorController = {
@@ -44,7 +44,7 @@ const rectorController = {
 
       const {
         userId,
-        compant_name,
+        company_name,
         address,
         broker_BRN,
         agent_ORN,
@@ -54,6 +54,7 @@ const rectorController = {
         language,
         description,
         license_number,
+        broker_card_image
       } = req.body;
 
       // Check if user exists
@@ -88,7 +89,7 @@ const rectorController = {
       // Create agent profile
       const agent = await prisma.realtor.create({
         data: {
-          compant_name,
+          company_name,
           address,
           broker_BRN,
           agent_ORN,
