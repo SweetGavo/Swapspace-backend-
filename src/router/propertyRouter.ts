@@ -49,7 +49,6 @@ router.route('/updateleads').patch(propertyController.updateLeads);
 
 router.route('/filters').get(propertyController.filterProperties);
 
-
 router.route('/leads/:realtorId').get(propertyController.leads);
 
 export default router;
