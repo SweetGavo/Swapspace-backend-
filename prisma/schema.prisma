@@ -240,8 +240,8 @@ model Task {
   id                    String         @id @unique @default(uuid())
   title                 String
   action                Action_Type
-  assignee              String
-  collaborator          String
+  assignee              String?
+  collaborator          String?
   contact               String[]
   description           String
   start_date            DateTime
@@ -292,4 +292,161 @@ model Admin {
   email    String
   password String
   type     String @default("ADMIN")
+}
+
+enum STRUCTURE {
+  commercial
+  residential
+}
+
+enum PAYMENT_PLAN {
+  one_term_payment
+  three_term_payment
+}
+
+enum SPECIFICATION {
+  funished
+  unfunished
+  none
+}
+
+enum APPLAINCES {
+  washing_machine
+  vacuum_cleaner
+  microwave
+  refrigerator
+  air_conditioner
+  kitchen_hood
+  gas_cooker
+  dish_washer
+  oven
+  blender
+  cloth_dryer
+  television
+  light_bulb
+  lamp
+}
+
+enum CATEGORY{
+  betes_and_bounds
+  lots_and_blocks
+  modern
+  ultra_modern
+  luxury
+}
+
+enum AMENITIES {
+  swimming_pool
+  fitnes_facilities
+  park_areas
+  apa
+  healt_club
+  co_working_areas
+  sport_and_leisure
+  gardens
+  movies
+  lobby
+  kids_play_area
+}
+
+enum EMIRATE {
+  abu_dhabi
+  dubai
+  sharja
+  ajman
+  ummu_al_quwain
+  ras_al_khaimah
+  fujairah
+}
+
+enum PROXIMITY {
+  school
+  hospital
+  salon
+  gas_station
+  airport
+  pharmacy
+  super_maket
+  eats_and_chill
+  bank
+}
+
+enum View {
+  loft
+  upper_crest
+  fountain_view
+  classic_villa
+  modern_villa
+  black_rock
+}
+
+enum PET {
+  cat
+  dog
+  none
+}
+
+
+enum STYLE{
+  arabic_villa
+  palm_jumeirah
+  modern_mansion
+  classic_villa
+  modern_villa
+  black_rock
+
+}
+
+enum RENT {
+  sale
+  short_let
+}
+
+model PropertyForm {
+  id                               String @id @unique @default(uuid())
+  property_title                   String    
+  description                      String
+  rent                             RENT
+  property_type                    PROPERTY_TYPES
+  structure                        STRUCTURE
+  sale_or_rent_price               String
+  price_prefix                     String
+  payment_frequency                String
+  payment_plan                     PAYMENT_PLAN
+  images                           String[]
+  video_url                        String
+  video_url_tour                   String
+  bedroom                          String
+  bathroom                         String
+  area_size                        String
+  size_postfix                     String
+  fire_place                       String
+  entry_floor                      String
+  parking_slot                     String
+  parking_lot                      String
+  year_built                       String
+  building_unit                    String
+  available                        String
+  renovation                       String
+  appliance                        APPLAINCES
+  category                         CATEGORY
+  amenities                        AMENITIES
+  additional_details               String?
+  location                         String
+  emirate                          EMIRATE
+  proximity                        PROXIMITY
+  street_Number                    String
+  locality                         String
+  postal_code                      String
+  style                            STYLE
+  view                             View
+  pet                              PET
+  specification                    SPECIFICATION
+  floor_plan                       String
+  property_document                String[]
+  total_lessee                     String
+  price                            String
+  message                          String
+  realtorId                        String?
+  userId                           String
 }
