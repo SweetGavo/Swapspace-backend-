@@ -47,8 +47,4 @@ router.route('/:propertyId').patch(propertyFormController.pairRealtorByAdmin);
 
 router.route('/:realtorId/listings').get(propertyFormController.getListings);
 
-
-
-
-
 export default router;
