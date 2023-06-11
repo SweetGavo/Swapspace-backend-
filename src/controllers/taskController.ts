@@ -2,63 +2,79 @@ import { Request, Response } from 'express';
 import prisma from '../DB/prisma';
 import { StatusCodes } from 'http-status-codes';
 
-const taskConroller = {
+const taskController = {
   createTask: async (req: Request, res: Response): Promise<Response> => {
     const {
       title,
       action,
       assignee,
       collaborator,
+      number_of_deals,
       contact,
       description,
       start_date,
-      due_date_and_time,
-      closing_date_and_time,
+      due_date,
+      due_time,
+      closing_date,
+      closing_time,
+      realtorId,
     } = req.body;
 
-    //checks or assign & collaborator
-    const checkAssignee = await prisma.group.findFirst({
+    // Check if the specified realtor exists
+    const existingRealtor = await prisma.realtor.findUnique({
       where: {
-        members: assignee,
-      },
-    });
-    if (!checkAssignee)
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .json({ message: ` ${assignee} is not your member ` });
-
-    const checkCollaborator = await prisma.group.findFirst({
-      where: {
-        members: collaborator,
+        id: realtorId,
       },
     });
 
-    if (!checkCollaborator)
+    if (!existingRealtor) {
       return res
         .status(StatusCodes.NOT_FOUND)
-        .json({ message: ` ${checkCollaborator} is not your member ` });
+        .json({ message: `Realtor with id ${realtorId} not found` });
+    }
+  
+
+    
+    
 
     const task = await prisma.task.create({
       data: {
+        
         title,
         action,
-        assignee,
-        collaborator,
+        number_of_deals,
         contact,
         description,
         start_date,
-        due_date_and_time,
-        closing_date_and_time,
+        due_date,
+        due_time,
+        closing_date,
+        closing_time,
+        realtor: {
+          connect: {
+            id: realtorId,
+          },
+        },
+        assignee: {
+          connect: {
+            id: assignee,
+          },
+        },
+        collaborator: {
+          connect: {
+            id: collaborator,
+          },
+        },
       },
     });
 
-    TODO: //  Notification or MAIL to assignee & collaborator
+    // TODO: Send notification or email to assignee & collaborator
 
-     return res.status(StatusCodes.CREATED).json({
-      message: `Tasks created`,
-      task: task,
+    return res.status(StatusCodes.CREATED).json({
+      message: 'Task created',
+      task,
     });
   },
 };
 
-export default taskConroller;
+export default taskController;
