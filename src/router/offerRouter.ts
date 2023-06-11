@@ -13,4 +13,19 @@ router
   .get(offersControllers.getOneRealtorsOffers)
   .patch(offersControllers.updateOffer);
 
+
+  router
+  .route('/checkoff')
+  .get(offersControllers.getCheckoff)
+
+  router
+  .route('/closed')
+  .get(offersControllers.getClosed)
+
+
+
+  router
+  .route('/connected')
+  .get(offersControllers.getConnected)
+
 export default router;

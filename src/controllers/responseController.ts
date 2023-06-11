@@ -4,7 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 
 const responseController = {
   addResponse: async (req: Request, res: Response): Promise<Response> => {
-    const { taskId, comment, note, outcome } = req.body;
+    const { taskId, contacts, note, outcome, amount } = req.body;
 
     const checktaskId = await prisma.task.findFirst({
       where: {
@@ -21,9 +21,10 @@ const responseController = {
     const response = await prisma.response.create({
       data: {
         taskId,
-        comment,
+        contacts,
         note,
         outcome,
+        amount
       },
     });
 
