@@ -109,10 +109,12 @@ model Realtor {
   groups              Group[]     @relation("RealtorGroups")
   userId              String?     @unique
   properties          Property[]  @relation("RealtorProperties")
-  offers                              Offers[]
+  offers              Offers[]
   createdAt           DateTime    @default(now())
   date_modified       DateTime    @default(now()) @updatedAt
   ratingsReceived     Rating[]
+
+  tasks Task[] @relation("Tasks")
 }
 
 model Otp {
@@ -127,8 +129,20 @@ model Otp {
   @@index([userId])
 }
 
+enum Availablity_Type {
+  Available
+  Unavailable
+  Sold
+}
+
+enum Property_Status {
+  Reviwing
+  Live
+  Declined
+}
+
 model Property {
-  id                                  String         @id @unique @default(uuid())
+  id                                  String           @id @unique @default(uuid())
   property_title                      String
   property_type                       PROPERTY_TYPES
   structure                           String
@@ -173,13 +187,15 @@ model Property {
   additional_details                  String
   additional_facilities_and_amenities String
   proximate_landmark                  String
-  realtor                             Realtor?       @relation("RealtorProperties", fields: [realtorId], references: [id])
+  availablity                         Availablity_Type @default(Available)
+  status                              Property_Status  @default(Reviwing)
+  realtor                             Realtor?         @relation("RealtorProperties", fields: [realtorId], references: [id])
   offers                              Offers[]
-  view_count                          Int            @default(0)
+  view_count                          Int              @default(0)
   view_by_user                        String[]
   realtorId                           String?
-  createdAt                           DateTime       @default(now())
-  date_modified                       DateTime       @default(now()) @updatedAt
+  createdAt                           DateTime         @default(now())
+  date_modified                       DateTime         @default(now()) @updatedAt
 }
 
 model Group {
@@ -216,10 +232,10 @@ enum ProgressStatus {
 model Offers {
   id             String         @id @unique @default(uuid())
   propertyId     String
-  realtorId   String
-  realtor       Realtor       @relation(fields: [realtorId], references: [id])
+  realtorId      String
+  realtor        Realtor        @relation(fields: [realtorId], references: [id])
   listingId      String?
-  client_name         String
+  client_name    String
   property_title String
   property_type  String
   listing_type   String
@@ -246,28 +262,50 @@ enum Action_Type {
   OTHERS
 }
 
+enum CoRealtorId {
+  CO_REALTOR_1
+  CO_REALTOR_2
+  NONE
+}
+
+enum TYPE {
+  Personal
+  Team
+}
+
 model Task {
-  id                    String         @id @unique @default(uuid())
-  title                 String
-  action                Action_Type
-  assignee              String?
-  collaborator          String?
-  contact               String[]
-  description           String
-  start_date            DateTime
-  due_date_and_time     DateTime
-  closing_date_and_time DateTime
-  completed             Completed_Type @default(PENDING)
-  responses             Response[]     @relation("TaskResponses")
-  createdAt             DateTime       @default(now())
-  updatedAt             DateTime       @updatedAt
+  id String @id @unique @default(uuid())
+
+  title           String
+  action          Action_Type
+  coRealtorId     String?
+  coRealtor       CoRealtor?     @relation("Tasks", fields: [coRealtorId], references: [id])
+  number_of_deals Int
+  contact         String[]
+  description     String
+  start_date      DateTime
+  due_date        DateTime
+  due_time        DateTime
+  closing_date    DateTime
+  closing_time    DateTime
+  completed       Completed_Type @default(PENDING)
+  responses       Response[]     @relation("TaskResponses")
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  realtorId       String?
+  realtor         Realtor?       @relation("Tasks", fields: [realtorId], references: [id])
+  assignee        CoRealtor?     @relation("AssigneeTasks", fields: [assigneeId], references: [id])
+  collaborator    CoRealtor?     @relation("CollaboratorTasks", fields: [collaboratorId], references: [id])
+  assigneeId      String?
+  collaboratorId  String?
 }
 
 model Response {
   id        String   @id @unique @default(uuid())
   outcome   String
+  contacts  String
   note      String
-  comment   String
+  amount    Float
   taskId    String
   task      Task?    @relation("TaskResponses", fields: [taskId], references: [id])
   createdAt DateTime @default(now())
@@ -275,17 +313,20 @@ model Response {
 }
 
 model CoRealtor {
-  id        String   @id @unique @default(uuid())
-  full_name String
-  email     String   @unique
-  number    String
-  password  String
-  type      String   @default("CO_REALTOR")
-  token     String?  @unique
-  image     String
-  groups    Group[]  @relation("GroupMembers")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                String   @id @unique @default(uuid())
+  full_name         String
+  email             String   @unique
+  number            String
+  password          String
+  type              String   @default("CO_REALTOR")
+  token             String?  @unique
+  image             String
+  groups            Group[]  @relation("GroupMembers")
+  tasks             Task[]   @relation("Tasks")
+  assignedTasks     Task[]   @relation("AssigneeTasks")
+  collaboratedTasks Task[]   @relation("CollaboratorTasks")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
 
 model Invitation {
