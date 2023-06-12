@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import prisma from "../DB/prisma";
 import { StatusCodes } from "http-status-codes";
 
-const groupMembersController = {
+const teamController = {
   createGroup: async (req: Request, res: Response) => {
     try {
       const { name, realtorId } = req.body;
@@ -133,4 +133,4 @@ const groupMembersController = {
   },
 };
 
-export default groupMembersController;
+export default teamController;
