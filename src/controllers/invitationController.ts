@@ -1,22 +1,15 @@
 import { Request, Response } from 'express';
 import prisma from '../DB/prisma';
 import { StatusCodes } from 'http-status-codes';
-import generateInvitationToken from '../utils/randomtoken';
 import sendEmail from '../utils/sendEmail';
-import getTokenExpiryTime from "../utils/tokenTimeGen"
 
 const invitationController = {
   inviteTeamMember: async (req: Request, res: Response): Promise<Response> => {
     const { email } = req.body;
 
-    const invitationToken = generateInvitationToken();
-    const otpExpiry = getTokenExpiryTime();
-
     await prisma.invitation.create({
       data: {
         email,
-        otp_expiry: otpExpiry,
-        token: invitationToken,
       },
     });
 
@@ -26,10 +19,11 @@ const invitationController = {
     const emailOptions = {
       email: email,
       subject: 'You have been invited to join your team On Swapspace',
-      html: `<p>Use this Token <b>${invitationLink}</b>  and complete your registration.</p>
-     <p>This code <b>link expires in 7 days </b>.</p>`,
+      html: `
+        <p>Use this Link <b>${invitationLink}</b>  and complete your registration. Also use this email <b>${email}</b></p>
+      `,
     };
-    console.log(invitationToken, invitationLink);
+    console.log(invitationLink);
     await sendEmail(emailOptions);
 
     return res.status(StatusCodes.CREATED).json({
@@ -37,6 +31,5 @@ const invitationController = {
     });
   },
 };
-
 
 export default invitationController;
