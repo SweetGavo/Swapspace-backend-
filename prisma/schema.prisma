@@ -106,7 +106,7 @@ model Realtor {
   image               String
   status              Status_type @default(PENDING)
   user                User?       @relation(fields: [userId], references: [id])
-  teams              Team[]     @relation("RealtorGroups")
+  teams               Team[]      @relation("RealtorGroups")
   userId              String?     @unique
   properties          Property[]  @relation("RealtorProperties")
   offers              Offers[]
@@ -272,8 +272,8 @@ enum TYPE {
   Personal
   Team
 }
-
-model Task {
+// this task is for Individula task or Personal task 
+model Task { 
   id String @id @unique @default(uuid())
 
   title           String
@@ -300,7 +300,7 @@ model Task {
   collaboratorId  String?
 }
 
-model Response {
+model Response {  // response to a individual task
   id        String   @id @unique @default(uuid())
   outcome   String
   contacts  String
@@ -321,7 +321,7 @@ model CoRealtor {
   type              String   @default("CO_REALTOR")
   token             String?  @unique
   image             String
-  groups            Team[]  @relation("GroupMembers")
+  groups            Team[]   @relation("GroupMembers")
   tasks             Task[]   @relation("Tasks")
   assignedTasks     Task[]   @relation("AssigneeTasks")
   collaboratedTasks Task[]   @relation("CollaboratorTasks")
@@ -330,12 +330,10 @@ model CoRealtor {
 }
 
 model Invitation {
-  id         String   @id @unique @default(uuid())
-  email      String
-  token      String   @unique
-  otp_expiry DateTime @default(now())
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id        String   @id @unique @default(uuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Admin {
@@ -501,8 +499,8 @@ model PropertyForm {
 }
 
 model TeamTask {
-  id        String   @id @unique @default(uuid())
+  id        String         @id @unique @default(uuid())
   status    Completed_Type @default(PENDING)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 }
