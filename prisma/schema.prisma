@@ -524,7 +524,7 @@ model Info {
   event      String
   event_link String
   date       DateTime
-  time       String
+  time       DateTime
   teamId     String[]
   teams      Team[]   @relation("InfoTeams")
   realtor    Realtor  @relation("Info", fields: [realtorId], references: [id])
