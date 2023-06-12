@@ -113,8 +113,9 @@ model Realtor {
   createdAt           DateTime    @default(now())
   date_modified       DateTime    @default(now()) @updatedAt
   ratingsReceived     Rating[]
-
-  tasks Task[] @relation("Tasks")
+  task                Task[]      @relation("Tasks")
+  teamTasks           TeamTask[]  @relation("TeamTasks")
+  info                Info[]      @relation("Info")
 }
 
 model Otp {
@@ -207,6 +208,7 @@ model Team {
   createdBy     Realtor     @relation("RealtorGroups", fields: [realtorId], references: [id])
   createdAt     DateTime    @default(now())
   date_modified DateTime    @default(now()) @updatedAt
+  infos         Info[]      @relation("InfoTeams")
 }
 
 model Rating {
@@ -272,8 +274,9 @@ enum TYPE {
   Personal
   Team
 }
+
 // this task is for Individula task or Personal task 
-model Task { 
+model Task {
   id String @id @unique @default(uuid())
 
   title           String
@@ -300,7 +303,7 @@ model Task {
   collaboratorId  String?
 }
 
-model Response {  // response to a individual task
+model Response {
   id        String   @id @unique @default(uuid())
   outcome   String
   contacts  String
@@ -499,8 +502,33 @@ model PropertyForm {
 }
 
 model TeamTask {
-  id        String         @id @unique @default(uuid())
-  status    Completed_Type @default(PENDING)
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
+  id         String         @id @unique @default(uuid())
+  title      String
+  note       String?
+  clue       String
+  break_down String[]
+  teamId     String[]
+  contact    String?
+  due_date   String
+  due_time   String
+  realtor    Realtor        @relation("TeamTasks", fields: [realtorId], references: [id])
+  realtorId  String
+  status     Completed_Type @default(PENDING)
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+}
+
+model Info {
+  id         String   @id @unique @default(uuid())
+  title      String
+  event      String
+  event_link String
+  date       DateTime
+  time       String
+  teamId     String[]
+  teams      Team[]   @relation("InfoTeams")
+  realtor    Realtor  @relation("Info", fields: [realtorId], references: [id])
+  realtorId  String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
