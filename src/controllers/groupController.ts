@@ -19,7 +19,7 @@ const groupMembersController = {
         });
       }
 
-      const newGroup = await prisma.group.create({
+      const newGroup = await prisma.team.create({
         data: {
           name: name,
           realtorId: realtorId,
@@ -41,7 +41,7 @@ const groupMembersController = {
 
   getAllGroups: async (req: Request, res: Response) => {
     try {
-      const groups = await prisma.group.findMany({
+      const groups = await prisma.team.findMany({
         include: {
           members: true,
         },
@@ -62,7 +62,7 @@ const groupMembersController = {
     try {
       const { groupId, memberId } = req.body;
 
-      const group = await prisma.group.findUnique({
+      const group = await prisma.team.findUnique({
         where: {
           id: groupId,
         },
@@ -107,7 +107,7 @@ const groupMembersController = {
       }
 
       // Add the member to the group
-      await prisma.group.update({
+      await prisma.team.update({
         where: {
           id: groupId,
         },

@@ -106,7 +106,7 @@ model Realtor {
   image               String
   status              Status_type @default(PENDING)
   user                User?       @relation(fields: [userId], references: [id])
-  groups              Group[]     @relation("RealtorGroups")
+  teams              Team[]     @relation("RealtorGroups")
   userId              String?     @unique
   properties          Property[]  @relation("RealtorProperties")
   offers              Offers[]
@@ -198,7 +198,7 @@ model Property {
   date_modified                       DateTime         @default(now()) @updatedAt
 }
 
-model Group {
+model Team {
   id            String      @id @unique @default(uuid())
   name          String
   realtorId     String
@@ -321,7 +321,7 @@ model CoRealtor {
   type              String   @default("CO_REALTOR")
   token             String?  @unique
   image             String
-  groups            Group[]  @relation("GroupMembers")
+  groups            Team[]  @relation("GroupMembers")
   tasks             Task[]   @relation("Tasks")
   assignedTasks     Task[]   @relation("AssigneeTasks")
   collaboratedTasks Task[]   @relation("CollaboratorTasks")
@@ -498,4 +498,11 @@ model PropertyForm {
   message            String
   realtorId          String?
   userId             String
+}
+
+model TeamTask {
+  id        String   @id @unique @default(uuid())
+  status    Completed_Type @default(PENDING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
