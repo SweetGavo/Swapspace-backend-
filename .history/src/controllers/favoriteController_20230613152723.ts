@@ -64,40 +64,32 @@ export const favoriteController = {
 
 
 
-    deleteFavortie: async (req: Request, res: Response) => {    
-        const { id } = req.params
-        try {
-            const favorite = await prisma.favorite.delete({
-                where: {
-                    id
-                }
-            })
-            res.status(200).json(favorite);
-        }
+    deletefavortieProperty: async (req: Request, res: Response) => {    
+        const favortiePropertyId = req.params.favortiePropertyId;
+          try {
+             const deletefavortieProperty = await prisma.favorite.delete({
+                 where: {
+                     id: favortiePropertyId
+                 }
+             })
+             
          
-      catch (error) {
+     } catch (error) {
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: "Failed to delete Favourite property.",
+        message: "Failed to delete Favorite property.",
       });
      }
 
     },
 
-    updateFavorite: async (req: Request, res: Response) => {
-        const {userId , propertyId} = req.body
-        const { id } = req.params
+    updateFavoriteProperty: async (req: Request, res: Response) => {
         try {
-            const favorite = await prisma.favorite.update({
-                where: { id  },
-        data: {
-            userId,
-            propertyId
-        }
-      })
-            res.status(200).json(favorite);
+           const {id}
+      });
+
         } catch (error) {
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: "An error occured while deleting favourite",
+        message: "Failed to update FavoriteProperty.",
       });
         }
     }

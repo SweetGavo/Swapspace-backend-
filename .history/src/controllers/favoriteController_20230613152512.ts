@@ -50,54 +50,57 @@ export const favoriteController = {
                     id
                 }
             })
+
             if (!favorite) {
-                res.status(404).json({error:"favorite not found"})
+                res.status(404).json({error:""})
             } else {
-                 res.status(200).json(favorite)
+                
+                res.status(200).json(favorite)
             }
         } catch (error) {
             return res
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)
-                .json({ error: "An error occured while retrieving the favorites" });
+                .json({ error: "Favorite not found" });
         }
     },
 
 
 
-    deleteFavortie: async (req: Request, res: Response) => {    
-        const { id } = req.params
-        try {
-            const favorite = await prisma.favorite.delete({
-                where: {
-                    id
-                }
-            })
-            res.status(200).json(favorite);
-        }
+    deletefavortieProperty: async (req: Request, res: Response) => {    
+        const favortiePropertyId = req.params.favortiePropertyId;
+          try {
+             const deletefavortieProperty = await prisma.favorite.delete({
+                 where: {
+                     id: favortiePropertyId
+                 }
+             })
+             
          
-      catch (error) {
+     } catch (error) {
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: "Failed to delete Favourite property.",
+        message: "Failed to delete Favorite property.",
       });
      }
 
     },
 
-    updateFavorite: async (req: Request, res: Response) => {
-        const {userId , propertyId} = req.body
-        const { id } = req.params
+    updateFavoriteProperty: async (req: Request, res: Response) => {
         try {
-            const favorite = await prisma.favorite.update({
-                where: { id  },
-        data: {
-            userId,
-            propertyId
-        }
-      })
-            res.status(200).json(favorite);
+            const FavoritePropertyId = req.params.favoritePropertyId;
+            const updateFavoriteProperty = await prisma.favorite.update({
+                where: {
+                    id:FavoritePropertyId
+                },
+                data: req.body
+            })
+          return res.status(StatusCodes.OK).json({
+          message: "FavoriteProperty updated successfully.",
+          updateFavoriteProperty,
+      });
+
         } catch (error) {
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: "An error occured while deleting favourite",
+        message: "Failed to update FavoriteProperty.",
       });
         }
     }

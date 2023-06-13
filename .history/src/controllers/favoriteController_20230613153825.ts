@@ -64,7 +64,7 @@ export const favoriteController = {
 
 
 
-    deleteFavortie: async (req: Request, res: Response) => {    
+    deletefavortieProperty: async (req: Request, res: Response) => {    
         const { id } = req.params
         try {
             const favorite = await prisma.favorite.delete({

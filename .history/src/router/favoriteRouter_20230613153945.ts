@@ -4,9 +4,9 @@ import { favoriteController} from '../controllers/favoriteController';
 const router = express.Router();
 
 
-router.route("/favorites").get(favoriteController.getAllfavorites);
+router.route("/favorites").get(favoriteController.getAllfavorites)
 
-router.route("/favorites:id").get(favoriteController.getFavoriteById);
+router.route("/favorites:id").get(favoriteController.getFavoriteById)
 
 router.route("/favortiePropertyId").delete(favoriteController.deleteFavortie);
 
