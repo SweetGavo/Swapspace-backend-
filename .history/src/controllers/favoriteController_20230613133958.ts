@@ -65,7 +65,7 @@ export const favoriteController = {
         catch (error) {
             return res
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)
-                .json({ error: "Favorite property not added..." });
+                .json({ error: "Favorite prop not added..." });
         }
     },
 
