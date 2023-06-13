@@ -45,14 +45,7 @@ export const declinedController = {
     const {id} = req.params
   
         try {
-            const declined = await prisma.declined.findUnique({
-                where: {
-                    id
-                }
-            })
-            if (!declined) {
-                res.status(404).json({})
-            }
+            const declined = await prisma.declined.findUnique()
         } catch (error) {
             
         }

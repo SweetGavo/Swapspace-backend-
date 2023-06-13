@@ -53,8 +53,7 @@ export const favoriteController = {
             } else {
                  res.status(200).json(favorite)
             }
-        } catch (error) {
-                res
+        } catch (error) { res
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)
                 .json({ error: "An error occured while retrieving the favorites" });
         }
@@ -74,7 +73,7 @@ export const favoriteController = {
         }
          
       catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         message: "Failed to delete Favourite property.",
       });
      }
@@ -91,10 +90,10 @@ export const favoriteController = {
             userId,
             propertyId
         }
-        })
-        res.status(200).json(favorite);
+      })
+            res.status(200).json(favorite);
         } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         message: "An error occured while deleting favourite",
       });
         }

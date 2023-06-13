@@ -46,13 +46,8 @@ export const declinedController = {
   
         try {
             const declined = await prisma.declined.findUnique({
-                where: {
-                    id
-                }
+                where
             })
-            if (!declined) {
-                res.status(404).json({})
-            }
         } catch (error) {
             
         }

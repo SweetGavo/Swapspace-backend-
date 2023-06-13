@@ -10,4 +10,4 @@ router.route("/declined/:id").get();
 
 router.route('/:declinedId').patch()
 
-router.route('/:declinedId').delete();
+router.route('/:declinedId').delete(declinedController.deletedeclinedProperty);

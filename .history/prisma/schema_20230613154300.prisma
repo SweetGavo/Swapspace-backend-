@@ -297,7 +297,7 @@ updatedAt DateTime @updatedAt
 
 model Declined {
 id String @id @unique @default(uuid())
-userId String
+userID String
 propertyId String
 createdAt DateTime @default(now())
 updatedAt DateTime @updatedAt

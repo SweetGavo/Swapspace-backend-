@@ -50,9 +50,7 @@ export const declinedController = {
                     id
                 }
             })
-            if (!declined) {
-                res.status(404).json({})
-            }
+            if
         } catch (error) {
             
         }

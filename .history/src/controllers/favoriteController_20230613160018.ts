@@ -91,8 +91,8 @@ export const favoriteController = {
             userId,
             propertyId
         }
-        })
-        res.status(200).json(favorite);
+      })
+            res.status(200).json(favorite);
         } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         message: "An error occured while deleting favourite",

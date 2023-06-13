@@ -12,12 +12,7 @@ export const declinedController = {
         const { propertyId, userId } = req.body;
       
         try {
-            const newdeclined = await prisma.declined.create({
-                data: {
-                    propertyId,
-                    userId
-                }
-            })
+            const newdeclined = await prisma.
             res.status(200).json(newdeclined)
         } catch (error) {
             res.send(500).json({message:"Failed to add favorite property"})
@@ -45,15 +40,8 @@ export const declinedController = {
     const {id} = req.params
   
         try {
-            const declined = await prisma.declined.findUnique({
-                where: {
-                    id
-                }
-            })
-            if (!declined) {
-                res.status(404).json({})
-            }
-        } catch (error) {
+            const declined = await prisma.declined
+        } catch () {
             
         }
         

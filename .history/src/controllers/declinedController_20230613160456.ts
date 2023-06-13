@@ -15,7 +15,7 @@ export const declinedController = {
             const newdeclined = await prisma.declined.create({
                 data: {
                     propertyId,
-                    userId
+                    user
                 }
             })
             res.status(200).json(newdeclined)
@@ -45,15 +45,8 @@ export const declinedController = {
     const {id} = req.params
   
         try {
-            const declined = await prisma.declined.findUnique({
-                where: {
-                    id
-                }
-            })
-            if (!declined) {
-                res.status(404).json({})
-            }
-        } catch (error) {
+            const declined = await prisma.declined
+        } catch () {
             
         }
         
