@@ -1,27 +1,22 @@
 import { Request, Response } from 'express';
 import prisma from '../DB/prisma';
 import { StatusCodes } from 'http-status-codes';
-import { string } from 'joi';
 
 
 
 export const favoriteController = {
     getALLfavorites: async (req: Request, res: Response) => {
-        const { favorite } = req.params;
+        const { Favorite } = req.query;
         try {
-          if (favorite) {
-                const favoriteproperties = await prisma.favorite.findMany({
-                    select: {
-                        propertyId: true,
-                        userID:true
-                    }
-                })
+    
+            if (Favorite) {
+                const savedproperties = await prisma.favorite.
                 return res.status(StatusCodes.OK).json({
-                    count: favoriteproperties.length,
-                  data:  favoriteproperties,
+                    count: savedproperties.length,
+                    savedproperties,
                 });
-          }
-            
+            }
+    
         }
         catch (error) {
             return res
@@ -39,7 +34,9 @@ export const favoriteController = {
                 const singlefavorite = prisma.favorite.findMany({
                     select: {
                         id: true,
-                       propertyId:true
+                        property_name: true,
+                        property_type: true,
+                        address: true
                     }
                 })
                 return res.status(StatusCodes.OK).json({

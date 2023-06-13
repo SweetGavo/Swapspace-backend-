@@ -4,22 +4,19 @@ import { StatusCodes } from 'http-status-codes';
 
 
 
-  export const declinedController = {
-      getAlldeclinedProperties: async (req:Request, res:Response) => {
-        const { declined } = req.params;
+export const declinedController = {
+    getAlldeclinedProperties: async (req:Request, res:Response) => {
+        const { Declined } = req.query;
         
-          try {              
-            if (declined) {
-                const declinedproperties = await prisma.declined.findMany({
-                   select: {
-                        propertyId: true,
-                        userID:true
-                    }
-                })
-                
+          try {
+              const delineditem:any = []               
+              
+            if (Declined) {
+                const item = prisma.
+           const declinedproperties = (await item).push(delineditem);
            return res.status(StatusCodes.CREATED).json({
-               message: "Declined properties",
-               data:declinedproperties
+           message: "All Declined properties",
+           data: declinedproperties,
       });
             }
         } catch (error) {
@@ -36,21 +33,21 @@ import { StatusCodes } from 'http-status-codes';
         try {
       const { id } = req.params;
 
-      const declinedproperties = await prisma.declined.findFirst({
+      const declined = await prisma.declined.findFirst({
           where: {
-         id:id
+          id: id,
         },
       });
 
-      if (!declinedproperties) {
+      if (!declined) {
         return res.status(StatusCodes.NOT_FOUND).json({
           message: " declined Property not found",
         });
       }
 
       return res.status(StatusCodes.OK).json({
-        message: "fetched declined properties",
-        data: declinedproperties,
+        message: "Fetched",
+        declined,
       });
     } catch (error) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

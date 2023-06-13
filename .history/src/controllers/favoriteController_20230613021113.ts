@@ -7,7 +7,7 @@ import { string } from 'joi';
 
 export const favoriteController = {
     getALLfavorites: async (req: Request, res: Response) => {
-        const { favorite } = req.params;
+        const { favorite } = req.query;
         try {
           if (favorite) {
                 const favoriteproperties = await prisma.favorite.findMany({
@@ -20,8 +20,8 @@ export const favoriteController = {
                     count: favoriteproperties.length,
                   data:  favoriteproperties,
                 });
-          }
-            
+            }
+    
         }
         catch (error) {
             return res

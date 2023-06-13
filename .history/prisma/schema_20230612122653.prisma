@@ -287,7 +287,6 @@ model Invitation {
 model Favorite {
 id String @id @unique @default(uuid())
 userID String
-propertyId String
 createdAt DateTime @default(now())
 updatedAt DateTime @updatedAt
 }
@@ -296,7 +295,6 @@ updatedAt DateTime @updatedAt
 model Declined {
 id String @id @unique @default(uuid())
 userID String
-propertyId String
 createdAt DateTime @default(now())
 updatedAt DateTime @updatedAt
 }

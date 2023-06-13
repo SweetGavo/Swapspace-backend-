@@ -6,7 +6,8 @@ import { fi, id } from "date-fns/locale";
 const userController = {
   getAllUsers: async (req: Request, res: Response) => {
     try {
-       
+      
+      
       const users = await prisma.user.findMany({
         select: {
           id: true,
@@ -15,7 +16,9 @@ const userController = {
           type: true,
         },   
       }); 
-  
+
+      
+      
       res.status(StatusCodes.OK).json({
         count: users.length,
         users,

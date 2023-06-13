@@ -6,7 +6,8 @@ import { fi, id } from "date-fns/locale";
 const userController = {
   getAllUsers: async (req: Request, res: Response) => {
     try {
-       
+      
+      
       const users = await prisma.user.findMany({
         select: {
           id: true,
@@ -15,7 +16,89 @@ const userController = {
           type: true,
         },   
       }); 
+
+      if (leads) {
+        await prisma.user.findMany({
+          where: {
+            type: "USER"
+          },
+          select: {
+            id: true,
+            profile: true,
+            createdAt: true
+          }
+        })
+      }
+
+      if (listing_request) {
+        const {id,email,realtor,offers} = req.body
+        await prisma.user.findMany({
+          where: {
+            type:'AGENT'
+          },
+          select: {
+            id: id,
+            email: email,
+            realtor:realtor,
+            offers:offers
+          }
+        })
+        
+      }
+
+
+      if (inquiries) {
+        const {id,email,realtor,offers} = req.body
+        await prisma.user.findMany({
+          where: {
+            type:'USER'
+          },
+          select: {
+            id: id,
+            email: email,
+            realtor:realtor,
+            offers:offers
+          }
+        })
+
+      }
+
+
+      if (offers) {
   
+        const { connected} = req.body;
+
+        const { listing_id, contact, property, location, amount, date_and_time }:any = req.query;
+        
+        if (connected) {
+          await prisma.property.findMany({
+            where: {
+              id: listing_id,
+              realtor: contact,
+              property_title: property,
+              street_Number: location,
+              property_price: amount,
+              createdAt:date_and_time
+            }
+          })
+        }
+        
+      } if (property_request) {
+        let { title, id, location, price } = req.body;
+      const propertyInfo =  await prisma.property.findMany({
+          select: {
+            property_title:title,
+            id: id,
+            street_Number: location,
+            property_price:price
+          }
+      })
+        res.status(StatusCodes.OK).json({
+          count:propertyInfo.length,
+          propertyInfo
+        })
+      }
+      
       res.status(StatusCodes.OK).json({
         count: users.length,
         users,

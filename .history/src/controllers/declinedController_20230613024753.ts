@@ -38,11 +38,11 @@ import { StatusCodes } from 'http-status-codes';
 
       const declinedproperties = await prisma.declined.findFirst({
           where: {
-         id:id
+         userID:id
         },
       });
 
-      if (!declinedproperties) {
+      if (!declined) {
         return res.status(StatusCodes.NOT_FOUND).json({
           message: " declined Property not found",
         });

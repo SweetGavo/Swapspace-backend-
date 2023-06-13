@@ -263,24 +263,6 @@ const propertyController = {
       })
       }
 
-      if (Saved) {
-        const { Interested, Connected, Favortie, Declined } = req.query;
-        if (Interested || Connected || Favortie || Declined ) {
-          const savedproperties = await prisma.property.findMany({
-          select: {
-            id: true,
-            property_title: true,
-            property_type: true,
-            property_price:true    
-          }
-          })
-          return res.status(StatusCodes.OK).json({
-        count: savedproperties.length,
-        savedproperties,
-      });
-        }
-        
-      }
       
       return res.status(StatusCodes.OK).json({
         count: properties.length,
@@ -352,11 +334,7 @@ const propertyController = {
     try {
       const properties = await prisma.property.findMany({});
       const saved = {}
-      const { Interested, Connected, Favorites, Declined } = req.query;
-      if (Interested) {
-        
-      }
-
+    
 
       res.status(StatusCodes.OK).json({
         message: `fetched`,

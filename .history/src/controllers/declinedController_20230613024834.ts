@@ -38,7 +38,7 @@ import { StatusCodes } from 'http-status-codes';
 
       const declinedproperties = await prisma.declined.findFirst({
           where: {
-         id:id
+         userID:id
         },
       });
 

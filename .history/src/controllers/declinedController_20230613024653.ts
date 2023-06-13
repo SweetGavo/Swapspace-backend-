@@ -36,13 +36,13 @@ import { StatusCodes } from 'http-status-codes';
         try {
       const { id } = req.params;
 
-      const declinedproperties = await prisma.declined.findFirst({
+      const declined = await prisma.declined.findFirst({
           where: {
-         id:id
+         userID:id
         },
       });
 
-      if (!declinedproperties) {
+      if (!declined) {
         return res.status(StatusCodes.NOT_FOUND).json({
           message: " declined Property not found",
         });
@@ -50,7 +50,7 @@ import { StatusCodes } from 'http-status-codes';
 
       return res.status(StatusCodes.OK).json({
         message: "fetched declined properties",
-        data: declinedproperties,
+        data: declined,
       });
     } catch (error) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

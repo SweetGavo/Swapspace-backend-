@@ -274,7 +274,7 @@ const propertyController = {
             property_price:true    
           }
           })
-          return res.status(StatusCodes.OK).json({
+        return res.status(StatusCodes.OK).json({
         count: savedproperties.length,
         savedproperties,
       });
