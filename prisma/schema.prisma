@@ -61,20 +61,21 @@ enum Agent_type {
 }
 
 model User {
-  id             String     @id @unique @default(uuid())
-  email          String     @unique
-  number         String     @unique
-  password       String
-  profile        Profile?
-  otp            Otp[]      @relation("Otpproperties")
-  type           List_Types @default(USER)
-  createdAt      DateTime   @default(now())
-  date_modified  DateTime   @default(now()) @updatedAt
-  verifiedEmail  Boolean    @default(false)
-  verifiedNumber Boolean    @default(false)
-  realtor        Realtor?
-  realtorId      String?    @unique
-  ratingsGiven   Rating[]
+  id                 String     @id @unique @default(uuid())
+  email              String     @unique
+  number             String     @unique
+  password           String
+  profile            Profile?
+  otp                Otp[]      @relation("Otpproperties")
+  type               List_Types @default(USER)
+  createdAt          DateTime   @default(now())
+  date_modified      DateTime   @default(now()) @updatedAt
+  verifiedEmail      Boolean    @default(false)
+  verifiedNumber     Boolean    @default(false)
+  realtor            Realtor?
+  realtorId          String?    @unique
+  ratingsGiven       Rating[]
+  favoriteProperties Favorite[] @relation("favorites")
 }
 
 model Profile {
@@ -197,6 +198,7 @@ model Property {
   realtorId                           String?
   createdAt                           DateTime         @default(now())
   date_modified                       DateTime         @default(now()) @updatedAt
+  favoriteProperties                  Favorite[]       @relation("favorites")
 }
 
 model Team {
@@ -531,4 +533,31 @@ model Info {
   realtorId  String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+model Favorite {
+  id         String   @id @default(uuid())
+  user       User[]   @relation("favorites")
+  property   Property @relation("favorites", fields: [propertyId], references: [id])
+  userId     String
+  propertyId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+
+model Feedback {
+  id            String         @id @unique @default(uuid())
+  userId        String
+  nature        FEEDBACKNATURE
+  contact_email String
+  contact_phone String
+  feedback_string String
+  attachments Json[]
+}
+
+enum FEEDBACKNATURE {
+  SUGGESTION
+  COMPLAINT
+  OTHER
 }
