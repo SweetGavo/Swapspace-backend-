@@ -72,6 +72,7 @@ export const declinedController = {
         const { id } = req.params
         const { userId, propertyId } = req.body
         try {
+
      
             const declined = await prisma.declined.update({
                 where: {

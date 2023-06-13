@@ -175,6 +175,7 @@ model Property {
   proximate_landmark                  String
   realtor                             Realtor?       @relation("RealtorProperties", fields: [realtorId], references: [id])
   offers                              Offers[]
+  filter                              Filter[]
   favorite                            Favorite[]
   realtorId                           String?
   createdAt                           DateTime       @default(now())

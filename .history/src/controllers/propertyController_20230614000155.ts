@@ -221,12 +221,11 @@ const propertyController = {
            lte: maxPrice,
          };
       } 
-      if (filters) {
-        const filter = await prisma.property.findFirst({
-          select: filters
-        });
-         res.send(200).json(filter);
-      }
+      if
+      const filter = await prisma.property.findFirst({
+        select: filters
+      });
+       res.send(200).json(filter);
       
       return res.status(StatusCodes.OK).json({
         count: properties.length,

@@ -214,19 +214,18 @@ const propertyController = {
       if (add) {
         filters.add = add
       }
+      
         if (price_range) {
          const [minPrice, maxPrice] = (price_range as string).split('-').map(Number);
          filters.price = {
            gte: minPrice,
            lte: maxPrice,
          };
-      } 
-      if (filters) {
-        const filter = await prisma.property.findFirst({
-          select: filters
-        });
-         res.send(200).json(filter);
-      }
+        }
+      
+      const colation = await prisma.property.findFirst({
+      select:f
+    })
       
       return res.status(StatusCodes.OK).json({
         count: properties.length,

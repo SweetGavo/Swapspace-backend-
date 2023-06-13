@@ -222,6 +222,7 @@ const propertyController = {
          };
       } 
       if (filters) {
+        
         const filter = await prisma.property.findFirst({
           select: filters
         });
