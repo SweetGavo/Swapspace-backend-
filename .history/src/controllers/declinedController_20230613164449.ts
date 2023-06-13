@@ -6,20 +6,6 @@ import { StatusCodes } from 'http-status-codes';
 
 export const declinedController = {
  
-
-
-    getAlldeclined: async (req: Request, res: Response) => {
-        try {
-            const declined = await prisma.declined.findMany({});
-            res.send(200).json(declined);
-
-        } catch (error) {
-            res.send(500).json({ error: "An error occured while retrieving declined" })
-
-        }
-
-    },
-
     
     createDeclined: async (req: Request, res: Response) => {
         
@@ -41,6 +27,19 @@ export const declinedController = {
     
     },
 
+    getAlldeclined: async (req: Request, res: Response) => {
+        try {
+            const declined = await prisma.declined.findMany({});
+            res.send(200).json(declined);
+
+        } catch (error) {
+            res.send(500).json({ error: "An error occured while retrieving declined" })
+
+        }
+
+    },
+
+
     getdeclinedById: async (req: Request, res: Response) => {
         
         const { id } = req.params
@@ -56,7 +55,8 @@ export const declinedController = {
             }
             else {
 
-                res.status(200).json(declined);      
+                res.status(200).json(declined);
+            
             }
         
         } catch (error) {
@@ -67,6 +67,9 @@ export const declinedController = {
 
 
     },
+
+
+
 
     updatedeclined: async (req: Request, res: Response) => {
         const { id } = req.params
@@ -106,8 +109,8 @@ export const declinedController = {
            res.status(200).json(declined)
        } catch (error) {
            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-               message: "Failed to delete Declined property"
-           });
+            message:
+        })
        }
      }     
 }

@@ -56,7 +56,8 @@ export const declinedController = {
             }
             else {
 
-                res.status(200).json(declined);      
+                res.status(200).json(declined);
+            
             }
         
         } catch (error) {
@@ -67,6 +68,9 @@ export const declinedController = {
 
 
     },
+
+
+
 
     updatedeclined: async (req: Request, res: Response) => {
         const { id } = req.params

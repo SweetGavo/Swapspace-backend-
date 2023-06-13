@@ -6,8 +6,8 @@ const router = express.Router();
 router.route("/").post(declinedController.createDeclined);
 router.route("/declined").get(declinedController.getAlldeclined);
 
-router.route("/declined/:id").get(declinedController.getdeclinedById);
+router.route("/declined/:id").get();
 
-router.route('/:declinedId').patch(declinedController.updatedeclined);
+router.route('/:declinedId').patch()
 
-router.route('/:declinedId').delete(declinedController.deleteDeclined);
+router.route('/:declinedId').delete();

@@ -8,6 +8,6 @@ router.route("/declined").get(declinedController.getAlldeclined);
 
 router.route("/declined/:id").get(declinedController.getdeclinedById);
 
-router.route('/:declinedId').patch(declinedController.updatedeclined);
+router.route('/:declinedId').patch(dec)
 
-router.route('/:declinedId').delete(declinedController.deleteDeclined);
+router.route('/:declinedId').delete();

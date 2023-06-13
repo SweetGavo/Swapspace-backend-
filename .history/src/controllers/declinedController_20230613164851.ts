@@ -68,6 +68,9 @@ export const declinedController = {
 
     },
 
+
+
+
     updatedeclined: async (req: Request, res: Response) => {
         const { id } = req.params
         const { userId, propertyId } = req.body
