@@ -30,6 +30,10 @@ import CorealtorRouter from './router/coRealtorRouter';
 import TaskRouter from './router/taskRouter';
 import AdminRouter from './router/adminRouter';
 import PropertyFormRouter from './router/propertyFormRouter';
+import TeamTaskRouter from './router/teamtaskRouter';
+import InfoRouter from './router/infoRouter';
+import FavoriteRouter from './router/favouriteRouter';
+import FeedbackRouter from './router/feedbackRouter';
 
 app.use(cors());
 app.use(morgan('dev'));
@@ -70,7 +74,7 @@ app.use('/api/v1/otp', OtpRouter);
 app.use('/api/v1/users', UserRouter);
 app.use('/api/v1/auth/password', resetPasswordRouter);
 app.use('/api/v1/properties', PropertyRouter);
-app.use('/api/v1/teams', OtpRouter);
+app.use('/api/v1/teams', TeamRouter);
 app.use('/api/v1/ratings', RatingRouter);
 app.use('/api/v1/offers', OfferRouter);
 app.use('/api/v1/invitations', InvitationRouter);
@@ -78,7 +82,10 @@ app.use('/api/v1/auth/co-realtor', CorealtorRouter);
 app.use('/api/v1/tasks', TaskRouter);
 app.use('/api/v1/auth/admins', AdminRouter);
 app.use('/api/v1/properties/owner', PropertyFormRouter);
-
+app.use('/api/v1/teamtasks', TeamTaskRouter);
+app.use('/api/v1/meetings', InfoRouter);
+app.use('/api/v1/favorites', FavoriteRouter);
+app.use('/api/v1/feedbacks', FeedbackRouter);
 
 //ErrorHandlerMiddleware
 import notFoundMiddleware from './middleware/not-found';
