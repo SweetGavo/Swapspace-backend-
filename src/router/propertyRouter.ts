@@ -47,7 +47,7 @@ router.route('/:id').get(propertyController.getOneProperty);
 
 router.route('/updateleads').post(propertyController.updateLeads);
 
-router.route('/filters').get(propertyController.filterProperties);
+router.route('/filters/find').get(propertyController.filterProperties);
 
 router.route('/leads/:realtorId').get(propertyController.leads);
 
