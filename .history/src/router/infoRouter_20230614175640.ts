@@ -16,7 +16,7 @@ router
 
 
 router
-    .route("/:meetingId")
+    .route("/:meetin")
     .patch(infoController.updateMeeting)
     .delete(infoController.deleteMeeting);
 

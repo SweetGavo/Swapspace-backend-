@@ -10,19 +10,9 @@ router
 .route('/')
 .post(infoController.createMeeting)
 
-router
-    .route("/")
-    .get(infoController.getallMeetings);
-
-
-router
-    .route("/:meetingId")
-    .patch(infoController.updateMeeting)
-    .delete(infoController.deleteMeeting);
-
-
-
-
-
+router.route("/").get(infoController.getallMeetings);
+router.route("/:id")
+   
+   .patch(infoController.updateMeeting).delete(infoController.deleteMeeting);
 export default router;
 

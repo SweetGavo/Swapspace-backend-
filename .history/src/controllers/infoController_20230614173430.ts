@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../DB/prisma';
-import { StatusCodes } from 'http-status-codes';
+import {  StatusCodes } from 'http-status-codes';
 const infoController = {
   createMeeting: async (req: Request, res: Response): Promise<Response> => {
     const { title, event, event_link, date, time, teamId, realtorId } =

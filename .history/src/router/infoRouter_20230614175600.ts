@@ -10,13 +10,10 @@ router
 .route('/')
 .post(infoController.createMeeting)
 
-router
-    .route("/")
-    .get(infoController.getallMeetings);
+router.route("/").get(infoController.getallMeetings);
 
 
-router
-    .route("/:meetingId")
+router.route("/:id")
     .patch(infoController.updateMeeting)
     .delete(infoController.deleteMeeting);
 
