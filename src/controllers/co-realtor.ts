@@ -10,7 +10,7 @@ const createCoRealtorSchema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().min(8).max(20).required(),
   number: Joi.number().required(),
-  token: Joi.string().token().required(),
+  token: Joi.string().token(),
 });
 
 import { v2 as cloudinary } from 'cloudinary';
@@ -33,7 +33,7 @@ const coRealtorController = {
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const { full_name, email, password, token, number } = req.body;
+    const { full_name, email, password, number } = req.body;
     const file = req.file; // Assuming the image file is uploaded as 'file' in the request
 
     if (!email.match(emailRegex)) {
@@ -41,17 +41,15 @@ const coRealtorController = {
         message: 'Invalid email address',
       });
     }
+    // Check for a valid email address
 
-    // Check for token
-    const checkTokenExists = await prisma.invitation.findUnique({
-      where: {
-        token: token,
-      },
+    const checkEmail = await prisma.invitation.findUnique({
+      where: { email },
     });
 
-    if (!checkTokenExists) {
-      return res.status(StatusCodes.FORBIDDEN).json({
-        message: 'You have not been invited by a realtor to join',
+    if (!checkEmail) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        messaage: `Please use the email that was sent to you `,
       });
     }
 
@@ -79,7 +77,6 @@ const coRealtorController = {
           email,
           password: hashedPassword,
           number,
-          token,
           image: uploadedImage.secure_url,
         },
       });
@@ -88,9 +85,10 @@ const coRealtorController = {
         .status(StatusCodes.CREATED)
         .json({ message: 'Created successfully', data: newAccount });
     } catch (error) {
+      console.log(error);
       return res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ message: 'Error uploading image' });
+        .json({ message: 'Error creating profile' });
     }
   },
 

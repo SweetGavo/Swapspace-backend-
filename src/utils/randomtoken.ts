@@ -1,19 +1,14 @@
-import { v4 as uuidv4 } from 'uuid';
-import { addDays, formatISO } from 'date-fns';
+import otpGenerator from 'otp-generator';
 
 const generateInvitationToken = (): string => {
-  const token = uuidv4();
+  const OTP = otpGenerator.generate(6, {
+    digits: true,
+    upperCaseAlphabets: false,
+    lowerCaseAlphabets: false,
+    specialChars: false,
+  });
 
-  const currentDate = new Date();
-
-  const expirationDate = addDays(currentDate, 7);
-
-  const formattedExpirationDate = formatISO(expirationDate);
-
-  const tokenWithExpiration = `${token}_${formattedExpirationDate}`;
-
-  return tokenWithExpiration;
+  return OTP;
 };
-
 
 export default generateInvitationToken;

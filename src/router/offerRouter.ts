@@ -1,26 +1,31 @@
-import express from "express";
+import express from 'express';
 const router = express.Router();
 
-import offersControllers from "../controllers/offerController";
-
-
+import offersControllers from '../controllers/offerController';
 
 router
-.route('/')
-.post(offersControllers.addOffers)
-.get(offersControllers.getAllOffers);
-
-
+  .route('/')
+  .post(offersControllers.addOffer)
+  .get(offersControllers.getAllOffers);
 
 router
-.route('/:id')
-.get(offersControllers.getAllOffersByUser)
-.get(offersControllers.acceptOffersByRealtor);
+  .route('/:id')
+  .get(offersControllers.getOneRealtorsOffers)
+  .patch(offersControllers.updateOffer);
+
+
+  router
+  .route('/checkoff')
+  .get(offersControllers.getCheckoff)
+
+  router
+  .route('/closed')
+  .get(offersControllers.getClosed)
 
 
 
-router
-.route('/:offerId/accept')
-.patch(offersControllers.acceptOffersByRealtor);
+  router
+  .route('/connected')
+  .get(offersControllers.getConnected)
 
 export default router;
