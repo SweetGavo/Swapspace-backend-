@@ -103,7 +103,7 @@ model Realtor {
   language            String[]
   description         String
   license_number      String      @unique
-  broker_card_image   String[]   
+  broker_card_image   String[]
   image               String
   status              Status_type @default(PENDING)
   user                User?       @relation(fields: [userId], references: [id])
@@ -184,6 +184,7 @@ model Property {
   date_posted                         String
   property_price                      String
   total_lessee                        String
+  renovation                          String
   permit                              String
   description                         String
   additional_details                  String
@@ -545,15 +546,14 @@ model Favorite {
   updatedAt  DateTime @updatedAt
 }
 
-
 model Feedback {
-  id            String         @id @unique @default(uuid())
-  userId        String
-  nature        FEEDBACKNATURE
-  contact_email String
-  contact_phone String
+  id              String         @id @unique @default(uuid())
+  userId          String
+  nature          FEEDBACKNATURE
+  contact_email   String
+  contact_phone   String
   feedback_string String
-  attachments Json[]
+  attachments     Json[]
 }
 
 enum FEEDBACKNATURE {
