@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "CoRealtor" ADD COLUMN     "type" TEXT NOT NULL DEFAULT 'CO_REALTOR';
