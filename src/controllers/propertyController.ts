@@ -158,12 +158,15 @@ const propertyController = {
         count: properties.length,
         properties,
       });
+       
     } catch (error) {
       console.error("Error retrieving users:", error);
       return res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ error: "Failed to retrieve properties" });
     }
+   
+
   },
 
   uploadImages: async (req: Request, res: Response): Promise<Response> => {
@@ -454,6 +457,7 @@ const propertyController = {
       const deletedProperty = await prisma.property.delete({
         where: {
           id: id,
+          
         },
       });
 
