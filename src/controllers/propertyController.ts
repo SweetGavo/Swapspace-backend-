@@ -473,10 +473,11 @@ const propertyController = {
 
   updateProperty: async (req: Request, res: Response) => {
     try {
-      const propertyId = req.params.propertyId;
+      const { id } = req.params;
+
       const updatedProperty = await prisma.property.update({
         where: {
-          id: propertyId,
+          id: id,
         },
         data: req.body,
       });
