@@ -14,6 +14,8 @@ const userController = {
                     number: true,
                     email: true,
                     type: true,
+                    profile: true,
+                    realtor: true,
                 },
             });
             res.status(http_status_codes_1.StatusCodes.OK).json({
@@ -22,24 +24,41 @@ const userController = {
             });
         }
         catch (error) {
-            console.error("Error retrieving users:", error);
+            console.error('Error retrieving users:', error);
             res
                 .status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR)
-                .json({ error: "Failed to retrieve users" });
+                .json({ error: 'Failed to retrieve users' });
         }
     },
     getAgentUsers: async (req, res) => {
         try {
             const agents = await prisma_1.default.user.findMany({
                 where: {
-                    type: "AGENT",
+                    type: 'AGENT',
                 },
                 select: {
                     id: true,
                     number: true,
                     email: true,
                     type: true,
-                    realtor: true,
+                    realtor: {
+                        select: {
+                            id: true,
+                            company_name: true,
+                            address: true,
+                            broker_BRN: true,
+                            agent_ORN: true,
+                            years_of_experience: true,
+                            specialty: true,
+                            role: true,
+                            language: true,
+                            description: true,
+                            license_number: true,
+                            broker_card_image: true,
+                            image: true,
+                            status: true,
+                        },
+                    },
                 },
             });
             res.status(http_status_codes_1.StatusCodes.OK).json({
@@ -48,17 +67,17 @@ const userController = {
             }); // Send the users as a JSON response
         }
         catch (error) {
-            console.error("Error retrieving users:", error);
+            console.error('Error retrieving users:', error);
             res
                 .status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR)
-                .json({ error: "Failed to retrieve users" });
+                .json({ error: 'Failed to retrieve users' });
         }
     },
     getUsersWhichAreUsers: async (req, res) => {
         try {
             const users = await prisma_1.default.user.findMany({
                 where: {
-                    type: "USER",
+                    type: 'USER',
                 },
                 select: {
                     id: true,
@@ -88,10 +107,10 @@ const userController = {
             });
         }
         catch (error) {
-            console.error("Error retrieving users:", error);
+            console.error('Error retrieving users:', error);
             res
                 .status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR)
-                .json({ error: "Failed to retrieve users" });
+                .json({ error: 'Failed to retrieve users' });
         }
     },
     getOneUser: async (req, res) => {
@@ -100,7 +119,7 @@ const userController = {
             const oneUser = await prisma_1.default.user.findFirst({
                 where: {
                     id: id,
-                    type: "USER",
+                    type: 'USER',
                 },
                 select: {
                     id: true,
@@ -112,7 +131,7 @@ const userController = {
             });
             if (!oneUser) {
                 return res.status(http_status_codes_1.StatusCodes.NOT_FOUND).json({
-                    message: "User not found",
+                    message: 'User not found',
                 });
             }
             return res.status(http_status_codes_1.StatusCodes.OK).json({
@@ -120,10 +139,10 @@ const userController = {
             });
         }
         catch (error) {
-            console.error("Error retrieving users:", error);
+            console.error('Error retrieving users:', error);
             return res
                 .status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR)
-                .json({ error: "Failed to retrieve user" });
+                .json({ error: 'Failed to retrieve user' });
         }
     },
     getOneAgent: async (req, res) => {
@@ -132,7 +151,7 @@ const userController = {
             const oneAgent = await prisma_1.default.user.findFirst({
                 where: {
                     id: id,
-                    type: "AGENT",
+                    type: 'AGENT',
                 },
                 select: {
                     id: true,
@@ -144,7 +163,7 @@ const userController = {
             });
             if (!oneAgent) {
                 return res.status(http_status_codes_1.StatusCodes.NOT_FOUND).json({
-                    message: "User not found",
+                    message: 'User not found',
                 });
             }
             return res.status(http_status_codes_1.StatusCodes.OK).json({
@@ -152,10 +171,10 @@ const userController = {
             });
         }
         catch (error) {
-            console.error("Error retrieving users:", error);
+            console.error('Error retrieving users:', error);
             return res
                 .status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR)
-                .json({ error: "Failed to retrieve user" });
+                .json({ error: 'Failed to retrieve user' });
         }
     },
 };

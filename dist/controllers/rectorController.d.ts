@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 declare const rectorController: {
     createAgentProfile: (req: Request, res: Response) => Promise<Response>;
     updateAgentProfileImage: (req: Request, res: Response) => Promise<Response>;

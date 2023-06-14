@@ -7,7 +7,7 @@ const prisma_1 = __importDefault(require("../DB/prisma"));
 const http_status_codes_1 = require("http-status-codes");
 const responseController = {
     addResponse: async (req, res) => {
-        const { taskId, comment, note, outcome } = req.body;
+        const { taskId, contacts, note, outcome, amount } = req.body;
         const checktaskId = await prisma_1.default.task.findFirst({
             where: {
                 id: taskId,
@@ -21,9 +21,10 @@ const responseController = {
         const response = await prisma_1.default.response.create({
             data: {
                 taskId,
-                comment,
+                contacts,
                 note,
                 outcome,
+                amount
             },
         });
         return res.status(http_status_codes_1.StatusCodes.CREATED).json(response);

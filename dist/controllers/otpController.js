@@ -32,7 +32,7 @@ const OtpController = {
                 });
             }
             const otp = otpGenerator_1.default;
-            const otp_expiry = timeGenerator_1.default;
+            const otp_expiry = (0, timeGenerator_1.default)();
             // const salt = await bcrypt.genSalt(16);
             // const hashedOtp = await bcrypt.hash(otp, salt);
             let createdOtp;
@@ -48,7 +48,7 @@ const OtpController = {
                     },
                     data: {
                         otp: otp,
-                        otp_expiry,
+                        otp_expiry: otp_expiry,
                     },
                 });
             }
@@ -57,7 +57,7 @@ const OtpController = {
                     data: {
                         userId: user.id,
                         otp: otp,
-                        otp_expiry,
+                        otp_expiry: otp_expiry,
                     },
                 });
             }
@@ -147,7 +147,7 @@ const OtpController = {
                 });
             }
             const otp = otpGenerator_1.default;
-            const otpExpiry = timeGenerator_1.default;
+            const otpExpiry = (0, timeGenerator_1.default)();
             let createdOtp;
             const existingOtp = await prisma_1.default.otp.findFirst({
                 where: {

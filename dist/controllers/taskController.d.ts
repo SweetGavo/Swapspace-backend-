@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-declare const taskConroller: {
+declare const taskController: {
     createTask: (req: Request, res: Response) => Promise<Response>;
 };
-export default taskConroller;
+export default taskController;

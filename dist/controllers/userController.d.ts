@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 declare const userController: {
     getAllUsers: (req: Request, res: Response) => Promise<void>;
     getAgentUsers: (req: Request, res: Response) => Promise<void>;

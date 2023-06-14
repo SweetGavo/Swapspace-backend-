@@ -8,13 +8,19 @@ const router = express_1.default.Router();
 const offerController_1 = __importDefault(require("../controllers/offerController"));
 router
     .route('/')
-    .post(offerController_1.default.addOffers)
+    .post(offerController_1.default.addOffer)
     .get(offerController_1.default.getAllOffers);
 router
     .route('/:id')
-    .get(offerController_1.default.getAllOffersByUser)
-    .get(offerController_1.default.acceptOffersByRealtor);
+    .get(offerController_1.default.getOneRealtorsOffers)
+    .patch(offerController_1.default.updateOffer);
 router
-    .route('/:offerId/accept')
-    .patch(offerController_1.default.acceptOffersByRealtor);
+    .route('/checkoff')
+    .get(offerController_1.default.getCheckoff);
+router
+    .route('/closed')
+    .get(offerController_1.default.getClosed);
+router
+    .route('/connected')
+    .get(offerController_1.default.getConnected);
 exports.default = router;

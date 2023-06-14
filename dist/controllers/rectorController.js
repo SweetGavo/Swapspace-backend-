@@ -13,7 +13,7 @@ cloudinary_1.v2.config({
     api_secret: process.env.API_SECRET,
 });
 const createAgentProfileSchema = joi_1.default.object({
-    compant_name: joi_1.default.string().required(),
+    company_name: joi_1.default.string().required(),
     address: joi_1.default.string().required(),
     broker_BRN: joi_1.default.string().required(),
     agent_ORN: joi_1.default.string().required(),
@@ -26,7 +26,7 @@ const createAgentProfileSchema = joi_1.default.object({
     userId: joi_1.default.string().required(),
     addProperty: joi_1.default.array().items(joi_1.default.string()),
     status: joi_1.default.string(),
-    image: joi_1.default.string().allow(""),
+    image: joi_1.default.string(),
 });
 const rectorController = {
     createAgentProfile: async (req, res) => {
@@ -34,23 +34,23 @@ const rectorController = {
             const { error } = createAgentProfileSchema.validate(req.body);
             if (error) {
                 return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
-                    message: "Invalid request body",
+                    message: 'Invalid request body',
                     error: error.details[0].message,
                 });
             }
-            const { userId, compant_name, address, broker_BRN, agent_ORN, years_of_experience, specialty, role, language, description, license_number, } = req.body;
+            const { userId, company_name, address, broker_BRN, agent_ORN, years_of_experience, specialty, role, language, description, license_number, } = req.body;
             // Check if user exists
             const userExists = await prisma_1.default.user.findUnique({
                 where: { id: userId },
             });
             if (!userExists) {
                 return res.status(http_status_codes_1.StatusCodes.NOT_FOUND).json({
-                    message: "User does not exist",
+                    message: 'User does not exist',
                 });
             }
-            if (userExists.type != "AGENT") {
+            if (userExists.type != 'AGENT') {
                 return res.status(http_status_codes_1.StatusCodes.UNAUTHORIZED).json({
-                    message: "You are not allowed to Create AN AGENT Profile",
+                    message: 'You are not allowed to Create AN AGENT Profile',
                 });
             }
             // Upload broker card images to Cloudinary
@@ -63,7 +63,7 @@ const rectorController = {
             // Create agent profile
             const agent = await prisma_1.default.realtor.create({
                 data: {
-                    compant_name,
+                    company_name,
                     address,
                     broker_BRN,
                     agent_ORN,
@@ -75,19 +75,20 @@ const rectorController = {
                     license_number,
                     broker_card_image: brokerCardImages,
                     userId,
-                    status: "PENDING",
-                    image: "",
+                    status: 'PENDING',
+                    image: '',
                 },
             });
             return res.status(http_status_codes_1.StatusCodes.CREATED).json({
-                message: "Agent profile created successfully",
+                message: 'Agent profile created successfully',
                 agent,
             });
         }
         catch (error) {
-            console.error("Error creating agent profile:", error);
+            console.log(error);
+            console.error('Error creating agent profile:', error);
             return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
-                message: "Failed to create agent profile",
+                message: 'Failed to create agent profile',
             });
         }
     },
@@ -97,7 +98,7 @@ const rectorController = {
             const imageFile = req.file; // Assuming the image file is uploaded as 'file' in the request
             if (!imageFile) {
                 return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
-                    message: "Image file is missing",
+                    message: 'Image file is missing',
                 });
             }
             // Check if user exists
@@ -106,7 +107,7 @@ const rectorController = {
             });
             if (!userExists) {
                 return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
-                    message: "User does not exist",
+                    message: 'User does not exist',
                 });
             }
             // Upload the image file to Cloudinary
@@ -117,14 +118,14 @@ const rectorController = {
                 data: { image: result.secure_url },
             });
             return res.status(http_status_codes_1.StatusCodes.OK).json({
-                message: "Agent profile image updated successfully",
+                message: 'Agent profile image updated successfully',
                 agent: updatedAgent.image,
             });
         }
         catch (error) {
-            console.error("Error updating agent profile image:", error);
+            console.error('Error updating agent profile image:', error);
             return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
-                message: "Failed to update agent profile image",
+                message: 'Failed to update agent profile image',
             });
         }
     },
@@ -134,12 +135,12 @@ const rectorController = {
             return res.status(http_status_codes_1.StatusCodes.OK).json({
                 count: realtors.length,
                 message: 'Fetched ',
-                realtors
+                realtors,
             });
         }
         catch (error) {
             return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
-                message: "Failed to fetch all agents profile ",
+                message: 'Failed to fetch all agents profile ',
             });
         }
     },
@@ -148,11 +149,11 @@ const rectorController = {
             const { id } = req.params;
             const realtor = await prisma_1.default.realtor.findFirst({
                 where: {
-                    id: id
+                    id: id,
                 },
                 include: {
-                    user: true
-                }
+                    user: true,
+                },
             });
             // Exclude password and broker id
             if (!realtor) {
@@ -167,7 +168,7 @@ const rectorController = {
         }
         catch (error) {
             return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
-                message: "Failed to fetch  agent profile ",
+                message: 'Failed to fetch  agent profile ',
             });
         }
     },

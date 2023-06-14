@@ -8,21 +8,12 @@ const http_status_codes_1 = require("http-status-codes");
 const password_1 = require("../utils/password");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const joi_1 = __importDefault(require("joi"));
+const passwordValidator_1 = __importDefault(require("../utils/passwordValidator"));
 const createUserSchema = joi_1.default.object({
     email: joi_1.default.string().email().required(),
     password: joi_1.default.string().required(),
     number: joi_1.default.string().required(),
 });
-const validatePasswordString = (password) => {
-    const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$/;
-    if (!password.match(regex)) {
-        return {
-            status: http_status_codes_1.StatusCodes.BAD_REQUEST,
-            message: 'Password must contain a capital letter, number, special character, and be between 8 and 20 characters long.',
-        };
-    }
-    return true;
-};
 const authController = {
     createUser: async (req, res) => {
         try {
@@ -63,7 +54,7 @@ const authController = {
                     message: 'Number already exists',
                 });
             }
-            const passwordValidationResult = validatePasswordString(password);
+            const passwordValidationResult = (0, passwordValidator_1.default)(password);
             if (typeof passwordValidationResult !== 'boolean') {
                 return res
                     .status(http_status_codes_1.StatusCodes.BAD_REQUEST)
@@ -126,6 +117,7 @@ const authController = {
             return res.status(http_status_codes_1.StatusCodes.OK).json({
                 message: 'Login successful',
                 user: {
+                    id: user.id,
                     email: user.email,
                     number: user.number,
                     type: user.type,
@@ -181,7 +173,7 @@ const authController = {
                     message: 'Number already exists',
                 });
             }
-            validatePasswordString(password);
+            (0, passwordValidator_1.default)(password);
             // Hash the password
             const hashedPassword = await (0, password_1.hashPassword)(password);
             // Create the user

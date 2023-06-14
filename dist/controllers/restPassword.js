@@ -24,7 +24,7 @@ const passwordController = {
                 });
             }
             const otp = otpGenerator_1.default;
-            const otp_expiry = timeGenerator_1.default;
+            const otp_expiry = (0, timeGenerator_1.default)();
             let createdOtp;
             const existingOtp = await prisma_1.default.otp.findFirst({
                 where: {
@@ -38,7 +38,7 @@ const passwordController = {
                     },
                     data: {
                         otp: otp,
-                        otp_expiry,
+                        otp_expiry: otp_expiry,
                     },
                 });
             }
@@ -47,7 +47,7 @@ const passwordController = {
                     data: {
                         userId: user.id,
                         otp: otp,
-                        otp_expiry,
+                        otp_expiry: otp_expiry,
                     },
                 });
             }

@@ -6,28 +6,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const prisma_1 = __importDefault(require("../DB/prisma"));
 const http_status_codes_1 = require("http-status-codes");
 const offersControllers = {
-    addOffers: async (req, res) => {
-        const { userId, propertyId } = req.body;
-        const checkUserId = await prisma_1.default.user.findUnique({
-            where: {
-                id: userId,
-            },
-        });
-        if (!checkUserId) {
-            return res.status(http_status_codes_1.StatusCodes.NOT_FOUND).json({
-                message: "User not found",
-            });
-        }
-        //TODO:
-        // Send mail notification and inapp notification
+    addOffer: async (req, res) => {
+        const { propertyId, realtorId, client_name, property_title, property_type, listing_type, amount, progress, date, time, } = req.body;
         const offer = await prisma_1.default.offers.create({
             data: {
-                userId,
                 propertyId,
+                realtorId,
+                client_name,
+                property_title,
+                property_type,
+                listing_type,
+                amount,
+                progress,
+                date,
+                time,
             },
         });
         return res.status(http_status_codes_1.StatusCodes.CREATED).json({
-            message: "offer created",
+            message: 'offer created',
             offer: offer,
         });
     },
@@ -48,25 +44,7 @@ const offersControllers = {
             totalPages: totalPages,
         });
     },
-    getAllOffersByUser: async (req, res) => {
-        const { id } = req.params;
-        const userOffers = await prisma_1.default.offers.findMany({
-            where: {
-                userId: id,
-            },
-        });
-        if (userOffers.length === 0) {
-            return res.status(http_status_codes_1.StatusCodes.NOT_FOUND).json({
-                message: "No offers found for the user",
-            });
-        }
-        return res.status(http_status_codes_1.StatusCodes.OK).json({
-            message: "Fetched offers",
-            count: userOffers.length,
-            data: userOffers,
-        });
-    },
-    getAllOffersRealtor: async (req, res) => {
+    getOneRealtorsOffers: async (req, res) => {
         const { id } = req.params;
         const userOffers = await prisma_1.default.offers.findMany({
             where: {
@@ -77,35 +55,77 @@ const offersControllers = {
         });
         if (userOffers.length === 0) {
             return res.status(http_status_codes_1.StatusCodes.NOT_FOUND).json({
-                message: "No offers found for the realtor",
+                message: 'No offers found for the realtor',
             });
         }
         return res.status(http_status_codes_1.StatusCodes.OK).json({
-            message: "Fetched offers",
+            message: 'Fetched offers',
             count: userOffers.length,
             data: userOffers,
         });
     },
-    acceptOffersByRealtor: async (req, res) => {
+    updateOffer: async (req, res) => {
         const { offerId } = req.params;
         const updateResponse = await prisma_1.default.offers.update({
             where: {
                 id: offerId,
             },
-            data: {
-                status: "ACCEPTED",
-            },
+            data: req.body,
         });
         if (!updateResponse) {
             return res.status(http_status_codes_1.StatusCodes.NOT_FOUND).json({
-                message: "Offer not found",
+                message: 'Offer not found',
             });
         }
-        //TODO: Send a notification and email notification
         return res.status(http_status_codes_1.StatusCodes.OK).json({
-            message: "Offer accepted",
+            message: 'Offer  updated successfully',
             updatedOffer: updateResponse,
         });
     },
+    getCheckoff: async (req, res) => {
+        const { offerId } = req.params;
+        const checkoff = await prisma_1.default.offers.findMany({
+            where: {
+                id: offerId,
+                progress: "Acceptance"
+            }
+        });
+        if (checkoff.length == 0) {
+            return res.status(http_status_codes_1.StatusCodes.NOT_FOUND)
+                .json({ message: 'No offers with checkoff found' });
+        }
+        return res.status(http_status_codes_1.StatusCodes.OK)
+            .json(checkoff);
+    },
+    getConnected: async (req, res) => {
+        const { offerId } = req.params;
+        const connected = await prisma_1.default.offers.findMany({
+            where: {
+                id: offerId,
+                progress: "Inquiry" || "Negotiation"
+            }
+        });
+        if (connected.length == 0) {
+            return res.status(http_status_codes_1.StatusCodes.NOT_FOUND)
+                .json({ message: 'No offers with checkoff found' });
+        }
+        return res.status(http_status_codes_1.StatusCodes.OK)
+            .json(connected);
+    },
+    getClosed: async (req, res) => {
+        const { offerId } = req.params;
+        const sold = await prisma_1.default.offers.findMany({
+            where: {
+                id: offerId,
+                progress: "Sold"
+            }
+        });
+        if (sold.length == 0) {
+            return res.status(http_status_codes_1.StatusCodes.NOT_FOUND)
+                .json({ message: 'No offers with checkoff found' });
+        }
+        return res.status(http_status_codes_1.StatusCodes.OK)
+            .json(sold);
+    }
 };
 exports.default = offersControllers;
