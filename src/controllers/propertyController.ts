@@ -517,20 +517,25 @@ const propertyController = {
           .json({ message: "Property not found" });
       }
   
-      const updateViewAndCount = await prisma.property.update({
-        where: {
-          id: propertyId,
-        },
-        data: {
-          view_count: { increment: 1 },
-          view_by_user: { push: userId },
-        },
-      });
+      // Check if the user has already viewed the property
+      const hasViewed = existingProperty.view_by_user.includes(userId);
+      if (!hasViewed) {
+        // Update the view_count and view_by_user fields
+        const updateViewAndCount = await prisma.property.update({
+          where: {
+            id: propertyId,
+          },
+          data: {
+            view_count: { increment: 1 },
+            view_by_user: { push: userId },
+          },
+        });
   
-      // TODO: Email & Notifications
+        // TODO: Email & Notifications
+      }
   
       return res.status(StatusCodes.OK).json({
-        message: "Property count has been increased",
+        message: "Property count has been updated",
       });
     } catch (error) {
       console.error("Error updating leads:", error);
@@ -539,35 +544,42 @@ const propertyController = {
         .json({ message: "Failed to update leads" });
     }
   },
+  
 
   leads: async (req: Request, res: Response): Promise<Response> => {
-    const { realtorId } = req.params;
-
-    const realtosLeads = await prisma.property.findMany({
-      where: {
-        id: realtorId,
-      },
-      select: {
-        view_count: true,
-        view_by_user: true,
-      },
-    })
-
-    if(!realtosLeads) {
-      return res.status(StatusCodes.NOT_FOUND)
-      .json({
-        message: `leads not found`
-      })
+    try {
+      const { realtorId } = req.params;
+  
+      const realtorLeads = await prisma.property.findMany({
+        where: {
+          realtorId: realtorId,
+        },
+        select: {
+          id: true,
+          view_count: true,
+          view_by_user: true,
+        },
+      });
+  
+      if (!realtorLeads) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+          message: `Leads not found for the realtor`,
+        });
+      }
+  
+      return res.status(StatusCodes.OK).json({
+        message: true,
+        realtorLeads,
+      });
+    } catch (error) {
+      console.error("Error fetching leads:", error);
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Failed to fetch leads" });
     }
-
-    return res.status(StatusCodes.OK).json({
-      message: true,
-      realtosLeads
-    })
   },
-  leadsnow: async(req: Request, res: Response) => {
-
-  }
+  
+ 
 };
 
 export default propertyController;
