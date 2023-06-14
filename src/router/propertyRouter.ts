@@ -45,7 +45,7 @@ router.route('/').get(propertyController.getAllProperty);
 router.route('/:id').patch(propertyController.updateProperty);
 router.route('/:id').get(propertyController.getOneProperty);
 
-router.route('/updateleads').patch(propertyController.updateLeads);
+router.route('/updateleads').post(propertyController.updateLeads);
 
 router.route('/filters').get(propertyController.filterProperties);
 
