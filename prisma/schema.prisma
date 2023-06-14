@@ -103,7 +103,7 @@ model Realtor {
   language            String[]
   description         String
   license_number      String      @unique
-  broker_card_image   String[]
+  broker_card_image   String[]   
   image               String
   status              Status_type @default(PENDING)
   user                User?       @relation(fields: [userId], references: [id])
