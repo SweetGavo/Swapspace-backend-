@@ -568,6 +568,9 @@ const propertyController = {
       message: true,
       realtosLeads
     })
+  },
+  leadsnow: async(req: Request, res: Response) => {
+
   }
 };
 
