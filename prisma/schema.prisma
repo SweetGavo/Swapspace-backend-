@@ -49,7 +49,7 @@ enum Status_type {
   REJECTED
 }
 
-enum List_Types {
+enum ListTypes {
   USER
   AGENT
   ADMIN
@@ -67,7 +67,7 @@ model User {
   password           String
   profile            Profile?
   otp                Otp[]      @relation("Otpproperties")
-  type               List_Types @default(USER)
+  type               ListTypes @default(USER)
   createdAt          DateTime   @default(now())
   date_modified      DateTime   @default(now()) @updatedAt
   verifiedEmail      Boolean    @default(false)
