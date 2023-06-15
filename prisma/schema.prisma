@@ -92,7 +92,7 @@ model Profile {
 }
 
 model Realtor {
-  id                  String      @id @unique @default(uuid())
+  id                  String       @id @unique @default(uuid())
   company_name        String
   address             String
   broker_BRN          String
@@ -102,21 +102,22 @@ model Realtor {
   role                Agent_type
   language            String[]
   description         String
-  license_number      String      @unique
+  license_number      String       @unique
   broker_card_image   String[]
   image               String
-  status              Status_type @default(PENDING)
-  user                User?       @relation(fields: [userId], references: [id])
-  teams               Team[]      @relation("RealtorGroups")
-  userId              String?     @unique
-  properties          Property[]  @relation("RealtorProperties")
+  status              Status_type  @default(PENDING)
+  user                User?        @relation(fields: [userId], references: [id])
+  teams               Team[]       @relation("RealtorGroups")
+  userId              String?      @unique
+  properties          Property[]   @relation("RealtorProperties")
   offers              Offers[]
-  createdAt           DateTime    @default(now())
-  date_modified       DateTime    @default(now()) @updatedAt
+  createdAt           DateTime     @default(now())
+  date_modified       DateTime     @default(now()) @updatedAt
   ratingsReceived     Rating[]
-  task                Task[]      @relation("Tasks")
-  teamTasks           TeamTask[]  @relation("TeamTasks")
-  info                Info[]      @relation("Info")
+  task                Task[]       @relation("Tasks")
+  teamTasks           TeamTask[]   @relation("TeamTasks")
+  info                Info[]       @relation("Info")
+  invites             Invitation[] @relation("Invitation")
 }
 
 model Otp {
@@ -184,7 +185,7 @@ model Property {
   date_posted                         String
   property_price                      String
   total_lessee                        String
-  renovation                          String
+  //renovation                          String
   permit                              String
   description                         String
   additional_details                  String
@@ -338,6 +339,8 @@ model CoRealtor {
 model Invitation {
   id        String   @id @unique @default(uuid())
   email     String   @unique
+  realtor   Realtor? @relation("Invitation", fields: [realtorId], references: [id])
+  realtorId String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

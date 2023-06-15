@@ -253,7 +253,6 @@ const propertyController = {
       };
     }
 
-    
     if (sale_or_rent_price) {
       const price = parseInt(sale_or_rent_price as string, 10);
       filters.price = { equals: price };
@@ -272,21 +271,16 @@ const propertyController = {
         true;
     }
 
-    
     if (pets_allowed) {
-      filters.pets_allowed = pets_allowed === "yes" ? "yes" : "no";
+      filters.pets_allowed = pets_allowed === 'yes' ? 'yes' : 'no';
     }
-    
-    
-    
 
     if (payment_frequency) {
       filters.payment_frequency = parseInt(payment_frequency as string, 10);
     }
 
-    
     if (renovation) {
-      filters.renovation = renovation === "yes" ? "yes" : "no";
+      filters.renovation = renovation === 'yes' ? 'yes' : 'no';
     }
 
     if (proximate_landmark) {
@@ -317,7 +311,7 @@ const propertyController = {
         skip: skip,
         take: ITEMS_PER_PAGE,
       });
-      console.log(filters)
+      console.log(filters);
       return res.status(StatusCodes.OK).json({
         count: properties.length,
         properties,
@@ -325,8 +319,6 @@ const propertyController = {
         totalPages,
         currentPage: page,
       });
-
-     
     } catch (error) {
       console.error('Error finding properties:', error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -468,6 +460,7 @@ const propertyController = {
       const realtorLeads = await prisma.property.findMany({
         where: {
           realtorId: realtorId,
+        
         },
         select: {
           id: true,
@@ -476,7 +469,10 @@ const propertyController = {
         },
       });
 
-      if (!realtorLeads) {
+      let result = realtorLeads.filter((lead) => lead.view_count !== null || lead.view_by_user !== null);
+
+
+      if (!realtorLeads || realtorLeads.length === 0) {
         return res.status(StatusCodes.NOT_FOUND).json({
           message: `Leads not found for the realtor`,
         });
@@ -484,7 +480,7 @@ const propertyController = {
 
       return res.status(StatusCodes.OK).json({
         message: true,
-        realtorLeads,
+        result,
       });
     } catch (error) {
       console.error('Error fetching leads:', error);
