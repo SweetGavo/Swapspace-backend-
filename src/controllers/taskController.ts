@@ -4,7 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import createTaskSchema from '../utils/taskValidator'
 
 const taskController = {
-  createTask: async (req: Request, res: Response): Promise<Response> => {
+  createPersonalTask: async (req: Request, res: Response): Promise<Response> => {
       
     const { error, value } = createTaskSchema.validate(req.body);
   if (error) {
@@ -91,13 +91,13 @@ const taskController = {
   },
 
 
-  getAllTasksByREaltor: async (req: Request, res: Response): Promise<Response> => {
+  getAllPersonalTasksByREaltor: async (req: Request, res: Response): Promise<Response> => {
     try {
-      const { realtorId } = req.params;
+      const { id } = req.params;
       
       const tasks = await prisma.task.findMany({
         where: {
-          realtorId: realtorId,
+          realtorId: id,
         },
         include: {
           coRealtor: true,
@@ -116,6 +116,39 @@ const taskController = {
       });
     }
   },
+
+  getTasksByAssigneeOrCollaborator: async (req: Request, res: Response): Promise<Response> => {
+    try {
+      //const  { assigneeId, collaboratorId } = req.query;
+     const { id } = req.params;
+
+           
+      
+      const tasks = await prisma.task.findMany({
+        where: {
+          OR: [
+            { assigneeId: id },
+            { collaboratorId: id },
+          ],
+        },
+      });
+
+      let result = tasks.filter(t => t.assigneeId ===id || t.collaboratorId === id)
+  
+      if (!result || result.length === 0) {
+        return res.status(StatusCodes.NOT_FOUND).json({ message: 'Tasks not found' });
+      }
+  
+      return res.status(StatusCodes.OK).json({
+        message: 'Tasks found',
+        result,
+      });
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch tasks' });
+    }
+  },
+  
   
   
 
