@@ -5,11 +5,12 @@ import sendEmail from '../utils/sendEmail';
 
 const invitationController = {
   inviteTeamMember: async (req: Request, res: Response): Promise<Response> => {
-    const { email } = req.body;
+    const { email, realtorId } = req.body;
 
     await prisma.invitation.create({
       data: {
         email,
+        realtorId,
       },
     });
 
