@@ -147,19 +147,13 @@ const propertyController = {
 
   getAllProperty: async (req: Request, res: Response): Promise<Response> => {
     try {
-      const {id}:any = req.params.propertyId
-      const properties = await prisma.property.findMany({});
-      const propertyId = await prisma.property.findMany({
-        where: {
-          id:id
-        },
-      })
-      if (propertyId) {
-        const filteredproperty = properties.filter(item => { item.id === id })
-        return res.status(StatusCodes.OK).json({
-        filteredproperty
-      });
+      const properties = await prisma.property.findMany();
+      
+      if(properties.length === 0) {
+        return res.status(StatusCodes.NOT_FOUND).
+        json({ message:" No properties found"})
       }
+
       return res.status(StatusCodes.OK).json({
         count: properties.length,
         properties,
@@ -479,10 +473,11 @@ const propertyController = {
 
   updateProperty: async (req: Request, res: Response) => {
     try {
-      const propertyId = req.params.propertyId;
+      const { id } = req.params;
+
       const updatedProperty = await prisma.property.update({
         where: {
-          id: propertyId,
+          id: id,
         },
         data: req.body,
       });
@@ -498,69 +493,97 @@ const propertyController = {
     }
   },
 
-  updateLeads: async(req: Request, res: Response): Promise<Response> => {
-    const { userId, propertyId } = req.body;
-
-   const  checkUserId = await prisma.user.findUnique({
-    where: {
-      id: userId
+  updateLeads: async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const { userId, propertyId } = req.body;
+  
+      const checkUserId = await prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+      });
+  
+      if (!checkUserId) {
+        return res
+          .status(StatusCodes.NOT_FOUND)
+          .json({ message: "User not found" });
+      }
+  
+      const existingProperty = await prisma.property.findUnique({
+        where: {
+          id: propertyId,
+        },
+      });
+  
+      if (!existingProperty) {
+        return res
+          .status(StatusCodes.NOT_FOUND)
+          .json({ message: "Property not found" });
+      }
+  
+      // Check if the user has already viewed the property
+      const hasViewed = existingProperty.view_by_user.includes(userId);
+      if (!hasViewed) {
+        // Update the view_count and view_by_user fields
+        const updateViewAndCount = await prisma.property.update({
+          where: {
+            id: propertyId,
+          },
+          data: {
+            view_count: { increment: 1 },
+            view_by_user: { push: userId },
+          },
+        });
+  
+        // TODO: Email & Notifications
+      }
+  
+      return res.status(StatusCodes.OK).json({
+        message: "Property count has been updated",
+      });
+    } catch (error) {
+      console.error("Error updating leads:", error);
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Failed to update leads" });
     }
-   })
-
-   if (!checkUserId) return  res.status(StatusCodes.NOT_FOUND)
-   .json({ message: `User not found`})
-
-   const existingProperty  = await prisma.property.findUnique({
-    where:{
-     id:propertyId,
-    } 
-  })
-    if (!existingProperty) return  res.status(StatusCodes.NOT_FOUND)
-    .json({ message: `Property not found`})
-
-   const updateViewAndCount = await prisma.property.update({
-    where: {
-      id: propertyId
-    },
-    data: {
-      view_count: {increment: 1},
-       view_by_user:{push: userId},
-    }
-   })
-
-   // TODO: Email& Notifications
-
-   return res.status(StatusCodes.OK).json({
-    message:"Property Count has been increased"
-  });
-
   },
+  
 
   leads: async (req: Request, res: Response): Promise<Response> => {
-    const { realtorId } = req.params;
-
-    const realtosLeads = await prisma.property.findMany({
-      where: {
-        id: realtorId,
-      },
-      select: {
-        view_count: true,
-        view_by_user: true,
-      },
-    })
-
-    if(!realtosLeads) {
-      return res.status(StatusCodes.NOT_FOUND)
-      .json({
-        message: `leads not found`
-      })
+    try {
+      const { realtorId } = req.params;
+  
+      const realtorLeads = await prisma.property.findMany({
+        where: {
+          realtorId: realtorId,
+        },
+        select: {
+          id: true,
+          view_count: true,
+          view_by_user: true,
+        },
+      });
+  
+      if (!realtorLeads) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+          message: `Leads not found for the realtor`,
+        });
+      }
+  
+      return res.status(StatusCodes.OK).json({
+        message: true,
+        realtorLeads,
+      });
+    } catch (error) {
+      console.error("Error fetching leads:", error);
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Failed to fetch leads" });
     }
-
-    return res.status(StatusCodes.OK).json({
-      message: true,
-      realtosLeads
-    })
-  }
+  },
+  
+ 
 };
 
 export default propertyController;
