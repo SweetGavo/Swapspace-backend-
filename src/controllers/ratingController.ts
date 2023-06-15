@@ -204,6 +204,12 @@ const ratingController = {
       });
     }
   },
+
+  getmore: async(req: Request, res: Response) => {
+    
+  }
+
+  
   
 };
 

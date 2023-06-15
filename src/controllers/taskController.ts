@@ -1,9 +1,17 @@
 import { Request, Response } from 'express';
 import prisma from '../DB/prisma';
 import { StatusCodes } from 'http-status-codes';
+import createTaskSchema from '../utils/taskValidator'
 
 const taskController = {
   createTask: async (req: Request, res: Response): Promise<Response> => {
+      
+    const { error, value } = createTaskSchema.validate(req.body);
+  if (error) {
+    return res.status(StatusCodes.BAD_REQUEST).json({ error: error.details[0].message });
+  }
+
+
     const {
       title,
       action,

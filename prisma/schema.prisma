@@ -346,26 +346,34 @@ model Invitation {
 }
 
 model Admin {
-  id       String @id @unique @default(uuid())
-  email    String
-  password String
-  type     String @default("ADMIN")
-}
-
-enum STRUCTURE {
-  commercial
-  residential
+  id        String   @id @unique @default(uuid())
+  email     String
+  password  String
+  type      String   @default("ADMIN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum PAYMENT_PLAN {
-  one_term_payment
-  three_term_payment
+  two_Term_Installments
+  one_Term_Payment
+  three_Term_Payment
 }
 
 enum SPECIFICATION {
   funished
   unfunished
   none
+}
+
+enum RENT {
+  sale
+  short_let
+}
+
+enum STRUCTURE {
+  commercial
+  residential
 }
 
 enum APPLAINCES {
@@ -453,11 +461,6 @@ enum STYLE {
   black_rock
 }
 
-enum RENT {
-  sale
-  short_let
-}
-
 model PropertyForm {
   id                 String         @id @unique @default(uuid())
   property_title     String
@@ -506,6 +509,9 @@ model PropertyForm {
   realtorId          String?
   userId             String
 }
+
+
+
 
 model TeamTask {
   id         String         @id @unique @default(uuid())
