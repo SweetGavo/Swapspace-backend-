@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 
 const userController = {
   getAllUsers: async (req: Request, res: Response) => {
-    try {
+   
       const users = await prisma.user.findMany({
         select: {
           id: true,
@@ -16,16 +16,17 @@ const userController = {
         },
       });
 
+
+      if (!users || users.length === 0 ) {
+        return res.status(StatusCodes.NOT_FOUND)
+        .json({ message: 'No users found' });
+      }
+
       res.status(StatusCodes.OK).json({
         count: users.length,
         users,
       });
-    } catch (error) {
-      console.error('Error retrieving users:', error);
-      res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: 'Failed to retrieve users' });
-    }
+   
   },
 
   getAgentUsers: async (req: Request, res: Response) => {
