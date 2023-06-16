@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
-import prisma from "../DB/prisma";
-import { StatusCodes } from "http-status-codes";
+import { Request, Response } from 'express';
+import prisma from '../DB/prisma';
+import { StatusCodes } from 'http-status-codes';
 
 const teamController = {
   createGroup: async (req: Request, res: Response) => {
@@ -23,7 +23,7 @@ const teamController = {
         data: {
           name: name,
           realtorId: realtorId,
-          status: "CREATOR",
+          status: 'CREATOR',
         },
       });
 
@@ -33,7 +33,7 @@ const teamController = {
       });
     } catch (error) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: "Failed to create group",
+        message: 'Failed to create group',
         error: error,
       });
     }
@@ -52,7 +52,7 @@ const teamController = {
       });
     } catch (error) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: "Failed to fetch all groups",
+        message: 'Failed to fetch all groups',
         error: error,
       });
     }
@@ -73,14 +73,14 @@ const teamController = {
 
       if (!group) {
         return res.status(StatusCodes.NOT_FOUND).json({
-          message: "Group not found",
+          message: 'Group not found',
         });
       }
-      const isCreator = group.status === "CREATOR";
+      const isCreator = group.status === 'CREATOR';
 
       if (!isCreator) {
         return res.status(StatusCodes.FORBIDDEN).json({
-          message: "Only the group creator can add members",
+          message: 'Only the group creator can add members',
         });
       }
 
@@ -90,7 +90,7 @@ const teamController = {
 
       if (memberExists) {
         return res.status(StatusCodes.BAD_REQUEST).json({
-          message: "Member is already added to the group",
+          message: 'Member is already added to the group',
         });
       }
 
@@ -102,7 +102,7 @@ const teamController = {
 
       if (!member) {
         return res.status(StatusCodes.NOT_FOUND).json({
-          message: "co-Realtor not found",
+          message: 'co-Realtor not found',
         });
       }
 
@@ -121,12 +121,12 @@ const teamController = {
       });
 
       return res.status(StatusCodes.OK).json({
-        message: "Member added to the group successfully",
+        message: 'Member added to the group successfully',
       });
     } catch (error) {
-      console.error("Failed to add member to group:", error);
+      console.error('Failed to add member to group:', error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: "Failed to add member to group",
+        message: 'Failed to add member to group',
         error: error,
       });
     }

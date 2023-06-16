@@ -65,6 +65,48 @@ const teamTaskController = {
         .json({ message: 'Failed to create team task' });
     }
   },
+
+
+  // Get all team tasks
+ getAllTeamTasks: async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const teamTasks = await prisma.teamTask.findMany();
+    return res.status(StatusCodes.OK).json({ message: 'Team tasks found', teamTasks });
+  } catch (error) {
+    console.error('Error fetching team tasks:', error);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: 'Failed to fetch team tasks' });
+  }
+},
+
+// Get all tasks by realtor
+ getTasksByRealtor: async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const { realtorId } = req.params;
+
+    const tasks = await prisma.teamTask.findMany({
+      where: {
+        realtorId,
+      },
+    });
+
+    if (!tasks || tasks.length === 0) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: 'Tasks not found' });
+    }
+
+    return res.status(StatusCodes.OK).json({
+      message: 'Tasks found',
+      tasks,
+    });
+  } catch (error) {
+    console.error('Error fetching tasks by realtor:', error);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: 'Failed to fetch tasks by realtor' });
+  }
+}
+
 };
 
 export default teamTaskController;

@@ -98,9 +98,11 @@ const coRealtorController = {
       const { email, password } = req.body;
 
       const co_Realtor = await prisma.coRealtor.findUnique({
-        where: email,
+        where: {
+          email: email,
+        },
       });
-
+      
       if (!co_Realtor) {
         return res.status(StatusCodes.UNAUTHORIZED).json({
           message: 'Invalid email or password',
@@ -129,13 +131,16 @@ const coRealtorController = {
       return res.status(StatusCodes.OK).json({
         message: 'Login successful',
         co_Realtor: {
+          id: co_Realtor.id,
           email: co_Realtor.email,
-          // number: co_Realtor.number,
-          // type: co_Realtor.type,
+          number: co_Realtor.number,
+           type: co_Realtor.type,
+           image: co_Realtor.image
         },
         token,
       });
     } catch (error) {
+      console.log(error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         message: 'Failed to login',
       });

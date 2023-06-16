@@ -30,7 +30,7 @@ router
 
 
 router
-.route('/')
+.route('/login')
 .post(coRealtorController.coRelatorLogin);
 
 
