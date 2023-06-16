@@ -5,9 +5,13 @@ generator client {
   provider = "prisma-client-js"
 }
 
+
+
+
 datasource db {
   provider = "postgresql"
-  url  = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("")
 }
 
 enum PROPERTY_TYPES {
@@ -48,8 +52,10 @@ enum Status_type {
   APPROVED
   REJECTED
 }
+   
 
-enum ListTypes {
+   
+enum Type {
   USER
   AGENT
   ADMIN
@@ -67,7 +73,7 @@ model User {
   password           String
   profile            Profile?
   otp                Otp[]      @relation("Otpproperties")
-  type               ListTypes @default(USER)
+  type               Type  @default(USER)
   createdAt          DateTime   @default(now())
   date_modified      DateTime   @default(now()) @updatedAt
   verifiedEmail      Boolean    @default(false)
@@ -185,7 +191,7 @@ model Property {
   date_posted                         String
   property_price                      String
   total_lessee                        String
-  //renovation                          String
+  renovation                          String?
   permit                              String
   description                         String
   additional_details                  String
@@ -510,9 +516,6 @@ model PropertyForm {
   userId             String
 }
 
-
-
-
 model TeamTask {
   id         String         @id @unique @default(uuid())
   title      String
@@ -563,10 +566,22 @@ model Feedback {
   contact_phone   String
   feedback_string String
   attachments     Json[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
 }
 
 enum FEEDBACKNATURE {
   SUGGESTION
   COMPLAINT
   OTHER
+}
+
+model ROC {
+  id             String   @id @unique @default(uuid())
+  property_price Float
+  commissiom     Float
+  split          Int
+  gain           Float?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
