@@ -264,6 +264,10 @@ const propertyFormController = {
       },
     });
 
+    let result = listings.filter(
+      (list: any) => list.propertyForm === realtorId
+    );
+
     if (listings.length == 0) {
       return res.status(StatusCodes.NOT_FOUND).json({
         message: 'No listings found for the specified realtor',
@@ -272,7 +276,7 @@ const propertyFormController = {
 
     return res.status(StatusCodes.OK).json({
       message: 'Listings retrieved successfully',
-      data: listings,
+      data: result,
     });
   },
 };

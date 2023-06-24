@@ -159,15 +159,12 @@ const propertyController = {
         count: properties.length,
         properties,
       });
-       
     } catch (error) {
       console.error('Error retrieving users:', error);
       return res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ error: 'Failed to retrieve properties' });
     }
-   
-
   },
 
   uploadImages: async (req: Request, res: Response): Promise<Response> => {
@@ -358,10 +355,10 @@ const propertyController = {
   deleteProperty: async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
+
       const deletedProperty = await prisma.property.delete({
         where: {
           id: id,
-          
         },
       });
 
@@ -460,7 +457,6 @@ const propertyController = {
       const realtorLeads = await prisma.property.findMany({
         where: {
           realtorId: realtorId,
-        
         },
         select: {
           id: true,
@@ -469,8 +465,9 @@ const propertyController = {
         },
       });
 
-      let result = realtorLeads.filter((lead) => lead.view_count !== null || lead.view_by_user !== null);
-
+      let result = realtorLeads.filter(
+        (lead) => lead.view_count !== null || lead.view_by_user !== null
+      );
 
       if (!realtorLeads || realtorLeads.length === 0) {
         return res.status(StatusCodes.NOT_FOUND).json({

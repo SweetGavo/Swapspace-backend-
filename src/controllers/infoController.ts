@@ -30,6 +30,37 @@ const infoController = {
         .json({ message: 'Failed to create team task' });
     }
   },
+
+
+   getAllInfo: async(req: Request, res: Response): Promise<Response> => {
+       
+         const infos = await prisma.info.findMany()
+
+
+         return res.status(StatusCodes.OK)
+         .json({
+          message: `Successful`,
+          infos
+         })
+   },
+   getAllInfosByRealtor: async(req: Request, res: Response) => {
+       const { id } = req.params;
+
+
+       const realtorsInfos = await prisma.info.findMany({
+        where: {
+          realtorId: id
+        }
+       })
+
+       if(!realtorsInfos){
+        return res.status(StatusCodes.NOT_FOUND)
+        .json({ message: `Realtors id not found`})
+       }
+
+       return res.status(StatusCodes.OK)
+       .json(realtorsInfos)
+   }
 };
 
 export default infoController;
