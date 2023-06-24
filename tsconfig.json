@@ -4,7 +4,9 @@
 
     /* Projects */
     "incremental": true, /* Save .tsbuildinfo files to allow for incremental compilation of projects. */
-
+    
+    "resolveJsonModule": true,
+    
     /* Language and Environment */
     "target": "es2022", /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
     "lib": ["ESNext"], /* Specify a set of bundled library declaration files that describe the target runtime environment. */

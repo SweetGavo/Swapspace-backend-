@@ -14,11 +14,14 @@ import helmet from 'helmet';
 const rateLimitPromise = import('express-rate-limit');
 import xss from 'xss-clean';
 
+
+
+
 // import routes
 import AuthRouter from './router/authRouter';
 import ProfileRouters from './router/profileRouter';
 import RectorRouter from './router/rectorRouter';
-import OtpRouter from './router/otpRouter';
+import OtpRouters from './router/otpRouter';
 import UserRouter from './router/userRouter';
 import resetPasswordRouter from './router/resetPasswordRouter';
 import PropertyRouter from './router/propertyRouter';
@@ -61,6 +64,8 @@ app.use(xss());
 app.use(applyRateLimiter);
 app.use(helmet());
 
+
+
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to SWAP SPACE App' });
 });
@@ -70,7 +75,7 @@ app.get('/', (req, res) => {
 app.use('/api/v1/auth', AuthRouter);
 app.use('/api/v1/profiles', ProfileRouters);
 app.use('/api/v1/agents', RectorRouter);
-app.use('/api/v1/otp', OtpRouter);
+app.use('/api/v1/otp', OtpRouters);
 app.use('/api/v1/users', UserRouter);
 app.use('/api/v1/auth/password', resetPasswordRouter);
 app.use('/api/v1/properties', PropertyRouter);

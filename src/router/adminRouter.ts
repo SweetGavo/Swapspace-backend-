@@ -7,12 +7,12 @@ import adminController from '../controllers/adminController';
 
 
 router
-.route('/sigun')
+.route('/signup')
 .post(adminController.createAdmin)
 
 
 router
-.route('/sigun')
+.route('/login')
 .post(adminController.logInAdmin);
 
 
