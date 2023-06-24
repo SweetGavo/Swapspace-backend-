@@ -52,7 +52,7 @@ const authController = {
         });
       }
       // Check if number is unique
-      const numberAlreadyExists = await prisma.user.findUnique({
+      const numberAlreadyExists = await prisma.user.findFirst({
         where: { number },
       });
 
@@ -191,7 +191,7 @@ const authController = {
         });
       }
       // Check if number is unique
-      const numberAlreadyExists = await prisma.user.findUnique({
+      const numberAlreadyExists = await prisma.user.findFirst({
         where: { number },
       });
 
