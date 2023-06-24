@@ -6,10 +6,14 @@ import jwt from 'jsonwebtoken';
 import Joi from 'joi';
 import validatePasswordString from '../utils/passwordValidator';
 
+
 const adminSchema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().required(),
-});
+  type: Joi.string().required().default('ADMIN'),
+  verifiedEmail: Joi.boolean().required().default(false),
+}).unknown(false);
+
 
 const adminController = {
   createAdmin: async (req: Request, res: Response): Promise<Response> => {
@@ -32,7 +36,7 @@ const adminController = {
       });
     }
 
-    const emailAlreadyExists = await prisma.admin.findFirst({
+    const emailAlreadyExists = await prisma.user.findFirst({
       where: { email },
     });
     if (emailAlreadyExists) {
@@ -50,10 +54,13 @@ const adminController = {
     const hashedPassword = await hashPassword(password);
 
     if (passwordValidationResult) {
-      const admin = await prisma.admin.create({
+      const admin = await prisma.user.create({
         data: {
           email,
           password: hashedPassword,
+          type: "ADMIN",
+          verifiedEmail: false
+                 
         },
       });
 
@@ -75,7 +82,7 @@ const adminController = {
   logInAdmin: async (req: Request, res: Response): Promise<Response> => {
     const { email, password } = req.body;
 
-    const admin = await prisma.admin.findFirst({ where: { email: email } });
+    const admin = await prisma.user.findFirst({ where: { email: email } });
 
     if (!admin) {
       return res.status(StatusCodes.UNAUTHORIZED).json({

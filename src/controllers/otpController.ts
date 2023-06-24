@@ -155,7 +155,7 @@ const OtpController = {
     try {
       const { number } = req.body;
 
-      const user = await prisma.user.findUnique({
+      const user = await prisma.user.findFirst({
         where: {
           number: number,
         },
