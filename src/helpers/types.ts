@@ -19,3 +19,16 @@ export type SendMailDataType = {
   mailBody: string;
   mailAttachments?: string;
 };
+
+
+export type InvitationDataType = {
+  subject: string;
+  invitationLink: string;
+  email: string;
+}
+
+export type PasswordDataType = {
+  subject: string;
+  otp: string;
+  
+}
