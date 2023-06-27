@@ -1,37 +1,61 @@
 import nodemailer, { Transporter } from 'nodemailer';
 
-interface EmailOptions {
-  email: string;
-  subject: string;
-  html: string;
-}
+import { PrepareMailDataType, SendMailDataType } from '../helpers/types';
+import { configs } from '../config';
 
-const sendEmail = async ({ email, subject, html }: EmailOptions): Promise<void> => {
+const sendEmail = async ({
+  senderName,
+  senderEmail,
+  mailRecipients,
+  mailSubject,
+  mailBody,
+}: SendMailDataType) => {
   try {
-  
     const transporter: Transporter = nodemailer.createTransport({
-      host: process.env.HOST,
-      service: process.env.SERVICE,
-      port: 587,
-      secure: true,
+      host: configs.MAIL_HOST,
+      port: 2525,
+      secure: false, // Set secure to false since STARTTLS is used
       auth: {
-        user: process.env.USER,
-        pass: process.env.PASS,
+        user: configs.MAIL_USERNAME,
+        pass: configs.MAIL_PASS,
+      },
+      tls: {
+        ciphers: 'SSLv3',
       },
     });
 
-    await transporter.sendMail({
-      from: `"SWAP SPACE" ${process.env.USER}`,
-      to: email,
-      subject: subject,
-      html: html,
-    });
+    const msg = {
+      from: `${senderName} <${senderEmail}>`,
+      to: mailRecipients,
+      subject: mailSubject,
+      html: mailBody,
+    };
+    await transporter.sendMail(msg);
 
-    console.log('Email sent successfully');
+    console.log('Email sent successfully, from setup');
   } catch (error) {
     console.log('Email not sent');
     console.log(error);
   }
+
+  return { status: 'error', message: 'Failed to send email' };
 };
 
 export default sendEmail;
+
+export const prepareMail = async ({
+  mailRecipients,
+  mailSubject,
+  mailBody,
+  senderName,
+  senderEmail,
+}: PrepareMailDataType) => {
+  const _sendMail: any = await sendEmail({
+    senderName,
+    senderEmail,
+    mailRecipients,
+    mailSubject,
+    mailBody,
+  });
+  return { status: 'error', message: 'Failed to send email' };
+};

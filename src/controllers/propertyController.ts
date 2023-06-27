@@ -5,12 +5,24 @@ import { StatusCodes } from 'http-status-codes';
 import propertySchema from '../utils/propertyValidation';
 import { v2 as cloudinary } from 'cloudinary';
 import { PROPERTY_TYPES, Prisma } from '@prisma/client';
+import { getOrSetCache, clearCache } from '../cache/redisClient';
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.API_KEY,
   api_secret: process.env.API_SECRET,
 });
+
+interface PropertyData {
+  count: number;
+  properties: Array<any>; // Adjust this type as per the structure of your properties array
+}
+
+// Function to fetch fresh data from the database
+async function fetchData(): Promise<PropertyData> {
+  const properties = await prisma.property.findMany();
+  return { count: properties.length, properties };
+}
 
 const propertyController = {
   addProperty: async (req: Request, res: Response): Promise<Response> => {
@@ -145,22 +157,31 @@ const propertyController = {
     }
   },
 
+  // Usage in getAllProperty function
   getAllProperty: async (req: Request, res: Response): Promise<Response> => {
     try {
-      const properties = await prisma.property.findMany();
+      const cacheKey = 'allProperties';
 
-      if (properties.length === 0) {
-        return res
-          .status(StatusCodes.NOT_FOUND)
-          .json({ message: ' No properties found' });
+      const cachedData = (await getOrSetCache(
+        cacheKey,
+        fetchData
+      )) as PropertyData; // Type assertion
+
+      if (cachedData.properties.length === 0) {
+        // The cache is empty, so fetch fresh data from the database
+        const freshData = await fetchData();
+
+        // Store the fresh data in the cache
+        await getOrSetCache(cacheKey, () => freshData);
+
+        // Return the fresh data
+        return res.status(StatusCodes.OK).json(freshData);
+      } else {
+        // The cache is not empty, so return the cached data
+        return res.status(StatusCodes.OK).json(cachedData);
       }
-
-      return res.status(StatusCodes.OK).json({
-        count: properties.length,
-        properties,
-      });
     } catch (error) {
-      console.error('Error retrieving users:', error);
+      console.error('Error retrieving properties:', error);
       return res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ error: 'Failed to retrieve properties' });
@@ -326,31 +347,39 @@ const propertyController = {
   },
 
   getOneProperty: async (req: Request, res: Response) => {
+    const { id } = req.params;
+  
     try {
-      const { id } = req.params;
-
-      const property = await prisma.property.findFirst({
+      const propertyId = await prisma.property.findFirst({
         where: {
           id: id,
         },
       });
-
-      if (!property) {
+  
+      if (!propertyId) {
         return res.status(StatusCodes.NOT_FOUND).json({
           message: 'Property not found',
         });
       }
-
+  
+      const property = await getOrSetCache(id, async () => {
+        const data = await prisma.property.findUnique({
+          where: { id: id },
+        });
+        return data;
+      });
+  
       return res.status(StatusCodes.OK).json({
-        message: 'Fatched',
+        message: 'Fetched',
         property,
       });
     } catch (error) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: 'Failed to fatch property',
+        message: 'Failed to fetch property',
       });
     }
   },
+  
 
   deleteProperty: async (req: Request, res: Response) => {
     try {

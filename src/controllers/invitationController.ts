@@ -25,7 +25,7 @@ const invitationController = {
       `,
     };
     console.log(invitationLink);
-    await sendEmail(emailOptions);
+   // await sendEmail(emailOptions);
 
     return res.status(StatusCodes.CREATED).json({
       message: 'Invitation sent successfully',

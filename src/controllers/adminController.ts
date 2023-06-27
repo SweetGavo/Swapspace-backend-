@@ -6,14 +6,12 @@ import jwt from 'jsonwebtoken';
 import Joi from 'joi';
 import validatePasswordString from '../utils/passwordValidator';
 
-
 const adminSchema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().required(),
   type: Joi.string().required().default('ADMIN'),
   verifiedEmail: Joi.boolean().required().default(false),
 }).unknown(false);
-
 
 const adminController = {
   createAdmin: async (req: Request, res: Response): Promise<Response> => {
@@ -58,19 +56,17 @@ const adminController = {
         data: {
           email,
           password: hashedPassword,
-          type: "ADMIN",
-          verifiedEmail: false
-                 
+        },
+        select: {
+          id: true,
+          email: true,
+          type: true,
         },
       });
-
+      
       return res.status(StatusCodes.OK).json({
         message: `Admin created successfully`,
-        admin: {
-          id: admin.id,
-          email: admin.email,
-          type: admin.type,
-        },
+        data: admin,
       });
     } else {
       return res.status(StatusCodes.BAD_REQUEST).json({
