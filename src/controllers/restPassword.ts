@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import prisma from "../DB/prisma";
 import { StatusCodes } from "http-status-codes";
 import { Request, Response } from "express";
-import randaomGeneratorId from "../utils/otpGenerator";
+import generateOTP from "../utils/otpGenerator";
 import getOtpExpiryTime from "../utils/timeGenerator";
 import sendEmail from "../utils/sendEmail";
 
@@ -24,7 +24,7 @@ const passwordController = {
         });
       }
 
-      const otp = randaomGeneratorId;
+      const otp = generateOTP();
       const otp_expiry = getOtpExpiryTime();
 
      
@@ -66,7 +66,7 @@ const passwordController = {
       };
 
       // Send the OTP to the user's email using the sendEmail function
-      await sendEmail(emailOptions);
+      //await sendEmail(emailOptions);
       return res.status(StatusCodes.OK).json({
         message: "OTP sent to your email",
       });

@@ -1,13 +1,14 @@
+import otpGenerator from 'otp-generator';
 
+const generateOTP = () => {
+  const OTP = otpGenerator.generate(6, {
+    digits: true,
+    upperCaseAlphabets: false,
+    lowerCaseAlphabets: false,
+    specialChars: false,
+  });
 
-const randaomGeneratorId = () => {
-     const generateCode =  `${Math.random()}`.substring(2, 8);
-     return generateCode;
-   
-   }
+  return OTP;
+};
 
-  
-   export default  
-    randaomGeneratorId();
-    
-   
+export default generateOTP;

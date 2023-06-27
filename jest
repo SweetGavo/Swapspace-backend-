@@ -1,0 +1,89 @@
+
+//     // Tests that email is sent successfully with valid input
+//     it('test_successful_email', async () => {
+//       const emailOptions = {
+//         email: 'test@example.com',
+//         subject: 'Test Email',
+//         html: '<p>This is a test email</p>'
+//       };
+//       const sendMailMock = jest.fn();
+//       const transporterMock = {
+//         sendMail: sendMailMock
+//       };
+//       jest.mock('nodemailer', () => ({
+//         createTransport: () => transporterMock
+//       }));
+
+//       await sendEmail(emailOptions);
+
+//       expect(sendMailMock).toHaveBeenCalledWith({
+//         from: '"SWAP SPACE" ' + process.env.USER,
+//         to: emailOptions.email,
+//         subject: emailOptions.subject,
+//         html: emailOptions.html
+//       });
+//     });
+
+//     // Tests that an error is thrown with invalid email input
+//     it('test_invalid_email_input', async () => {
+//       const emailOptions = {
+//         email: 'invalidemail',
+//         subject: 'Test Email',
+//         html: '<p>This is a test email</p>'
+//       };
+
+//       await expect(sendEmail(emailOptions)).rejects.toThrow();
+//     });
+
+//     // Tests that an error is thrown with invalid subject input
+//     it('test_invalid_subject_input', async () => {
+//       const emailOptions = {
+//         email: 'test@example.com',
+//         subject: '',
+//         html: '<p>This is a test email</p>'
+//       };
+
+//       await expect(sendEmail(emailOptions)).rejects.toThrow();
+//     });
+
+//     // Tests that an error is thrown with invalid html input
+//     it('test_invalid_html_input', async () => {
+//       const emailOptions = {
+//         email: 'test@example.com',
+//         subject: 'Test Email',
+//         html: ''
+//       };
+
+//       await expect(sendEmail(emailOptions)).rejects.toThrow();
+//     });
+
+//     // Tests that an error is thrown with missing email, subject, or html input
+//     it('test_missing_input', async () => {
+//       const emailOptions = {
+//         email: '',
+//         subject: 'Test Email',
+//         html: '<p>This is a test email</p>'
+//       };
+
+//       await expect(sendEmail(emailOptions)).rejects.toThrow();
+//     });
+
+//     // Tests that an error is thrown with missing MAIL_HOST, MAIL_USERNAME, or MAIL_PASS environment variables
+//     it("test_missing_env_variables",async () => {
+//       const emailOptions: EmailOptions = {
+//         email: 'test@example.com',
+//         subject: 'Test Email',
+//         html: '<p>This is a test email</p>',
+//       };
+
+//       const originalEnv = { ...process.env };
+//       delete process.env.MAIL_HOST;
+//       delete process.env.MAIL_USERNAME;
+//       delete process.env.MAIL_PASS;
+
+//       try {
+//         await expect(sendEmail(emailOptions)).rejects.toThrow();
+//       } finally {
+//         process.env = originalEnv;
+//       }
+//     })

@@ -1,12 +1,14 @@
-import bcrypt from "bcryptjs";
-import prisma from "../DB/prisma";
-import { StatusCodes } from "http-status-codes";
-import { Request, Response } from "express";
-import randaomGeneratorId from "../utils/otpGenerator";
-import getOtpExpiryTime from "../utils/timeGenerator";
-import sendEmail from "../utils/sendEmail";
-import request from "request";
+import bcrypt from 'bcryptjs';
+import prisma from '../DB/prisma';
+import { StatusCodes } from 'http-status-codes';
+import { Request, Response } from 'express';
+import generateOTP from '../utils/otpGenerator';
+import getOtpExpiryTime from '../utils/timeGenerator';
+import { prepareMail } from '../utils/sendEmail';
+import request from 'request';
 import cron from 'node-cron';
+import { otptem } from '../mailer/optTemplate';
+import { configs } from '../config';
 
 const checkIfOtpHasExpired = (otp_expiry: Date): boolean => {
   const currentTime = new Date().getTime();
@@ -29,11 +31,11 @@ const OtpController = {
 
       if (!user) {
         return res.status(StatusCodes.NOT_FOUND).json({
-          message: "User not found",
+          message: 'User not found',
         });
       }
 
-      const otp = randaomGeneratorId;
+      const otp = generateOTP();
       const otp_expiry = getOtpExpiryTime();
 
       // const salt = await bcrypt.genSalt(16);
@@ -66,25 +68,32 @@ const OtpController = {
         });
       }
 
+      const mail = user.email;
+
+      console.log(mail);
+
       console.log(createdOtp, otp);
 
-      const emailOptions = {
-        email: user.email,
-        subject: "Verify Your Email with your OTP",
-        html: `<p>Enter <b>${otp}</b> in the app to verify your email address and complete your registration.</p>
-          <p>This code <b>expires in 5 minutes</b>.</p>`,
-      };
+      const mailSubject = 'OTP';
+      const mailBody1 = `${otp}`;
+      const mailBodyPromise = otptem({ subject: mailSubject, otp: mailBody1 });
+      const mailBody = await mailBodyPromise;
 
-      // Send the OTP to the user's email using the sendEmail function
-      await sendEmail(emailOptions);
+      await prepareMail({
+        mailRecipients: user.email,
+        mailSubject: mailSubject,
+        mailBody: mailBody,
+        senderName: configs.SENDERS_NAME,
+        senderEmail: configs.SENDERS_EMAIL,
+      });
 
       return res.status(StatusCodes.OK).json({
-        message: "OTP sent to your email",
+        message: 'OTP sent to your email',
       });
     } catch (error) {
       console.error(error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: "Failed to send OTP",
+        message: 'Failed to send OTP',
         error: error,
       });
     }
@@ -93,13 +102,14 @@ const OtpController = {
   verifyOtpEmail: async (req: Request, res: Response): Promise<Response> => {
     try {
       const { userId, otp } = req.body;
-  
+
       if (!userId || !otp) {
         return res.status(StatusCodes.BAD_REQUEST).json({
-          message: "Empty OTP details are not allowed",
+          message: 'Empty OTP details are not allowed',
         });
-      }597702
-  
+      }
+      597702;
+
       const otpInstance = await prisma.otp.findFirst({
         where: {
           userId,
@@ -109,13 +119,12 @@ const OtpController = {
           user: true,
         },
       });
-  if(otpInstance == null) {
-    return res.status(StatusCodes.UNAUTHORIZED).json({
-      message: "Invalid OTP",
-    });
-  }
-     
-  
+      if (otpInstance == null) {
+        return res.status(StatusCodes.UNAUTHORIZED).json({
+          message: 'Invalid OTP',
+        });
+      }
+
       await prisma.$transaction([
         prisma.user.update({
           where: {
@@ -131,22 +140,19 @@ const OtpController = {
           },
         }),
       ]);
-  
+
       return res.status(StatusCodes.OK).json({
-        status: "VERIFIED",
-        message: "Email verified successfully",
+        status: 'VERIFIED',
+        message: 'Email verified successfully',
       });
     } catch (error) {
       console.error(error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: "Failed to verify OTP",
+        message: 'Failed to verify OTP',
         error: error,
       });
     }
   },
-  
-  
-  
 
   sendOtpToPhone: async (
     req: Request,
@@ -163,14 +169,13 @@ const OtpController = {
 
       if (!user) {
         return res.status(StatusCodes.NOT_FOUND).json({
-          message: "User not found",
+          message: 'User not found',
         });
       }
 
-      const otp = randaomGeneratorId;
+      const otp = generateOTP();
       const otpExpiry = getOtpExpiryTime();
 
-      
       let createdOtp;
 
       const existingOtp = await prisma.otp.findFirst({
@@ -199,23 +204,23 @@ const OtpController = {
         });
       }
 
-      console.log("Phone OTP:", createdOtp);
+      console.log('Phone OTP:', createdOtp);
       console.log(otp);
       // Send the OTP to PHONE NUMBER (implementation not included).
 
       var options = {
-        method: "POST",
-        url: "https://api.sendchamp.com/api/v1/sms/send",
+        method: 'POST',
+        url: 'https://api.sendchamp.com/api/v1/sms/send',
         headers: {
-          Accept: "application/json",
+          Accept: 'application/json',
           Authorization: `Bearer ${process.env.ACCESS_KEY}`,
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           to: [user.number],
           message: `Hi this is your OTP it expires in 5 Minutes ${otp}`,
-          sender_name: "Sendchamp",
-          route: "non_dnd",
+          sender_name: 'Sendchamp',
+          route: 'non_dnd',
         }),
       };
 
@@ -231,13 +236,13 @@ const OtpController = {
       });
 
       return res.status(StatusCodes.OK).json({
-        message: "OTP sent to your phone number",
+        message: 'OTP sent to your phone number',
       });
     } catch (error) {
       console.error(error);
 
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: "Failed to send OTP",
+        message: 'Failed to send OTP',
         error: error,
       });
     }
@@ -249,7 +254,7 @@ const OtpController = {
 
       if (!userId || !otp) {
         return res.status(StatusCodes.BAD_REQUEST).json({
-          message: "Empty OTP details are not allowed",
+          message: 'Empty OTP details are not allowed',
         });
       }
 
@@ -262,7 +267,7 @@ const OtpController = {
 
       if (!otpInstance) {
         return res.status(StatusCodes.BAD_REQUEST).json({
-          message: "Invalid OTP",
+          message: 'Invalid OTP',
         });
       }
 
@@ -276,7 +281,7 @@ const OtpController = {
         });
 
         return res.status(StatusCodes.BAD_REQUEST).json({
-          message: "OTP has expired",
+          message: 'OTP has expired',
         });
       }
 
@@ -296,18 +301,18 @@ const OtpController = {
       });
 
       return res.status(StatusCodes.OK).json({
-        status: "VERIFIED",
-        message: "Phone Number verified successfully",
+        status: 'VERIFIED',
+        message: 'Phone Number verified successfully',
       });
     } catch (error) {
       console.error(error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: "Failed to verify OTP",
+        message: 'Failed to verify OTP',
         error: error,
       });
     }
   },
-   removeExpiredOtps:  async () => {
+  removeExpiredOtps: async () => {
     try {
       // Find expired OTPs and delete them
       const expiredOtps = await prisma.otp.findMany({
@@ -317,7 +322,7 @@ const OtpController = {
           },
         },
       });
-  
+
       await prisma.otp.deleteMany({
         where: {
           id: {
@@ -325,18 +330,13 @@ const OtpController = {
           },
         },
       });
-  
+
       console.log('Expired OTPs removed successfully.');
     } catch (error) {
       console.error('Failed to remove expired OTPs:', error);
     }
-
-  }
-
-  
-
+  },
 };
-
 
 cron.schedule('59 23 * * *', () => {
   OtpController.removeExpiredOtps();
