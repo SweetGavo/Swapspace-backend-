@@ -18,5 +18,6 @@ export const configs =  {
      MAIL_USERNAME:process.env.MAIL_USERNAME,
      MAIL_PASS:process.env.MAIL_PASS,
      SENDERS_NAME:process.env.SENDERS_NAME || 'SWAP SPACE',
-     SENDERS_EMAIL:process.env.SENDERS_EMAIL || 'dev@swapspace.live'
+     SENDERS_EMAIL:process.env.SENDERS_EMAIL || 'dev@swapspace.live',
+     URL: process.env.URL
 }

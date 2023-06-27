@@ -1,13 +1,15 @@
 import { Request, Response } from 'express';
 import prisma from '../DB/prisma';
 import { StatusCodes } from 'http-status-codes';
-import sendEmail from '../utils/sendEmail';
+import { prepareMail } from '../utils/sendEmail';
+import { configs } from '../config';
+import { InvitationTemp } from '../mailer/invitationTemplate';
 
 const invitationController = {
   inviteTeamMember: async (req: Request, res: Response): Promise<Response> => {
     const { email, realtorId } = req.body;
 
-    await prisma.invitation.create({
+    const invite = await prisma.invitation.create({
       data: {
         email,
         realtorId,
@@ -15,7 +17,7 @@ const invitationController = {
     });
 
     // Generate the invitation link using the invitation token
-    const invitationLink = `http://localhost:6001/api/v1/auth/co-realtor/signup`;
+    const invitationLink = `${configs.URL}/auth/co-realtor/signup`;
 
     const emailOptions = {
       email: email,
@@ -25,12 +27,31 @@ const invitationController = {
       `,
     };
     console.log(invitationLink);
-   // await sendEmail(emailOptions);
+
+    const mailSubject = 'INVITATION';
+    const mailBody1 = `${invitationLink}`;
+    const mailBody2 = `${email}`;
+    const mailBodyPromise = InvitationTemp({
+      subject: mailSubject,
+      email: mailBody2,
+      invitationLink: mailBody1,
+    });
+    const mailBody = await mailBodyPromise;
+
+    await prepareMail({
+      mailRecipients: invite.email,
+      mailSubject: mailSubject,
+      mailBody: mailBody,
+      senderName: configs.SENDERS_NAME,
+      senderEmail: configs.SENDERS_EMAIL,
+    });
 
     return res.status(StatusCodes.CREATED).json({
       message: 'Invitation sent successfully',
+      invite,
     });
   },
 };
 
 export default invitationController;
+//invite

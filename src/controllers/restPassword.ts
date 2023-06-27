@@ -1,11 +1,12 @@
-import bcrypt from "bcryptjs";
-import prisma from "../DB/prisma";
-import { StatusCodes } from "http-status-codes";
-import { Request, Response } from "express";
-import generateOTP from "../utils/otpGenerator";
-import getOtpExpiryTime from "../utils/timeGenerator";
-import sendEmail from "../utils/sendEmail";
-
+import bcrypt from 'bcryptjs';
+import prisma from '../DB/prisma';
+import { StatusCodes } from 'http-status-codes';
+import { Request, Response } from 'express';
+import generateOTP from '../utils/otpGenerator';
+import getOtpExpiryTime from '../utils/timeGenerator';
+import { prepareMail } from '../utils/sendEmail';
+import { passwordTem } from '../mailer/resetpasswordtemplate';
+import { configs } from '../config';
 
 const passwordController = {
   forgetPassword: async (req: Request, res: Response): Promise<Response> => {
@@ -20,14 +21,13 @@ const passwordController = {
 
       if (!user) {
         return res.status(StatusCodes.NOT_FOUND).json({
-          message: "User not found",
+          message: 'User not found',
         });
       }
 
       const otp = generateOTP();
       const otp_expiry = getOtpExpiryTime();
 
-     
       let createdOtp;
 
       const existingOtp = await prisma.otp.findFirst({
@@ -57,22 +57,30 @@ const passwordController = {
       }
 
       console.log(createdOtp, otp);
+      
 
-      const emailOptions = {
-        email: user.email,
-        subject: "Reset your password",
-        html: `<p>Enter <b>${otp}</b> in the app to reset your password.</p>
-                 <p>This code <b>expires in 5 minutes</b>.</p>`,
-      };
-
-      // Send the OTP to the user's email using the sendEmail function
-      //await sendEmail(emailOptions);
+      const mailSubject = 'PASSWORD RESET';
+      const mailBody1 = `${otp}`;
+      const mailBodyPromise = passwordTem({
+        subject: mailSubject,
+        otp: mailBody1,
+      });
+      const mailBody = await mailBodyPromise;
+      
+      await prepareMail({
+        mailRecipients: user.email,
+        mailSubject: mailSubject,
+        mailBody: mailBody,
+        senderName: configs.SENDERS_NAME,
+        senderEmail: configs.SENDERS_EMAIL,
+      });
+     
       return res.status(StatusCodes.OK).json({
-        message: "OTP sent to your email",
+        message: 'OTP sent to your email',
       });
     } catch (error) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: "Something Went wrong",
+        message: 'Something Went wrong',
         error: error,
       });
     }
@@ -84,7 +92,7 @@ const passwordController = {
 
       if (!userId || !otp || !newpassword) {
         return res.status(StatusCodes.BAD_REQUEST).json({
-          message: "Empty OTP details are not allowed",
+          message: 'Empty OTP details are not allowed',
         });
       }
 
@@ -94,7 +102,7 @@ const passwordController = {
 
       if (!user) {
         return res.status(StatusCodes.NOT_FOUND).json({
-          message: "User not found",
+          message: 'User not found',
         });
       }
 
@@ -110,7 +118,7 @@ const passwordController = {
 
       if (!otpInstance) {
         return res.status(StatusCodes.UNAUTHORIZED).json({
-          message: "Invalid OTP",
+          message: 'Invalid OTP',
         });
       }
 
@@ -127,7 +135,7 @@ const passwordController = {
         ]);
 
         return res.status(StatusCodes.BAD_REQUEST).json({
-          message: "OTP has expired",
+          message: 'OTP has expired',
         });
       }
 
@@ -139,13 +147,15 @@ const passwordController = {
         }),
       ]);
 
+      //TODO: send mail
+
       return res.status(StatusCodes.OK).json({
-        message: "Password reset successful",
+        message: 'Password reset successful',
       });
     } catch (error) {
       console.error(error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: "Something went wrong",
+        message: 'Something went wrong',
         error: error,
       });
     }
