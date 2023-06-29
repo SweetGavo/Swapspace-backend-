@@ -10,7 +10,7 @@ router
 .post(authController.createUser)
 
 router
-.route('/login')
+.route('/users/login')
 .post(authController.loginUser)
 
 
@@ -21,6 +21,11 @@ router
 router
 .route('/signup/agent')
 .post(authController.createAgent)
+
+
+router
+.route('/relators/login')
+.post(authController.loginRealtor)
 
 
 
