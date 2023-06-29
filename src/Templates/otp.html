@@ -15,27 +15,68 @@
       max-width: 100%;
     }
 
-    #callout {
-               float: center;
-               margin: auto;
-               height: 4vh;
-               display: flex;
-               align-items: center;
-               justify-content: center;
-               position: relative;
-               
-               
-          }
+    #type {
+      float: left;
+      margin: 0px;
+      height: 30vh;
+      display: flex;
+      align-items: left;
+      justify-content: left;
+      position: relative;
+      left: -5px;
+      top: -50px;
+      left: -20px;
+      list-style-type: none;
 
-          .social {
-               margin: auto;
-               height: 4vh;
-               display: flex;
-               align-items: center;
-               justify-content: center;
-               position: relative;
-               
-          }
+    }
+
+    .store {
+      float: left;
+      margin: 0px;
+      height: 30vh;
+      display: flex;
+      align-items: left;
+      justify-content: left;
+      position: relative;
+      
+       top: -60px; 
+      left: -35px;
+      list-style-type: none;
+    }
+
+    #callout {
+      float: center;
+      margin-left: 100px;
+      height: 4vh;
+      display: flex;
+      align-items: left;
+      justify-content: center;
+      position: relative;
+      right: -5px;
+      border-bottom: -80px;
+      list-style-type: none;
+       top: 115px; 
+      width: 450px;
+    }
+
+    .social {
+      margin-left: 100px;
+      height: 4vh;
+      display: flex;
+      align-items: left;
+      justify-content: center;
+      position: relative;
+      right: -5px;
+      top: -80px;
+      list-style-type: none;
+      /* top: -10px; */
+      width: 450px;
+
+    }
+
+    li {
+  padding: 10px;
+}
 
     body {
       background-color: #f6f6f6;
@@ -358,10 +399,10 @@
 </head>
 
 <body class="">
-  <div style="text-align: center;">
+  <div style=" justify-content: center;text-align: center;  display: flex;position: relative; top: 18px;">
     <img
-      src="https://res.cloudinary.com/daewfkfzs/image/upload/v1664367572/ipaybtc/IpayBTC_White_Logo-02_1_1_mi2fzq.png"
-      width="150" alt="" srcset="">
+      src="https://res.cloudinary.com/dlh65ewsl/image/upload/v1687964296/ps_ceo_logo_1_tirnc0.svg"
+      width="70" alt="" srcset="">
   </div>
   <div class="content">
     <table border="0" cellpadding="0" cellspacing="0" class="body">
@@ -379,9 +420,11 @@
                     <tr>
                       <td>
 
-                        <h2>Hello Dear Swappes</h2>
-                        <h3>Verify your email. To continue, please use the short code below. </h3>
-                        <h3>{{OTP}}</h3>
+                        <h2>Hello </h2>
+                        <h3>You have been invited, has a co-realtor click on the link below to start your registration. </h3>
+                        <h3>${invitationLink}</h3>
+                        <h3>Use this email to complete your registration</h3>
+                        <h3>${email}</h3>
                         <h5>If you have any questions, simply reply this email. We’d love to help. </h5>
 
                         <h5>If you didn’t request this email, there’s is nothing to worry about - you can safely ignore
@@ -389,8 +432,8 @@
                        
                         
                         <h4>Have any questions about  <a
-                          href="https://ipaybtc.app/">iPayBTC.</a>  Drop us a note at  <a
-                          href="https://help@ipayBTC.com/">help@iPayBTC.com</a>   We are glad
+                          href="https://swapspace.live/">swapspace.</a>  Drop us a note at  <a
+                          href="https://dev@swapspace.live/">dev@swapspace.live</a>   We are glad
                           that you are here</h4>
                         <h4>If you did not initiate this please ignore this email.</h4>
                         <table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
@@ -411,27 +454,36 @@
                           <!-- <p>If you received this email by mistake, simply delete it. You won't be subscribed if you don't click the confirmation link above.</p> -->
                           <div style="text-align: left;">
                             <img
-                              src="https://res.cloudinary.com/daewfkfzs/image/upload/v1664367572/ipaybtc/IpayBTC_White_Logo-02_1_1_mi2fzq.png"
+                              src="https://res.cloudinary.com/dlh65ewsl/image/upload/v1687964296/ps_ceo_logo_1_tirnc0.svg"
                               width="150" alt="" srcset="">
 
                               <div id="callout">
                                 <ul class="social">
                                      <li><a href="https://facebook.com"
-                                               target="_blank"><img src="">
+                                               target="_blank"><img src="https://res.cloudinary.com/dlh65ewsl/image/upload/v1687968932/Facebook_a74oaj.svg">
                                           </a></li>
                                      <li><a href="https://instagram.com"
-                                               target="_blank"><img src="">
+                                               target="_blank"><img src="https://res.cloudinary.com/dlh65ewsl/image/upload/v1687968878/IG_1_huqjwo.svg">
                                           </a></li>
                                      <li><a href="https://twitter.com"
-                                               target="_blank"><img src="">
+                                               target="_blank"><img src="https://res.cloudinary.com/dlh65ewsl/image/upload/v1687968709/Twitter_yakdir.svg">
                                           </a></li>
 
                                      <li><a href="https://wa.me/07030762738"
-                                               target="_blank"><img src="">
+                                               target="_blank"><img src="https://res.cloudinary.com/dlh65ewsl/image/upload/v1687968709/Whatsapp_1_h9hg2e.svg">
                                           </a></li>
                                 </ul>
 
                            </div>
+                           <div id="type">
+                            <ul class="store">
+                              <li><a href="https://play.google.com" target="_blank"><img src="https://res.cloudinary.com/dlh65ewsl/image/upload/v1687969017/Playstore_1_m1nfvl.svg">
+                                </a></li>
+                              <li><a href="https://www.apple.com/app-store/" target="_blank"><img src="https://res.cloudinary.com/dlh65ewsl/image/upload/v1687968911/Appstore_thvtis.svg">
+                                </a></li>
+
+                            </ul>
+                          </div>
                           </div>
                       </td>
                     </tr>
@@ -453,7 +505,7 @@
                 </tr>
                 <tr>
                   <td class="content-block powered-by">
-                    Powered by <a href="https://ipaybtc.app/">iPayBTC.</a>.
+                    Powered by <a href="https://swapspace.live/">swapspace.</a>.
                   </td>
                 </tr>
               </table>

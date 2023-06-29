@@ -1,0 +1,636 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Simple Transaction </title>
+  <style>
+    /* -------------------------------------
+          GLOBAL RESETS
+      ------------------------------------- */
+    img {
+      border: none;
+      -ms-interpolation-mode: bicubic;
+      max-width: 100%;
+    }
+
+
+
+    #p2 {
+      position: relative;
+      /* top: -18px; */
+    }
+
+
+    #p3 {
+      position: relative;
+      /* top: -18px; */
+    }
+
+    .save {
+       position: relative;
+       top: -20px;  
+    }
+
+    #rec{
+      position: relative;
+      top: -30px;
+      
+    }
+    #snd{
+      position: relative; 
+       top: -40px;
+    }
+
+
+    #box {
+      border: 5px solid;
+      width: 450px;
+      height: 8px;
+      background-color: rgb(9, 9, 77);
+      text-align: center;
+      color: white;
+      padding: 20px;
+      font-weight: bold;
+      position: relative; 
+      top: -40px;
+    }
+
+
+
+
+    #type {
+      float: left;
+      margin: 0px;
+      height: 30vh;
+      display: flex;
+      align-items: left;
+      justify-content: left;
+      position: relative;
+      left: -5px;
+      top: -50px;
+      left: -20px;
+      list-style-type: none;
+
+    }
+
+    .store {
+      float: left;
+      margin: 0px;
+      height: 30vh;
+      display: flex;
+      align-items: left;
+      justify-content: left;
+      position: relative;
+      
+       top: -60px; 
+      left: -35px;
+      list-style-type: none;
+    }
+
+    #callout {
+      float: center;
+      margin-left: 100px;
+      height: 4vh;
+      display: flex;
+      align-items: left;
+      justify-content: center;
+      position: relative;
+      right: -5px;
+      border-bottom: -80px;
+      list-style-type: none;
+       top: 115px; 
+      width: 450px;
+    }
+
+    .social {
+      margin-left: 100px;
+      height: 4vh;
+      display: flex;
+      align-items: left;
+      justify-content: center;
+      position: relative;
+      right: -5px;
+      top: -80px;
+      list-style-type: none;
+      /* top: -10px; */
+      width: 450px;
+
+    }
+    li {
+  padding: 10px;
+}
+
+
+
+
+
+
+
+    body {
+      background-color: #f6f6f6;
+      font-family: sans-serif;
+      -webkit-font-smoothing: antialiased;
+      font-size: 14px;
+      line-height: 1.4;
+      margin: 0;
+      padding: 0;
+      -ms-text-size-adjust: 100%;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    table {
+      border-collapse: separate;
+      mso-table-lspace: 0pt;
+      mso-table-rspace: 0pt;
+      width: 100%;
+    }
+
+    table td {
+      font-family: sans-serif;
+      font-size: 14px;
+      vertical-align: top;
+    }
+
+    /* -------------------------------------
+          BODY & CONTAINER
+      ------------------------------------- */
+    .body {
+      background-color: #f6f6f6;
+      width: 100%;
+    }
+
+    /* Set a max-width, and make it display as block so it will automatically stretch to that width, but will also shrink down on a phone or something */
+    .container {
+      display: block;
+      Margin: 0 auto !important;
+      /* makes it centered */
+      max-width: 580px;
+      padding: 10px;
+      width: 580px;
+    }
+
+    /* This should also be a block element, so that it will fill 100% of the .container */
+    .content {
+      box-sizing: border-box;
+      display: block;
+      Margin: 0 auto;
+      max-width: 580px;
+      padding: 10px;
+    }
+
+    /* -------------------------------------
+          HEADER, FOOTER, MAIN
+      ------------------------------------- */
+    .main {
+      background: #fff;
+      border-radius: 3px;
+      width: 100%;
+    }
+
+    .wrapper {
+      box-sizing: border-box;
+      padding: 20px;
+    }
+
+    .footer {
+      clear: both;
+      padding-top: 10px;
+      text-align: center;
+      width: 100%;
+      
+    }
+
+    .footer td,
+    .footer p,
+    .footer span,
+    .footer a {
+      color: #999999;
+      font-size: 12px;
+      text-align: left;
+      
+    }
+
+    /* -------------------------------------
+          TYPOGRAPHY
+      ------------------------------------- */
+    h1,
+    h2,
+    h3,
+    h4 {
+      color: #000000;
+      font-family: sans-serif;
+      font-weight: 400;
+      line-height: 1.4;
+      margin: 0;
+      Margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 35px;
+      font-weight: 300;
+      text-align: center;
+      text-transform: capitalize;
+    }
+
+    p,
+    ul,
+    ol {
+      font-family: sans-serif;
+      font-size: 14px;
+      font-weight: normal;
+      margin: 0;
+      Margin-bottom: 15px;
+    }
+
+    p li,
+    ul li,
+    ol li {
+      list-style-position: inside;
+      margin-left: 5px;
+    }
+
+    a {
+      color: #3498db;
+      text-decoration: underline;
+    }
+
+    /* -------------------------------------
+          BUTTONS
+      ------------------------------------- */
+    .btn {
+      box-sizing: border-box;
+      width: 100%;
+    }
+
+    .btn>tbody>tr>td {
+      padding-bottom: 15px;
+    }
+
+    .btn table {
+      width: auto;
+    }
+
+    .btn table td {
+      background-color: #ffffff;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    .btn a {
+      background-color: #ffffff;
+      border: solid 1px #3498db;
+      border-radius: 5px;
+      box-sizing: border-box;
+      color: #3498db;
+      cursor: pointer;
+      display: inline-block;
+      font-size: 14px;
+      font-weight: bold;
+      margin: 0;
+      padding: 12px 25px;
+      text-decoration: none;
+      text-transform: capitalize;
+    }
+
+    .btn-primary table td {
+      background-color: #3498db;
+    }
+
+    .btn-primary a {
+      background-color: #3498db;
+      border-color: #3498db;
+      color: #ffffff;
+    }
+
+    /* -------------------------------------
+          OTHER STYLES THAT MIGHT BE USEFUL
+      ------------------------------------- */
+    .last {
+      margin-bottom: 0;
+    }
+
+    .first {
+      margin-top: 0;
+    }
+
+    .align-center {
+      text-align: center;
+    }
+
+    .align-right {
+      text-align: right;
+    }
+
+    .align-left {
+      text-align: left;
+    }
+
+    .clear {
+      clear: both;
+    }
+
+    .mt0 {
+      margin-top: 0;
+    }
+
+    .mb0 {
+      margin-bottom: 0;
+    }
+
+    .preheader {
+      color: transparent;
+      display: none;
+      height: 0;
+      max-height: 0;
+      max-width: 0;
+      opacity: 0;
+      overflow: hidden;
+      mso-hide: all;
+      visibility: hidden;
+      width: 0;
+    }
+
+    .powered-by a {
+      text-decoration: none;
+    }
+
+    hr {
+      border: 0;
+      border-bottom: 1px solid #f6f6f6;
+      Margin: 20px 0;
+    }
+
+    /* -------------------------------------
+          RESPONSIVE AND MOBILE FRIENDLY STYLES
+      ------------------------------------- */
+    @media only screen and (max-width: 620px) {
+      table[class=body] h1 {
+        font-size: 28px !important;
+        margin-bottom: 10px !important;
+      }
+
+      table[class=body] p,
+      table[class=body] ul,
+      table[class=body] ol,
+      table[class=body] td,
+      table[class=body] span,
+      table[class=body] a {
+        font-size: 16px !important;
+      }
+
+      table[class=body] .wrapper,
+      table[class=body] .article {
+        padding: 10px !important;
+      }
+
+      table[class=body] .content {
+        padding: 0 !important;
+      }
+
+      table[class=body] .container {
+        padding: 0 !important;
+        width: 100% !important;
+      }
+
+      table[class=body] .main {
+        border-left-width: 0 !important;
+        border-radius: 0 !important;
+        border-right-width: 0 !important;
+      }
+
+      table[class=body] .btn table {
+        width: 100% !important;
+      }
+
+      table[class=body] .btn a {
+        width: 100% !important;
+      }
+
+      table[class=body] .img-responsive {
+        height: auto !important;
+        max-width: 100% !important;
+        width: auto !important;
+      }
+    }
+
+    @media all {
+      .ExternalClass {
+        width: 100%;
+      }
+
+      .ExternalClass,
+      .ExternalClass p,
+      .ExternalClass span,
+      .ExternalClass font,
+      .ExternalClass td,
+      .ExternalClass div {
+        line-height: 100%;
+      }
+
+      .apple-link a {
+        color: inherit !important;
+        font-family: inherit !important;
+        font-size: inherit !important;
+        font-weight: inherit !important;
+        line-height: inherit !important;
+        text-decoration: none !important;
+      }
+
+      .btn-primary table td:hover {
+        background-color: #34495e !important;
+      }
+
+      .btn-primary a:hover {
+        background-color: #34495e !important;
+        border-color: #34495e !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="">
+     <div style="justify-content: center;
+     align-items: center;  display: flex;position: relative; top: 10px;">
+       <img src="https://res.cloudinary.com/daewfkfzs/image/upload/v1664367572/ipaybtc/IpayBTC_White_Logo-02_1_1_mi2fzq.png"
+            width="150" alt="" srcset="">
+   </div>
+  <div class="content">
+    <table border="0" cellpadding="0" cellspacing="0" class="body">
+      <tr>
+        <td>&nbsp;</td>
+        <td class="container">
+          <div class="content">
+            <span class="preheader">Subscribe to Coloured.com.ng mailing list</span>
+            <table class="main">
+
+              <!-- START MAIN CONTENT AREA -->
+              <tr>
+                <td class="wrapper">
+                  <table border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <div>
+                        <h2 style="font-size: 1.5em;">Hello {{name}},</h2>
+                        <p> <b>{{value}} {{asset}}</b> transaction successfully sent.</p>
+
+                        <p><b> Details Below: </b></p>
+
+                        <p><b> Hash:</b> {{txhash}}</p>
+
+                        <p><b> Destination address:</b> {{destination_address}}</p>
+
+                        <p><b> Value: </b> {{value}}</p>
+
+                        <p><b> Asset: </b> {{asset}}</p>
+
+                        <p><b> Status:</b> {{status}}</p>
+
+                        <p><b> Blockchain Network:</b> {{network}}</p>
+
+                        <p><b> Date sent:</b> {{date}}</p>
+
+                        <h4>You will be notified when transaction is confirmed on the Blockchain.</h4>
+                 
+                        <p style="line-height: 1.2em;">This email to confirm that the above users has registered on the <a href="https://ipaybtc.app/">iPayBTC.</a>  and give their consent for <a href="https://ipaybtc.app/">iPayBTC.</a>  to use and store the user's data
+                        <p>If you did not initiate this please ignore this email.</p>
+                         
+
+                        <h3 style="font-weight: bold;">Setting up your account </h3>
+
+
+                        <p id="p3">Here are a few things you can do with ipayBTC </p>
+
+
+                        <div class="save">
+                          <div style="float: left;">
+                            <img
+                              src="https://firebasestorage.googleapis.com/v0/b/ipaybtc-d8d9b.appspot.com/o/svgs%2FStore%20(3).svg?alt=media&token=c2e1ada9-f82c-4eed-bbea-d80b8876c2e2"
+                              width="40" alt="" srcset="">
+                          </div>
+
+                          <h4 style=" margin: 10%;" > <b>Store Cryptocurrency </b><br /> 
+                            Your crypto’s within secure wallet. 
+                         </h4>
+                        </div>
+
+
+                        <div id="rec">
+                          <div style=" float: left;">
+                            <img
+                              src="https://firebasestorage.googleapis.com/v0/b/ipaybtc-d8d9b.appspot.com/o/svgs%2FReceive.svg?alt=media&token=d9abb98d-5471-4c73-9cdb-02bcfd070191"
+                              width="40" alt="" srcset="">
+                          </div>
+                          <h4 style="margin: 10%;"> <b>Receive Cryptocurrency </b> <br />  Receive BTC and other assets from anywhere
+                            in the world.
+                          
+                        </h4>
+                        </div>
+
+                        <div id="snd">
+                          <div style="float: left;">
+                            <img
+                              src="https://firebasestorage.googleapis.com/v0/b/ipaybtc-d8d9b.appspot.com/o/svgs%2FSend%20(1).svg?alt=media&token=9e779e44-065f-4170-a477-16e0b533331a"
+                              width="40" alt="" srcset="">
+                          </div>
+                          <h4 style="margin: 10%;"> <b>Send Cryptocurrency </b> <br />
+                            Send BTC with ease from the comfort of
+                              your home. 
+                          </h4>
+                        </div>
+                        <div id="box">
+                          SEE MORE TIPS
+                        </div>
+
+
+                        <h4 style="position: relative; top: -20px;">Have any questions about <a href="https://ipaybtc.app/">iPayBTC.</a> Drop us a note at <a
+                            href="https://help@ipayBTC.com/">help@iPayBTC.com</a> We are glad
+                          that you are here</h4>
+                        <!-- <h4>If you did not initiate this please ignore this email.</h4> -->
+                        <table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
+                          <!-- <tbody>
+                            <tr>
+                              <td align="left">
+                                <table border="0" cellpadding="0" cellspacing="0">
+                                  <tbody>
+                                    <tr>
+                                      <td> <a href="http://htmlemail.io" target="_blank">confirm email</a> </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table> -->
+                          <!-- <p>If you received this email by mistake, simply delete it. You won't be subscribed if you don't click the confirmation link above.</p> -->
+                          <div style="text-align: left; position: relative;bottom: -90px;">
+                            <img
+                              src="https://res.cloudinary.com/daewfkfzs/image/upload/v1664367572/ipaybtc/IpayBTC_White_Logo-02_1_1_mi2fzq.png"
+                              width="150" alt="" srcset="">
+                          </div>
+                          <div id="callout">
+                            <ul class="social">
+                              <li><a href="https://facebook.com" target="_blank"><img
+                                    src="https://firebasestorage.googleapis.com/v0/b/ipaybtc-d8d9b.appspot.com/o/svgs%2FFacebook.svg?alt=media&token=761d7522-87c1-4c5b-8c44-8e297d1f8c68">
+                                </a></li>
+                              <li><a href="https://instagram.com" target="_blank"><img
+                                    src="https://firebasestorage.googleapis.com/v0/b/ipaybtc-d8d9b.appspot.com/o/svgs%2FIG.svg?alt=media&token=e6d76129-ed0c-4a02-906a-8a92aee216a0">
+                                </a></li>
+                              <li><a href="https://twitter.com" target="_blank"><img
+                                    src="https://firebasestorage.googleapis.com/v0/b/ipaybtc-d8d9b.appspot.com/o/svgs%2FTwitter.svg?alt=media&token=b8499f0b-81c3-40a2-a8c3-95ed2a1df1d2">
+                                </a></li>
+
+                              <li style="margin-top:-5px"><a href="https://wa.me/" target="_blank"><img
+                                    src="https://firebasestorage.googleapis.com/v0/b/ipaybtc-d8d9b.appspot.com/o/svgs%2FWhatsapp%20(1).svg?alt=media&token=670166de-25dd-46f5-9186-f9376ba2c26a"
+                                   >
+                                   </a></li>
+                            </ul>
+                          </div>
+                          <!-- <div style="position: relative;
+                          top: -190px;"> -->
+                          <div id="type">
+                            <ul class="store">
+                              <li><a href="https://play.google.com" target="_blank"><img src="https://firebasestorage.googleapis.com/v0/b/ipaybtc-d8d9b.appspot.com/o/svgs%2FPlaystore.svg?alt=media&token=325de8a0-6f3f-4d2a-af2a-52f1c5f55723">
+                                </a></li>
+                              <li><a href="https://www.apple.com/app-store/" target="_blank"><img src="https://firebasestorage.googleapis.com/v0/b/ipaybtc-d8d9b.appspot.com/o/svgs%2FAppstore.svg?alt=media&token=f725a0b1-3f62-4b29-9347-a6a64f20d2d5">
+                                </a></li>
+
+                            </ul>
+                          </div>
+                </td>
+              </tr>
+            </table>
+        </td>
+      </tr>
+  
+      <!-- END MAIN CONTENT AREA -->
+    </table>
+     <div style="position: relative;
+     top: -150px;">
+    <!-- START FOOTER -->
+    <div class="footer">
+      <table border="0" cellpadding="0" cellspacing="0">
+        <tr>
+          <td class="content-block">
+            <span class="apple-link">iPayBTC LTD, 3 Abbey Road, San Francisco CA 94102. <a href="#"></a>.
+          </td>
+        </tr>
+        <tr>
+          <td class="content-block powered-by">
+            Powered by <a href="https://ipaybtc.app/">iPayBTC.</a>.
+          </td>
+        </tr>
+      </table>
+    </div>
+    </div>
+    <!-- END FOOTER -->
+
+    <!-- END CENTERED WHITE CONTAINER -->
+  </div>
+  </td>
+  <td>&nbsp;</td>
+  </tr>
+  </table>
+</body>
+
+</html>

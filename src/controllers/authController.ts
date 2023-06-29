@@ -13,8 +13,6 @@ const createUserSchema = Joi.object({
   number: Joi.string().required(),
 });
 
-
-
 const authController = {
   createUser: async (req: Request, res: Response): Promise<Response> => {
     try {
@@ -105,12 +103,18 @@ const authController = {
       });
     }
   },
-
+  //Regulare users Login Function
   loginUser: async (req: Request, res: Response): Promise<Response> => {
     const { email, password } = req.body;
 
     try {
       const user = await prisma.user.findUnique({ where: { email } });
+
+      if (user && user.type != 'USER') {
+        return res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ message: 'Buyers and Landlord Logins' });
+      }
 
       if (!user) {
         return res.status(StatusCodes.UNAUTHORIZED).json({
@@ -231,6 +235,78 @@ const authController = {
 
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         message: 'Failed to create agent',
+      });
+    }
+  },
+
+  //Realtor  Login Function
+  loginRealtor: async (req: Request, res: Response): Promise<Response> => {
+    const { email, password } = req.body;
+
+    try {
+      const user = await prisma.user.findUnique({ where: { email } });
+
+      if (!user || user.type !== 'AGENT') {
+        return res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ message: 'Invalid user type' });
+      }
+
+      if (!user.realtorId) {
+        return res
+          .status(StatusCodes.NOT_FOUND)
+          .json({ message: 'Realtor not found' });
+      }
+
+      const realtor = await prisma.realtor.findFirst({
+        where: { id: user.realtorId },
+      });
+
+      if (!realtor) {
+        return res
+          .status(StatusCodes.NOT_FOUND)
+          .json({ message: 'Realtor not found' });
+      }
+
+      if (!user) {
+        return res.status(StatusCodes.UNAUTHORIZED).json({
+          message: 'Invalid email or password',
+        });
+      }
+
+      const isPasswordValid = await comparePassword(password, user.password);
+
+      if (!isPasswordValid) {
+        return res.status(StatusCodes.UNAUTHORIZED).json({
+          message: 'Invalid email or password',
+        });
+      }
+
+      // Generate a JWT token
+
+      console.log(process.env.JWT_SECRET);
+
+      const token = jwt.sign(
+        { userId: realtor.id, type: user.type },
+        process.env.JWT_SECRET || '', // Provide a default value if process.env.JWT_SECRET is undefined
+        { expiresIn: '1h' }
+      );
+
+      return res.status(StatusCodes.OK).json({
+        message: 'Login successful',
+        user: {
+          id: user.id,
+          email: user.email,
+          number: user.number,
+          type: user.type,
+        },
+        token: token,
+      });
+    } catch (error) {
+      console.log(error);
+
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: 'Failed to login',
       });
     }
   },
