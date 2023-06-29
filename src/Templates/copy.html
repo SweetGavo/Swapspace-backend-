@@ -4,7 +4,7 @@
 <head>
   <meta name="viewport" content="width=device-width" />
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <title>Otp  </title>
+  <title>Simple Transaction </title>
   <style>
     /* -------------------------------------
           GLOBAL RESETS
@@ -14,6 +14,51 @@
       -ms-interpolation-mode: bicubic;
       max-width: 100%;
     }
+
+
+
+    #p2 {
+      position: relative;
+      /* top: -18px; */
+    }
+
+
+    #p3 {
+      position: relative;
+      /* top: -18px; */
+    }
+
+    .save {
+       position: relative;
+       top: -20px;  
+    }
+
+    #rec{
+      position: relative;
+      top: -30px;
+      
+    }
+    #snd{
+      position: relative; 
+       top: -40px;
+    }
+
+
+    #box {
+      border: 5px solid;
+      width: 450px;
+      height: 8px;
+      background-color: rgb(9, 9, 77);
+      text-align: center;
+      color: white;
+      padding: 20px;
+      font-weight: bold;
+      position: relative; 
+      top: -40px;
+    }
+
+
+
 
     #type {
       float: left;
@@ -73,10 +118,15 @@
       width: 450px;
 
     }
-
     li {
   padding: 10px;
 }
+
+
+
+
+
+
 
     body {
       background-color: #f6f6f6;
@@ -149,6 +199,7 @@
       padding-top: 10px;
       text-align: center;
       width: 100%;
+      
     }
 
     .footer td,
@@ -157,7 +208,8 @@
     .footer a {
       color: #999999;
       font-size: 12px;
-      text-align: center;
+      text-align: left;
+      
     }
 
     /* -------------------------------------
@@ -399,11 +451,11 @@
 </head>
 
 <body class="">
-  <div style=" justify-content: center;text-align: center;  display: flex;position: relative; top: 18px;">
-    <img
-      src="https://res.cloudinary.com/dlh65ewsl/image/upload/v1687964296/ps_ceo_logo_1_tirnc0.svg"
-      width="70" alt="" srcset="">
-  </div>
+     <div style="justify-content: center;
+     align-items: center;  display: flex;position: relative; top: 10px;">
+       <img src="https://res.cloudinary.com/daewfkfzs/image/upload/v1664367572/ipaybtc/IpayBTC_White_Logo-02_1_1_mi2fzq.png"
+            width="150" alt="" srcset="">
+   </div>
   <div class="content">
     <table border="0" cellpadding="0" cellspacing="0" class="body">
       <tr>
@@ -418,24 +470,83 @@
                 <td class="wrapper">
                   <table border="0" cellpadding="0" cellspacing="0">
                     <tr>
-                      <td>
+                      <div>
+                        <h2 style="font-size: 1.5em;">Hello {{name}},</h2>
+                        <p> <b>{{value}} {{asset}}</b> transaction successfully sent.</p>
 
-                        <h2>Hello </h2>
-                        <h3>You have been invited, has a co-realtor click on the link below to start your registration. </h3>
-                        <h3>${invitationLink}</h3>
-                        <h3>Use this email to complete your registration</h3>
-                        <h3>${email}</h3>
-                        <h5>If you have any questions, simply reply this email. We’d love to help. </h5>
+                        <p><b> Details Below: </b></p>
 
-                        <h5>If you didn’t request this email, there’s is nothing to worry about - you can safely ignore
-                          it </h5>
-                       
-                        
-                        <h4>Have any questions about  <a
-                          href="https://swapspace.live/">swapspace.</a>  Drop us a note at  <a
-                          href="https://dev@swapspace.live/">dev@swapspace.live</a>   We are glad
+                        <p><b> Hash:</b> {{txhash}}</p>
+
+                        <p><b> Destination address:</b> {{destination_address}}</p>
+
+                        <p><b> Value: </b> {{value}}</p>
+
+                        <p><b> Asset: </b> {{asset}}</p>
+
+                        <p><b> Status:</b> {{status}}</p>
+
+                        <p><b> Blockchain Network:</b> {{network}}</p>
+
+                        <p><b> Date sent:</b> {{date}}</p>
+
+                        <h4>You will be notified when transaction is confirmed on the Blockchain.</h4>
+                 
+                        <p style="line-height: 1.2em;">This email to confirm that the above users has registered on the <a href="https://ipaybtc.app/">iPayBTC.</a>  and give their consent for <a href="https://ipaybtc.app/">iPayBTC.</a>  to use and store the user's data
+                        <p>If you did not initiate this please ignore this email.</p>
+                         
+
+                        <h3 style="font-weight: bold;">Setting up your account </h3>
+
+
+                        <p id="p3">Here are a few things you can do with ipayBTC </p>
+
+
+                        <div class="save">
+                          <div style="float: left;">
+                            <img
+                              src="https://firebasestorage.googleapis.com/v0/b/ipaybtc-d8d9b.appspot.com/o/svgs%2FStore%20(3).svg?alt=media&token=c2e1ada9-f82c-4eed-bbea-d80b8876c2e2"
+                              width="40" alt="" srcset="">
+                          </div>
+
+                          <h4 style=" margin: 10%;" > <b>Store Cryptocurrency </b><br /> 
+                            Your crypto’s within secure wallet. 
+                         </h4>
+                        </div>
+
+
+                        <div id="rec">
+                          <div style=" float: left;">
+                            <img
+                              src="https://firebasestorage.googleapis.com/v0/b/ipaybtc-d8d9b.appspot.com/o/svgs%2FReceive.svg?alt=media&token=d9abb98d-5471-4c73-9cdb-02bcfd070191"
+                              width="40" alt="" srcset="">
+                          </div>
+                          <h4 style="margin: 10%;"> <b>Receive Cryptocurrency </b> <br />  Receive BTC and other assets from anywhere
+                            in the world.
+                          
+                        </h4>
+                        </div>
+
+                        <div id="snd">
+                          <div style="float: left;">
+                            <img
+                              src="https://firebasestorage.googleapis.com/v0/b/ipaybtc-d8d9b.appspot.com/o/svgs%2FSend%20(1).svg?alt=media&token=9e779e44-065f-4170-a477-16e0b533331a"
+                              width="40" alt="" srcset="">
+                          </div>
+                          <h4 style="margin: 10%;"> <b>Send Cryptocurrency </b> <br />
+                            Send BTC with ease from the comfort of
+                              your home. 
+                          </h4>
+                        </div>
+                        <div id="box">
+                          SEE MORE TIPS
+                        </div>
+
+
+                        <h4 style="position: relative; top: -20px;">Have any questions about <a href="https://ipaybtc.app/">iPayBTC.</a> Drop us a note at <a
+                            href="https://help@ipayBTC.com/">help@iPayBTC.com</a> We are glad
                           that you are here</h4>
-                        <h4>If you did not initiate this please ignore this email.</h4>
+                        <!-- <h4>If you did not initiate this please ignore this email.</h4> -->
                         <table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
                           <!-- <tbody>
                             <tr>
@@ -452,72 +563,74 @@
                           </tbody>
                         </table> -->
                           <!-- <p>If you received this email by mistake, simply delete it. You won't be subscribed if you don't click the confirmation link above.</p> -->
-                          <div style="text-align: left;">
+                          <div style="text-align: left; position: relative;bottom: -90px;">
                             <img
-                              src="https://res.cloudinary.com/dlh65ewsl/image/upload/v1687964296/ps_ceo_logo_1_tirnc0.svg"
+                              src="https://res.cloudinary.com/daewfkfzs/image/upload/v1664367572/ipaybtc/IpayBTC_White_Logo-02_1_1_mi2fzq.png"
                               width="150" alt="" srcset="">
-
-                              <div id="callout">
-                                <ul class="social">
-                                     <li><a href="https://facebook.com"
-                                               target="_blank"><img src="https://res.cloudinary.com/dlh65ewsl/image/upload/v1687968932/Facebook_a74oaj.svg">
-                                          </a></li>
-                                     <li><a href="https://instagram.com"
-                                               target="_blank"><img src="https://res.cloudinary.com/dlh65ewsl/image/upload/v1687968878/IG_1_huqjwo.svg">
-                                          </a></li>
-                                     <li><a href="https://twitter.com"
-                                               target="_blank"><img src="https://res.cloudinary.com/dlh65ewsl/image/upload/v1687968709/Twitter_yakdir.svg">
-                                          </a></li>
-
-                                     <li><a href="https://wa.me/07030762738"
-                                               target="_blank"><img src="https://res.cloudinary.com/dlh65ewsl/image/upload/v1687968709/Whatsapp_1_h9hg2e.svg">
-                                          </a></li>
-                                </ul>
-
-                           </div>
-                           <div id="type">
-                            <ul class="store">
-                              <li><a href="https://play.google.com" target="_blank"><img src="https://res.cloudinary.com/dlh65ewsl/image/upload/v1687969017/Playstore_1_m1nfvl.svg">
+                          </div>
+                          <div id="callout">
+                            <ul class="social">
+                              <li><a href="https://facebook.com" target="_blank"><img
+                                    src="https://firebasestorage.googleapis.com/v0/b/ipaybtc-d8d9b.appspot.com/o/svgs%2FFacebook.svg?alt=media&token=761d7522-87c1-4c5b-8c44-8e297d1f8c68">
                                 </a></li>
-                              <li><a href="https://www.apple.com/app-store/" target="_blank"><img src="https://res.cloudinary.com/dlh65ewsl/image/upload/v1687968911/Appstore_thvtis.svg">
+                              <li><a href="https://instagram.com" target="_blank"><img
+                                    src="https://firebasestorage.googleapis.com/v0/b/ipaybtc-d8d9b.appspot.com/o/svgs%2FIG.svg?alt=media&token=e6d76129-ed0c-4a02-906a-8a92aee216a0">
+                                </a></li>
+                              <li><a href="https://twitter.com" target="_blank"><img
+                                    src="https://firebasestorage.googleapis.com/v0/b/ipaybtc-d8d9b.appspot.com/o/svgs%2FTwitter.svg?alt=media&token=b8499f0b-81c3-40a2-a8c3-95ed2a1df1d2">
+                                </a></li>
+
+                              <li style="margin-top:-5px"><a href="https://wa.me/" target="_blank"><img
+                                    src="https://firebasestorage.googleapis.com/v0/b/ipaybtc-d8d9b.appspot.com/o/svgs%2FWhatsapp%20(1).svg?alt=media&token=670166de-25dd-46f5-9186-f9376ba2c26a"
+                                   >
+                                   </a></li>
+                            </ul>
+                          </div>
+                          <!-- <div style="position: relative;
+                          top: -190px;"> -->
+                          <div id="type">
+                            <ul class="store">
+                              <li><a href="https://play.google.com" target="_blank"><img src="https://firebasestorage.googleapis.com/v0/b/ipaybtc-d8d9b.appspot.com/o/svgs%2FPlaystore.svg?alt=media&token=325de8a0-6f3f-4d2a-af2a-52f1c5f55723">
+                                </a></li>
+                              <li><a href="https://www.apple.com/app-store/" target="_blank"><img src="https://firebasestorage.googleapis.com/v0/b/ipaybtc-d8d9b.appspot.com/o/svgs%2FAppstore.svg?alt=media&token=f725a0b1-3f62-4b29-9347-a6a64f20d2d5">
                                 </a></li>
 
                             </ul>
                           </div>
-                          </div>
-                      </td>
-                    </tr>
-                  </table>
                 </td>
               </tr>
-
-              <!-- END MAIN CONTENT AREA -->
             </table>
-
-            <!-- START FOOTER -->
-            <div class="footer">
-              <table border="0" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td class="content-block">
-                    <span class="apple-link">iPayBTC LTD, 3 Abbey Road, San Francisco CA 94102. <a
-                        href="#">Unsubscribe</a>.
-                  </td>
-                </tr>
-                <tr>
-                  <td class="content-block powered-by">
-                    Powered by <a href="https://swapspace.live/">swapspace.</a>.
-                  </td>
-                </tr>
-              </table>
-            </div>
-            <!-- END FOOTER -->
-
-            <!-- END CENTERED WHITE CONTAINER -->
-          </div>
         </td>
-        <td>&nbsp;</td>
       </tr>
+  
+      <!-- END MAIN CONTENT AREA -->
     </table>
+     <div style="position: relative;
+     top: -150px;">
+    <!-- START FOOTER -->
+    <div class="footer">
+      <table border="0" cellpadding="0" cellspacing="0">
+        <tr>
+          <td class="content-block">
+            <span class="apple-link">iPayBTC LTD, 3 Abbey Road, San Francisco CA 94102. <a href="#"></a>.
+          </td>
+        </tr>
+        <tr>
+          <td class="content-block powered-by">
+            Powered by <a href="https://ipaybtc.app/">iPayBTC.</a>.
+          </td>
+        </tr>
+      </table>
+    </div>
+    </div>
+    <!-- END FOOTER -->
+
+    <!-- END CENTERED WHITE CONTAINER -->
+  </div>
+  </td>
+  <td>&nbsp;</td>
+  </tr>
+  </table>
 </body>
 
 </html>

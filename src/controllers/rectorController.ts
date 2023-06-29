@@ -109,6 +109,9 @@ const rectorController = {
         },
       });
 
+      //Send Notification
+
+
       return res.status(StatusCodes.CREATED).json({
         message: 'Agent profile created successfully',
         agent,
@@ -215,7 +218,7 @@ const rectorController = {
     }
   },
 
-  //todo  DELETE AND UPDATE, PAGENATING
+  //TODO:  DELETE AND UPDATE, PAGENATING
 };
 
 export default rectorController;

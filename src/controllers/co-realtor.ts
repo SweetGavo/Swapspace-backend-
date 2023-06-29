@@ -50,7 +50,7 @@ const coRealtorController = {
 
     if (!checkEmail) {
       return res.status(StatusCodes.BAD_REQUEST).json({
-        messaage: `Please use the email that was sent to you `,
+        messaage: `Please use the email that was sent to you for your email `,
       });
     }
 
