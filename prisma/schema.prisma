@@ -6,9 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider          = "postgresql"
-  url               = env("DATABASE_URL")
-  
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 enum PROPERTY_TYPES {
@@ -29,8 +28,6 @@ enum PROPERTY_TYPES {
   RESIDENTIAL_FLOOR
   LAND
 }
-
-
 
 enum Specalty_Type {
   Property_Investment
@@ -75,6 +72,8 @@ model User {
   date_modified      DateTime   @default(now()) @updatedAt
   verifiedEmail      Boolean    @default(false)
   verifiedNumber     Boolean    @default(false)
+  block              Boolean    @default(false)
+  lastLogin          DateTime   @default(now())
   realtor            Realtor?
   realtorId          String?    @unique
   ratingsGiven       Rating[]
@@ -112,6 +111,7 @@ model Realtor {
   user                User?        @relation(fields: [userId], references: [id])
   teams               Team[]       @relation("RealtorGroups")
   userId              String?      @unique
+  //otp                Otp[]      @relation("Otpproperties")
   properties          Property[]   @relation("RealtorProperties")
   offers              Offers[]
   createdAt           DateTime     @default(now())
@@ -122,11 +122,13 @@ model Realtor {
   info                Info[]       @relation("Info")
   invites             Invitation[] @relation("Invitation")
 }
-
+//link realtor id
 model Otp {
   id            String   @id @unique @default(uuid())
-  userId        String   @unique
+  userId        String   
   user          User?    @relation("Otpproperties", fields: [userId], references: [id])
+  // realtorId      String
+  // realtor       Realtor?  @relation("Otpproperties", fields: [realtorId], references:[id])
   otp           String
   createdAt     DateTime @default(now())
   otp_expiry    DateTime @default(now())
@@ -237,7 +239,6 @@ enum ProgressStatus {
   PAYMENT
   SOLD
 }
-
 
 model Offers {
   id             String         @id @unique @default(uuid())
@@ -455,7 +456,6 @@ enum STYLE {
   MODERN_VILLA
   BLACK_ROCK
 }
-
 
 model PropertyForm {
   id                 String         @id @unique @default(uuid())

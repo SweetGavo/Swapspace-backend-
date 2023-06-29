@@ -117,7 +117,7 @@ const offersControllers = {
     const checkoff = await prisma.offers.findMany({
       where: {
         id: offerId,
-        progress: "Acceptance" 
+        progress: "ACCEPTANCE" 
 
       }
     })
@@ -137,7 +137,7 @@ const offersControllers = {
     const connected = await prisma.offers.findMany({
       where: {
         id: offerId,
-        progress: "Inquiry" || "Negotiation"
+        progress: "INQUIRY" || "NEGOTIATION"
 
       }
     })
@@ -157,7 +157,7 @@ const offersControllers = {
     const sold = await prisma.offers.findMany({
       where: {
         id: offerId,
-        progress: "Sold"
+        progress: "SOLD"
 
       }
     })
