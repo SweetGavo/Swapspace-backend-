@@ -8,27 +8,29 @@ generator client {
 datasource db {
   provider          = "postgresql"
   url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("")
+  
 }
 
 enum PROPERTY_TYPES {
-  commercial_Villa
-  offices
-  shops
-  apartment
-  villa
-  town_House
-  pent_House
-  select
-  Apartment_Hotel
-  apartment_Residential
-  warehouse
-  showroom
-  bulk_Unit
-  commercial_Floor
-  residential_Floor
-  land
+  COMMERCIAL_VILLA
+  OFFICES
+  SHOPS
+  APARTMENT
+  VILLA
+  TOWN_HOUSE
+  PENT_HOUSE
+  SELECT
+  APARTMENT_HOTEL
+  APARTMENT_RESIDENTIAL
+  WAREHOUSE
+  SHOWROOM
+  BULK_UNIT
+  COMMERCIAL_FLOOR
+  RESIDENTIAL_FLOOR
+  LAND
 }
+
+
 
 enum Specalty_Type {
   Property_Investment
@@ -134,15 +136,15 @@ model Otp {
 }
 
 enum Availablity_Type {
-  Available
-  Unavailable
-  Sold
+  AVAILABLE
+  UNAVAILABLE
+  SOLD
 }
 
 enum Property_Status {
-  Reviwing
-  Live
-  Declined
+  REVIWING
+  LIVE
+  DECLINED
 }
 
 model Property {
@@ -192,8 +194,8 @@ model Property {
   additional_details                  String
   additional_facilities_and_amenities String
   proximate_landmark                  String
-  availablity                         Availablity_Type @default(Available)
-  status                              Property_Status  @default(Reviwing)
+  availablity                         Availablity_Type @default(AVAILABLE)
+  status                              Property_Status  @default(REVIWING)
   realtor                             Realtor?         @relation("RealtorProperties", fields: [realtorId], references: [id])
   offers                              Offers[]
   view_count                          Int              @default(0)
@@ -229,12 +231,13 @@ model Rating {
 }
 
 enum ProgressStatus {
-  Inquiry
-  Negotiation
-  Acceptance
-  Payment
-  Sold
+  INQUIRY
+  NEGOTIATION
+  ACCEPTANCE
+  PAYMENT
+  SOLD
 }
+
 
 model Offers {
   id             String         @id @unique @default(uuid())
@@ -276,8 +279,8 @@ enum CoRealtorId {
 }
 
 enum TYPE {
-  Personal
-  Team
+  PERSONAL
+  TEAM
 }
 
 // this task is for Individula task or Personal task 
@@ -347,111 +350,112 @@ model Invitation {
 }
 
 enum PAYMENT_PLAN {
-  two_Term_Installments
-  one_Term_Payment
-  three_Term_Payment
+  TWO_TERM_INSTALLMENTS
+  ONE_TERM_PAYMENT
+  THREE_TERM_PAYMENT
 }
 
 enum SPECIFICATION {
-  funished
-  unfunished
-  none
+  FUNISHED
+  UNFUNISHED
+  NONE
 }
 
 enum RENT {
-  sale
-  short_let
+  SALE
+  SHORT_LET
 }
 
 enum STRUCTURE {
-  commercial
-  residential
+  COMMERCIAL
+  RESIDENTIAL
 }
 
 enum APPLAINCES {
-  washing_machine
-  vacuum_cleaner
-  microwave
-  refrigerator
-  air_conditioner
-  kitchen_hood
-  gas_cooker
-  dish_washer
-  oven
-  blender
-  cloth_dryer
-  television
-  light_bulb
-  lamp
+  WASHING_MACHINE
+  VACUUM_CLEANER
+  MICROWAVE
+  REFRIGERATOR
+  AIR_CONDITIONER
+  KITCHEN_HOOD
+  GAS_COOKER
+  DISH_WASHER
+  OVEN
+  BLENDER
+  CLOTH_DRYER
+  TELEVISION
+  LIGHT_BULB
+  LAMP
 }
 
 enum CATEGORY {
-  betes_and_bounds
-  lots_and_blocks
-  modern
-  ultra_modern
-  luxury
+  BETES_AND_BOUNDS
+  LOTS_AND_BLOCKS
+  MODERN
+  ULTRA_MODERN
+  LUXURY
 }
 
 enum AMENITIES {
-  swimming_pool
-  fitnes_facilities
-  park_areas
-  apa
-  healt_club
-  co_working_areas
-  sport_and_leisure
-  gardens
-  movies
-  lobby
-  kids_play_area
+  SWIMMING_POOL
+  FITNES_FACILITIES
+  PARK_AREAS
+  APA
+  HEALT_CLUB
+  CO_WORKING_AREAS
+  SPORT_AND_LEISURE
+  GARDENS
+  MOVIES
+  LOBBY
+  KIDS_PLAY_AREA
 }
 
 enum EMIRATE {
-  abu_dhabi
-  dubai
-  sharja
-  ajman
-  ummu_al_quwain
-  ras_al_khaimah
-  fujairah
+  ABU_DHABI
+  DUBAI
+  SHARJA
+  AJMAN
+  UMMU_AL_QUWAIN
+  RAS_AL_KHAIMAH
+  FUJAIRAH
 }
 
 enum PROXIMITY {
-  school
-  hospital
-  salon
-  gas_station
-  airport
-  pharmacy
-  super_maket
-  eats_and_chill
-  bank
+  SCHOOL
+  HOSPITAL
+  SALON
+  GAS_STATION
+  AIRPORT
+  PHARMACY
+  SUPER_MAKET
+  EATS_AND_CHILL
+  BANK
 }
 
 enum View {
-  loft
-  upper_crest
-  fountain_view
-  classic_villa
-  modern_villa
-  black_rock
+  LOFT
+  UPPER_CREST
+  FOUNTAIN_VIEW
+  CLASSIC_VILLA
+  MODERN_VILLA
+  BLACK_ROCK
 }
 
 enum PET {
-  cat
-  dog
-  none
+  CAT
+  DOG
+  NONE
 }
 
 enum STYLE {
-  arabic_villa
-  palm_jumeirah
-  modern_mansion
-  classic_villa
-  modern_villa
-  black_rock
+  ARABIC_VILLA
+  PALM_JUMEIRAH
+  MODERN_MANSION
+  CLASSIC_VILLA
+  MODERN_VILLA
+  BLACK_ROCK
 }
+
 
 model PropertyForm {
   id                 String         @id @unique @default(uuid())

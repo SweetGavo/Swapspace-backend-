@@ -385,10 +385,11 @@ export const InvitationTemp = async ({ invitationLink, email, subject }: Invitat
                            <td>
      
                              <h2>Hello </h2>
-                             <h3>You have been invited, has a co-realtor click on the link below to start your registration. </h3>
-                             <h3>${invitationLink}</h3>
-                             <h3>Use this email to complete your registration</h3>
-                             <h3>${email}</h3>
+                             <h3>You have been invited as a co-realtor</h3>
+                             <p>Click on the link below to start your registration:</p>
+                             <p>${invitationLink}</p>
+                             <p>Use this email to complete your registration:</p>
+                             <p>${email}</p>
                              <h5>If you have any questions, simply reply this email. We’d love to help. </h5>
      
                              <h5>If you didn’t request this email, there’s is nothing to worry about - you can safely ignore

@@ -17,15 +17,8 @@ const invitationController = {
     });
 
     // Generate the invitation link using the invitation token
-    const invitationLink = `${configs.URL}/auth/co-realtor/signup`;
+    const invitationLink = `<a href="${configs.URL}/auth/co-realtor/signup">Click here to start your registration</a>`;
 
-    const emailOptions = {
-      email: email,
-      subject: 'You have been invited to join your team On Swapspace',
-      html: `
-        <p>Use this Link <b>${invitationLink}</b>  and complete your registration. Also use this email <b>${email}</b></p>
-      `,
-    };
     console.log(invitationLink);
 
     const mailSubject = 'INVITATION';
