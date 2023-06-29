@@ -1,35 +1,24 @@
-import express from 'express';     
+import express from 'express';
 const router = express.Router();
-
-
 
 import userController from '../controllers/userController';
 
+router.route('/').get(userController.getAllUsers);
 
+router.route('/agents').get(userController.getAgentUsers);
 
-router
-.route('/')
-.get(userController.getAllUsers);
+router.route('/find/users').get(userController.getUsersWhichAreUsers);
 
-router
-.route('/agents')
-.get(userController.getAgentUsers);
+router.route('/:id').get(userController.getOneUser);
 
+router.route('/agents/:id').get(userController.getOneAgent);
 
-router
-.route('/find/users')
-.get(userController.getUsersWhichAreUsers);
+router.route('/total/users').get(userController.getUsertAggregate);
 
+router.route('/total/agent').get(userController.getAgentAggregate);
 
-router
-.route('/:id')
-.get(userController.getOneUser);
+router.route('/block').patch(userController.blockUser);
 
-
-router
-.route('/agents/:id')
-.get(userController.getOneAgent);
-
-
+router.route('/unblock').patch(userController.blockUser);
 
 export default router;

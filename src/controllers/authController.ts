@@ -287,7 +287,7 @@ const authController = {
       console.log(process.env.JWT_SECRET);
 
       const token = jwt.sign(
-        { userId: realtor.id, type: user.type },
+        { realtorId: realtor.id, type: user.type , userId: user.id},
         process.env.JWT_SECRET || '', // Provide a default value if process.env.JWT_SECRET is undefined
         { expiresIn: '1h' }
       );

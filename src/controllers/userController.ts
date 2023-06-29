@@ -4,29 +4,27 @@ import { Request, Response } from 'express';
 
 const userController = {
   getAllUsers: async (req: Request, res: Response) => {
-   
-      const users = await prisma.user.findMany({
-        select: {
-          id: true,
-          number: true,
-          email: true,
-          type: true,
-          profile: true,
-          realtor: true,
-        },
-      });
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        number: true,
+        email: true,
+        type: true,
+        profile: true,
+        realtor: true,
+      },
+    });
 
-
-      if (!users || users.length === 0 ) {
-        return res.status(StatusCodes.NOT_FOUND)
+    if (!users || users.length === 0) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
         .json({ message: 'No users found' });
-      }
+    }
 
-      res.status(StatusCodes.OK).json({
-        count: users.length,
-        users,
-      });
-   
+    res.status(StatusCodes.OK).json({
+      count: users.length,
+      users,
+    });
   },
 
   getAgentUsers: async (req: Request, res: Response) => {
@@ -60,7 +58,7 @@ const userController = {
           },
         },
       });
-  
+
       res.status(StatusCodes.OK).json({
         count: agents.length,
         user: agents,
@@ -179,6 +177,91 @@ const userController = {
       return res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ error: 'Failed to retrieve user' });
+    }
+  },
+
+  getAgentAggregate: async (req: Request, res: Response) => {
+    try {
+      const agentCount = await prisma.user.aggregate({
+        where: {
+          type: 'AGENT',
+        },
+        _count: true,
+      });
+
+      res.status(StatusCodes.OK).json({
+        message: 'Agent users retrieved successfully',
+        count: agentCount._count,
+      });
+    } catch (error) {
+      console.error('Error retrieving agent :', error);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: 'Failed to retrieve agent users',
+      });
+    } finally {
+      await prisma.$disconnect();
+    }
+  },
+  getUsertAggregate: async (req: Request, res: Response) => {
+    try {
+      const agentCount = await prisma.user.aggregate({
+        where: {
+          type: 'USER',
+        },
+        _count: true,
+      });
+
+      res.status(StatusCodes.OK).json({
+        message: 'Agent users retrieved successfully',
+        count: agentCount._count,
+      });
+    } catch (error) {
+      console.error('Error retrieving agent :', error);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: 'Failed to retrieve agent users',
+      });
+    } finally {
+      await prisma.$disconnect();
+    }
+  },
+
+  blockUser: async (req: Request, res: Response): Promise<Response> => {
+    const { userId } = req.body;
+    try {
+      // Update the user's data and set blocked status
+      const updatedUser = await prisma.user.update({
+        where: { id: userId },
+        data: { block: true },
+      });
+
+      return res
+        .status(StatusCodes.OK)
+        .json({ message: 'User blocked successfully', user: updatedUser });
+    } catch (error) {
+      console.error(error);
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ message: 'Failed to block user' });
+    }
+  },
+
+  unBlockUser: async (req: Request, res: Response): Promise<Response> => {
+    const { userId } = req.body;
+    try {
+      // Update the user's data and set blocked status
+      const updatedUser = await prisma.user.update({
+        where: { id: userId },
+        data: { block: false },
+      });
+
+      return res
+        .status(StatusCodes.OK)
+        .json({ message: 'User unblocked successfully', user: updatedUser });
+    } catch (error) {
+      console.error(error);
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ message: 'Failed to unblock user' });
     }
   },
 };

@@ -1,0 +1,6 @@
+-- DropIndex
+DROP INDEX "Otp_userId_key";
+
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "block" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN     "lastLogin" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
