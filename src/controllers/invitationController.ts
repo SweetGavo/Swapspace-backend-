@@ -9,6 +9,19 @@ const invitationController = {
   inviteTeamMember: async (req: Request, res: Response): Promise<Response> => {
     const { email, realtorId } = req.body;
 
+    //check realtorsID
+
+    const ckeckRealtorID = await prisma.realtor.findUnique({
+      where: {
+        id: realtorId
+      }
+    })
+
+
+    if(!ckeckRealtorID) return res.status(StatusCodes.NOT_FOUND).json({
+      message: `Realtor Not found`
+    })
+
     const invite = await prisma.invitation.create({
       data: {
         email,

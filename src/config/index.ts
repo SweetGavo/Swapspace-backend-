@@ -2,7 +2,9 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-
+// Parse the REDIS_PORT environment variable as a number
+const redisPortString = process.env.REDIS_PORT;
+const redisPort = redisPortString ? parseInt(redisPortString, 10) : undefined;
 
 export const configs =  {
      JWT_SECRET: process.env.JWT_SECRET || '',
@@ -19,5 +21,6 @@ export const configs =  {
      MAIL_PASS:process.env.MAIL_PASS,
      SENDERS_NAME:process.env.SENDERS_NAME || 'SWAP SPACE',
      SENDERS_EMAIL:process.env.SENDERS_EMAIL || 'dev@swapspace.live',
-     URL: process.env.URL
+     URL: process.env.URL,
+     REDIS_PORT:redisPort
 }

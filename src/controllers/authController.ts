@@ -245,33 +245,46 @@ const authController = {
 
     try {
       const user = await prisma.user.findUnique({ where: { email } });
+      
 
-      if (!user || user.type !== 'AGENT') {
+      console.log('user:', user);
+      if (!user ) {
         return res
           .status(StatusCodes.BAD_REQUEST)
-          .json({ message: 'Invalid user type' });
+          .json({ message: 'Invalid email or password' });
       }
 
-      if (!user.realtorId) {
+      console.log('user.type:', user.type);
+      console.log('user.realtorId:', user.realtorId);
+
+      if(user.type !== 'AGENT'|| user.realtorId === null) {
         return res
-          .status(StatusCodes.NOT_FOUND)
-          .json({ message: 'Realtor not found' });
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ message: 'Invalid User Account' });
       }
+    
+     
 
-      const realtor = await prisma.realtor.findFirst({
-        where: { id: user.realtorId },
-      });
+      // const realtor = await prisma.realtor.findFirst({
+      //   where: { realtor: user.realtor },
+      // });
 
-      if (!realtor) {
-        return res
-          .status(StatusCodes.NOT_FOUND)
-          .json({ message: 'Realtor not found' });
-      }
+      // if (!realtor) {
+      //   return res
+      //     .status(StatusCodes.NOT_FOUND)
+      //     .json({ message: 'Realtor not found 2' });
+      // }
 
       if (!user) {
         return res.status(StatusCodes.UNAUTHORIZED).json({
           message: 'Invalid email or password',
         });
+      }
+
+      if (user.realtorId === null) {
+        return res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ message: 'Invalid User Account' });
       }
 
       const isPasswordValid = await comparePassword(password, user.password);
@@ -287,13 +300,13 @@ const authController = {
       console.log(process.env.JWT_SECRET);
 
       const token = jwt.sign(
-        { realtorId: realtor.id, type: user.type , userId: user.id},
+        { realtorId: user.realtorId, type: user.type , userId: user.id},
         process.env.JWT_SECRET || '', // Provide a default value if process.env.JWT_SECRET is undefined
         { expiresIn: '1h' }
       );
 
       return res.status(StatusCodes.OK).json({
-        message: 'Login successful',
+        message: 'Login successfully',
         user: {
           id: user.id,
           email: user.email,
