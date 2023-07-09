@@ -25,7 +25,6 @@ const createAgentProfileSchema = Joi.object({
   addProperty: Joi.array().items(Joi.string()),
   status: Joi.string(),
   image: Joi.string(),
-  
 });
 
 const rectorController = {
@@ -57,8 +56,6 @@ const rectorController = {
         license_number,
       } = req.body;
 
-      
-
       // Check if user exists
       const userExists = await prisma.user.findUnique({
         where: { id: userId },
@@ -75,8 +72,7 @@ const rectorController = {
           message: 'You are not allowed to Create AN AGENT Profile',
         });
       }
-      
-      
+
       // Upload broker card images to Cloudinary
       const brokerCardImages: string[] = [];
       if (req.files && Array.isArray(req.files) && req.files.length > 0) {
@@ -109,8 +105,16 @@ const rectorController = {
         },
       });
 
-      //Send Notification
+      await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          realtorId: agent.id,
+        },
+      });
 
+      //Send Notification
 
       return res.status(StatusCodes.CREATED).json({
         message: 'Agent profile created successfully',
@@ -175,11 +179,24 @@ const rectorController = {
 
   getAllRealtor: async (req: Request, res: Response) => {
     try {
-      const realtors = await prisma.realtor.findMany({});
+      const ITEMS_PER_PAGE = 10;
+      const page = parseInt(req.query.page as string) || 1;
+
+      const skip = (page - 1) * ITEMS_PER_PAGE;
+      const realtors = await prisma.realtor.findMany({
+        skip: skip,
+        take: ITEMS_PER_PAGE,
+      });
+
+      const totalCount = await prisma.realtor.count();
+
+      const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
       return res.status(StatusCodes.OK).json({
         count: realtors.length,
         message: 'Fetched ',
+        currentPage: page,
+        totalPages: totalPages,
         realtors,
       });
     } catch (error) {
@@ -218,7 +235,25 @@ const rectorController = {
     }
   },
 
-  //TODO:  DELETE AND UPDATE, PAGENATING
+  deleteRealtor: async (req: Request, res: Response): Promise<Response> => {
+    const { id } = req.params;
+
+    const deleteRealtor = await prisma.realtor.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!deleteRealtor) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: `realtor not found` });
+    }
+
+    return res.status(StatusCodes.OK).json({ message: `Profile deleted` });
+  },
+
+  //TODO:  DELETE AND UPDATE,
 };
 
 export default rectorController;

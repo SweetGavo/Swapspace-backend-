@@ -17,13 +17,13 @@ export interface SoftAuthenticatedRequest extends Request {
     email:string
   };
 }
-const verifyToken = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const verifyToken = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
 
   if (authHeader && authHeader.startsWith('Bearer ')) {
     const token = authHeader.substring(7);
 
-    jwt.verify(token, process.env.JWT_SECRET || 'zackzack', (err: jwt.VerifyErrors | null, decoded: any) => {
+    jwt.verify(token, process.env.JWT_SECRET || '', (err: jwt.VerifyErrors | null, decoded: any) => {
       if (err) {
         return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Invalid token' });
       } else {
@@ -36,13 +36,13 @@ const verifyToken = async (req: AuthenticatedRequest, res: Response, next: NextF
   }
 };
 //
-const softVerifyToken = async (req: SoftAuthenticatedRequest, res: Response, next: NextFunction) => {
+export const softVerifyToken = async (req: SoftAuthenticatedRequest, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
 
   if (authHeader && authHeader.startsWith('Bearer ')) {
     const token = authHeader.substring(7);
 
-    jwt.verify(token, process.env.JWT_SECRET || 'zackzack', (err: jwt.VerifyErrors | null, decoded: any) => {
+    jwt.verify(token, process.env.JWT_SECRET || '', (err: jwt.VerifyErrors | null, decoded: any) => {
         req.user = decoded;
         next();
     });
@@ -50,5 +50,5 @@ const softVerifyToken = async (req: SoftAuthenticatedRequest, res: Response, nex
     next()
   }
 };
-export {softVerifyToken}
-export default verifyToken;
+//export {softVerifyToken}
+//export default verifyToken;
