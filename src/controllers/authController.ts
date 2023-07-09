@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../DB/prisma';
+import { format, parseISO } from 'date-fns';
 
 import { StatusCodes } from 'http-status-codes';
 import { hashPassword, comparePassword } from '../utils/password';
@@ -140,6 +141,18 @@ const authController = {
         { expiresIn: '1h' }
       );
 
+      // Format the lastLogin value
+    const formattedLastLogin = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
+
+      await prisma.user.update({
+        where: {
+          id: user.id
+        },
+        data: {
+          lastLogin: formattedLastLogin
+        }
+      })
+
       return res.status(StatusCodes.OK).json({
         message: 'Login successful',
         user: {
@@ -147,6 +160,7 @@ const authController = {
           email: user.email,
           number: user.number,
           type: user.type,
+          lastLogin: user.lastLogin
         },
         token: token,
       });
@@ -265,15 +279,6 @@ const authController = {
     
      
 
-      // const realtor = await prisma.realtor.findFirst({
-      //   where: { realtor: user.realtor },
-      // });
-
-      // if (!realtor) {
-      //   return res
-      //     .status(StatusCodes.NOT_FOUND)
-      //     .json({ message: 'Realtor not found 2' });
-      // }
 
       if (!user) {
         return res.status(StatusCodes.UNAUTHORIZED).json({
@@ -305,6 +310,18 @@ const authController = {
         { expiresIn: '1h' }
       );
 
+       // Format the lastLogin value
+    const formattedLastLogin = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
+
+    await prisma.user.update({
+      where: {
+        id: user.id
+      },
+      data: {
+        lastLogin: formattedLastLogin
+      }
+    })
+
       return res.status(StatusCodes.OK).json({
         message: 'Login successfully',
         user: {
@@ -312,6 +329,7 @@ const authController = {
           email: user.email,
           number: user.number,
           type: user.type,
+          lastLogin: user.lastLogin,
         },
         token: token,
       });
