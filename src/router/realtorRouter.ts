@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import multer from 'multer';
 const router = express.Router();
 
-import rectorController from '../controllers/rectorController';
+import rectorController from '../controllers/realtorController';
 
 //Set up multer storage and file filter
 const storage = multer.diskStorage({});

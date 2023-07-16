@@ -73,7 +73,7 @@ const propertyFormController = {
         total_lessee,
         price,
         message,
-        realtorId,
+        
         userId,
       } = req.body;
 
@@ -136,7 +136,7 @@ const propertyFormController = {
           total_lessee,
           price,
           message,
-          realtorId,
+          
           userId,
         },
       });
