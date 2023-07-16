@@ -20,7 +20,7 @@ import xss from 'xss-clean';
 // import routes
 import AuthRouter from './router/authRouter';
 import ProfileRouters from './router/profileRouter';
-import RectorRouter from './router/rectorRouter';
+import RealtorRouter from './router/realtorRouter';
 import OtpRouters from './router/otpRouter';
 import UserRouter from './router/userRouter';
 import resetPasswordRouter from './router/resetPasswordRouter';
@@ -74,7 +74,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/v1/auth', AuthRouter);
 app.use('/api/v1/profiles', ProfileRouters);
-app.use('/api/v1/agents', RectorRouter);
+app.use('/api/v1/agents', RealtorRouter);
 app.use('/api/v1/otp', OtpRouters);
 app.use('/api/v1/users', UserRouter);
 app.use('/api/v1/auth/password', resetPasswordRouter);
