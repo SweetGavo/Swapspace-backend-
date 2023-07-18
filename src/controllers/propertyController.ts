@@ -159,6 +159,7 @@ const propertyController = {
 
   // Usage in getAllProperty function
   getAllProperty: async (req: Request, res: Response): Promise<Response> => {
+    
     try {
       const cacheKey = 'allProperties';
 
@@ -181,7 +182,10 @@ const propertyController = {
         return res.status(StatusCodes.OK).json(cachedData);
       }
     } catch (error) {
+<<<<<<< HEAD
       console.error('Error retrieving properties:', error);
+=======
+>>>>>>> 16df60584bcabcb4966e89d4a168459efc5b942b
       return res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ error: 'Failed to retrieve properties' });
@@ -346,6 +350,7 @@ const propertyController = {
     }
   },
 
+  
   getOneProperty: async (req: Request, res: Response) => {
     const { id } = req.params;
   

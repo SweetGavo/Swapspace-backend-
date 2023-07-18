@@ -27,7 +27,7 @@ const responseController = {
         amount
       },
     });
-
+    
     return res.status(StatusCodes.CREATED).json(response);
   },
 };

@@ -1,0 +1,300 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url  = env("DATABASE_URL")
+}
+
+enum PROPERTY_TYPES {
+  commercial_Villa
+  offices
+  shops
+  apartment
+  villa
+  town_House
+  pent_House
+  select
+  Apartment_Hotel
+  apartment_Residential
+  warehouse
+  showroom
+  bulk_Unit
+  commercial_Floor
+  residential_Floor
+  land
+}
+
+enum Specalty_Type {
+  Property_Investment
+  Property_Contractor
+  Leasing_Executive
+  Realtor
+  Property_Consultant
+  Real_Estate_Consultant
+  Property_Manager
+  Real_Estate_Agent
+  Sales_Leasing_Agent
+  Other
+  Selecte
+}
+
+enum Status_type {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum List_Types {
+  USER
+  AGENT
+  ADMIN
+}
+
+enum Agent_type {
+  REALTOR
+  CO_REALTOR
+}
+
+model User {
+  id             String     @id @unique @default(uuid())
+  email          String     @unique
+  number         String     @unique
+  password       String
+  profile        Profile?
+  otp            Otp[]      @relation("Otpproperties")
+  type           List_Types @default(USER)
+  createdAt      DateTime   @default(now())
+  date_modified  DateTime   @default(now()) @updatedAt
+  verifiedEmail  Boolean    @default(false)
+  verifiedNumber Boolean    @default(false)
+  realtor        Realtor?
+  realtorId      String?    @unique
+  ratingsGiven   Rating[]
+  offers         Offers[]
+}
+
+model Profile {
+  id            String   @id @unique @default(uuid())
+  fullname      String
+  address       String
+  image         String
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id])
+  createdAt     DateTime @default(now())
+  date_modified DateTime @default(now()) @updatedAt
+
+  @@index([userId])
+}
+
+model Realtor {
+  id                  String      @id @unique @default(uuid())
+  compant_name        String
+  address             String
+  broker_BRN          String
+  agent_ORN           String
+  years_of_experience String
+  specialty           String[]
+  role                Agent_type
+  language            String[]
+  description         String
+  license_number      String      @unique
+  broker_card_image   String[]
+  image               String
+  status              Status_type @default(PENDING)
+  user                User?       @relation(fields: [userId], references: [id])
+  groups              Group[]     @relation("RealtorGroups")
+  userId              String?     @unique
+  properties          Property[]  @relation("RealtorProperties")
+  createdAt           DateTime    @default(now())
+  date_modified       DateTime    @default(now()) @updatedAt
+  ratingsReceived     Rating[]
+}
+
+model Otp {
+  id            String   @id @unique @default(uuid())
+  userId        String   @unique
+  user          User?    @relation("Otpproperties", fields: [userId], references: [id])
+  otp           String
+  createdAt     DateTime @default(now())
+  otp_expiry    DateTime
+  date_modified DateTime @default(now()) @updatedAt
+
+  @@index([userId])
+}
+
+model Property {
+  id                                  String         @id @unique @default(uuid())
+  property_title                      String
+  property_type                       PROPERTY_TYPES
+  structure                           String
+  listing_type                        String
+  style                               String
+  view                                String
+  utility_payment                     String
+  year_built                          String
+  pets_allowed                        String
+  available                           String
+  sale_or_rent_price                  String
+  price_prefix                        String
+  payment_frequency                   String
+  payment_plan                        String
+  langitude                           Float
+  latitude                            Float
+  country                             String
+  street_Number                       String
+  locality                            String
+  postal_code                         String
+  logistics                           String
+  parking_lot                         String
+  parking_slots                       String
+  fire_place                          String
+  entry_floor                         String
+  room_list                           String
+  bedroom                             String
+  bathroom                            String
+  pool                                String
+  building_unit                       String
+  unit_amenities                      String[]
+  specification                       String
+  images                              String[]
+  video_url                           String
+  video_url_tour                      String
+  utilities                           String[]
+  date_posted                         String
+  property_price                      String
+  total_lessee                        String
+  permit                              String
+  description                         String
+  additional_details                  String
+  additional_facilities_and_amenities String
+  proximate_landmark                  String
+  realtor                             Realtor?       @relation("RealtorProperties", fields: [realtorId], references: [id])
+  offers                              Offers[]
+  realtorId                           String?
+  createdAt                           DateTime       @default(now())
+  date_modified                       DateTime       @default(now()) @updatedAt
+}
+
+model Group {
+  id            String      @id @unique @default(uuid())
+  name          String
+  realtorId     String
+  status        String      @default("CREATOR")
+  members       CoRealtor[] @relation("GroupMembers")
+  createdBy     Realtor     @relation("RealtorGroups", fields: [realtorId], references: [id])
+  createdAt     DateTime    @default(now())
+  date_modified DateTime    @default(now()) @updatedAt
+}
+
+model Rating {
+  id        String   @id @unique @default(uuid())
+  value     Int
+  comment   String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  realtorId String
+  realtor   Realtor  @relation(fields: [realtorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum OfferStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model Offers {
+  id         String      @id @unique @default(uuid())
+  userId     String
+  propertyId String
+  status     OfferStatus @default(PENDING)
+  user       User        @relation(fields: [userId], references: [id])
+  property   Property    @relation(fields: [propertyId], references: [id])
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+enum Completed_Type {
+  PENDING
+  COMPLETED
+  OVERDUE
+}
+
+enum Action_Type {
+  CALL
+  EMAIL
+  MESSAGE
+  DEAL
+  OTHERS
+}
+
+model Task {
+  id                    String         @id @unique @default(uuid())
+  title                 String
+  action                Action_Type
+  assignee              String
+  collaborator          String
+  contact               String[]
+  description           String
+  start_date            DateTime
+  due_date_and_time     DateTime
+  closing_date_and_time DateTime
+  completed             Completed_Type @default(PENDING)
+  responses             Response[]     @relation("TaskResponses")
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+}
+
+model Response {
+  id        String   @id @unique @default(uuid())
+  outcome   String
+  note      String
+  comment   String
+  taskId    String
+  task      Task?    @relation("TaskResponses", fields: [taskId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CoRealtor {
+  id        String   @id @unique @default(uuid())
+  full_name String
+  email     String   @unique
+  number    String
+  password  String
+  type      String   @default("CO_REALTOR")
+  token     String?  @unique
+  image     String
+  groups    Group[]  @relation("GroupMembers")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Invitation {
+  id        String   @id @unique @default(uuid())
+  email     String
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Favorite {
+id String @id @unique @default(uuid())
+userID String
+createdAt DateTime @default(now())
+updatedAt DateTime @updatedAt
+}
+
+
+model declined {
+id String @unique 
+userID String
+createdAt DateTime @default(now())
+updatedAt DateTime @updatedAt
+}
