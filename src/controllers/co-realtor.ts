@@ -5,7 +5,6 @@ import Joi from 'joi';
 import { hashPassword, comparePassword } from '../utils/password';
 import validatePasswordString from '../utils/passwordValidator';
 import jwt from 'jsonwebtoken';
-
 const createCoRealtorSchema = Joi.object({
   full_name: Joi.string().min(3).max(50).required(),
   email: Joi.string().email().required(),

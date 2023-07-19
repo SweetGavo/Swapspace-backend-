@@ -38,6 +38,7 @@ const offersControllers = {
       offer: offer,
     });
   },
+  
   getAllOffers: async (req: Request, res: Response): Promise<Response> => {
     const ITEMS_PER_PAGE = 10;
     const page = parseInt(req.query.page as string) || 1;

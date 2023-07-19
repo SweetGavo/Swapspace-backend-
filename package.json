@@ -1,7 +1,7 @@
 {
   "name": "swapspace",
   "version": "1.0.0",
-  "description": "",
+  "description": "Swap Space users server.",
   "main": "app.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
