@@ -31,38 +31,6 @@ const infoController = {
     }
   },
 
-<<<<<<< HEAD
-
-   getAllInfo: async(req: Request, res: Response): Promise<Response> => {
-       
-         const infos = await prisma.info.findMany()
-
-
-         return res.status(StatusCodes.OK)
-         .json({
-          message: `Successful`,
-          infos
-         })
-   },
-   getAllInfosByRealtor: async(req: Request, res: Response) => {
-       const { id } = req.params;
-
-
-       const realtorsInfos = await prisma.info.findMany({
-        where: {
-          realtorId: id
-        }
-       })
-
-       if(!realtorsInfos){
-        return res.status(StatusCodes.NOT_FOUND)
-        .json({ message: `Realtors id not found`})
-       }
-
-       return res.status(StatusCodes.OK)
-       .json(realtorsInfos)
-   }
-=======
   getallMeetings: async (req: Request, res: Response) => {
       try {
         const meetings = await prisma.info.findMany({})
@@ -124,7 +92,6 @@ const infoController = {
       });
     }
   }
->>>>>>> 16df60584bcabcb4966e89d4a168459efc5b942b
 };
 
 export default infoController;

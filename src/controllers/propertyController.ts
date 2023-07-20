@@ -182,10 +182,6 @@ const propertyController = {
         return res.status(StatusCodes.OK).json(cachedData);
       }
     } catch (error) {
-<<<<<<< HEAD
-      console.error('Error retrieving properties:', error);
-=======
->>>>>>> 16df60584bcabcb4966e89d4a168459efc5b942b
       return res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ error: 'Failed to retrieve properties' });

@@ -4,19 +4,7 @@ import { Request, Response } from 'express';
 
 const userController = {
   getAllUsers: async (req: Request, res: Response) => {
-<<<<<<< HEAD
-    const users = await prisma.user.findMany({
-      select: {
-        id: true,
-        number: true,
-        email: true,
-        type: true,
-        profile: true,
-        realtor: true,
-      },
-    });
-=======
-    try {
+  
        
       const users = await prisma.user.findMany({
         select: {
@@ -28,7 +16,6 @@ const userController = {
           realtor: true,
         },
       });
->>>>>>> 16df60584bcabcb4966e89d4a168459efc5b942b
 
     if (!users || users.length === 0) {
       return res
