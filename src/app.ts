@@ -10,6 +10,11 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 
+import prisma from './DB/prisma';
+import jwt from 'jsonwebtoken';
+const passport = require('passport');
+import AppleStrategy from 'passport-apple';
+
 import helmet from 'helmet';
 const rateLimitPromise = import('express-rate-limit');
 import xss from 'xss-clean';
@@ -44,6 +49,17 @@ app.use(bodyParser.json());
 app.use(cookieParser(process.env.JWT_COOKIE));
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+interface UserInfo {
+  id: string;
+  name: string;
+  emails: string;
+}
+
+
 const applyRateLimiter = async (
   req: Request,
   res: Response,
@@ -68,6 +84,33 @@ app.use(helmet());
 
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to SWAP SPACE App' });
+});
+
+
+app.get("/login", passport.authenticate('apple'));
+
+app.post("/auth", function(req, res, next) {
+	passport.authenticate('apple', function(err: string, user: UserInfo, info: any) {
+		if (err) {
+			if (err == "AuthorizationError") {
+				res.send("Oops! Looks like you didn't allow the app to proceed. Please sign in again! ");
+			} else if (err == "TokenError") {
+				res.send("Oops! Couldn't get a valid token from Apple's servers!");
+			} else {
+				res.send(err);
+			}
+		} else {
+
+			if (req.body.user) {
+				res.json({
+					user: req.body.user,
+					idToken: user
+				});
+			} else {
+				res.json(user);
+			}			
+		}
+	})(next);
 });
 
 // USE ROUTES
@@ -98,6 +141,21 @@ import errorHandlerMiddleware from './middleware/error-handler';
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
+
+// passport.use(new AppleStrategy({
+//   clientID:  process.env.APPLE_ID  || " ",
+//   teamID: "",
+//   callbackURL: "",
+//   keyID: "",
+//   privateKeyLocation: "",
+//   passReqToCallback: true
+// }, function(req, accessToken, refreshToken, idToken, profile, cb) {
+//   if (req.body && req.body.user) {
+//     // Register your user here!
+// console.log(req.body.user);
+// }
+//   cb(null, idToken);
+// }));
 
 //port
 const port = process.env.PORT || 6001;
