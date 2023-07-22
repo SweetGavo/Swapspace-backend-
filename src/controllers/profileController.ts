@@ -145,12 +145,12 @@ const profileController = {
           },
         });
   
-        // Delete other related properties associated with the user
-        // await prisma.property.deleteMany({
-        //   where: {
-        //     userId: userId,
-        //   },
-        // });
+        //Delete other related properties associated with the user
+        await prisma.property.deleteMany({
+          where: {
+            userId: profileId,
+          },
+        });
   
         return res.status(StatusCodes.OK).json({
           message: "Profile and associated properties deleted successfully.",

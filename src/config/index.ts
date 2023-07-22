@@ -6,6 +6,10 @@ dotenv.config();
 const redisPortString = process.env.REDIS_PORT;
 const redisPort = redisPortString ? parseInt(redisPortString, 10) : undefined;
 
+
+const azureEndPointString = process.env.AZURE_ENDPOINT
+const newAzureEndPoint = azureEndPointString ? parseInt(azureEndPointString, 10) : undefined;
+
 export const configs =  {
      JWT_SECRET: process.env.JWT_SECRET || '',
      JWT_COOKIE: process.env.JWT_COOKIE,
@@ -22,5 +26,7 @@ export const configs =  {
      SENDERS_NAME:process.env.SENDERS_NAME || 'SWAP SPACE',
      SENDERS_EMAIL:process.env.SENDERS_EMAIL || 'dev@swapspace.live',
      URL: process.env.URL,
-     REDIS_PORT:redisPort
+     REDIS_PORT:redisPort,
+     AZURE_ENDPOINT:process.env.AZURE_ENDPOINT || 'https://notification-swapspace.communication.azure.com/',
+     AZURE_CONNECTION_STRING:process.env.CONNECTION_STRING
 }

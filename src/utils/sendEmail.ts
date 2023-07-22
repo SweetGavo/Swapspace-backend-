@@ -1,6 +1,4 @@
 import nodemailer, { Transporter } from 'nodemailer';
-import { Job, Queue } from 'bullmq';
-import { emailQueue } from '../cache/emailQueue';
 import { PrepareMailDataType, SendMailDataType } from '../helpers/types';
 import { configs } from '../config';
 

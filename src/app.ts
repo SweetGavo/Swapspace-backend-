@@ -14,9 +14,6 @@ import helmet from 'helmet';
 const rateLimitPromise = import('express-rate-limit');
 import xss from 'xss-clean';
 
-
-
-
 // import routes
 import AuthRouter from './router/authRouter';
 import ProfileRouters from './router/profileRouter';
@@ -37,6 +34,7 @@ import TeamTaskRouter from './router/teamtaskRouter';
 import InfoRouter from './router/infoRouter';
 import FavoriteRouter from './router/favouriteRouter';
 import FeedbackRouter from './router/feedbackRouter';
+import WailistRouter from './router/waitlistRouter';
 
 app.use(cors());
 app.use(morgan('dev'));
@@ -64,8 +62,6 @@ app.use(xss());
 app.use(applyRateLimiter);
 app.use(helmet());
 
-
-
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to SWAP SPACE App' });
 });
@@ -91,6 +87,7 @@ app.use('/api/v1/teamtasks', TeamTaskRouter);
 app.use('/api/v1/meetings', InfoRouter);
 app.use('/api/v1/favorites', FavoriteRouter);
 app.use('/api/v1/feedbacks', FeedbackRouter);
+app.use('/api/v1/waitlist', WailistRouter);
 
 //ErrorHandlerMiddleware
 import notFoundMiddleware from './middleware/not-found';

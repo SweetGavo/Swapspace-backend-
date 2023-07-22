@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
@@ -74,7 +74,7 @@ model User {
   verifiedEmail      Boolean    @default(false)
   verifiedNumber     Boolean    @default(false)
   block              Boolean    @default(false)
-  lastLogin          String?   
+  lastLogin          String?
   realtor            Realtor?
   realtorId          String?    @unique
   ratingsGiven       Rating[]
@@ -123,10 +123,11 @@ model Realtor {
   info                Info[]       @relation("Info")
   invites             Invitation[] @relation("Invitation")
 }
+
 //link realtor id
 model Otp {
   id            String   @id @unique @default(uuid())
-  userId        String   
+  userId        String
   user          User?    @relation("Otpproperties", fields: [userId], references: [id])
   // realtorId      String
   // realtor       Realtor?  @relation("Otpproperties", fields: [realtorId], references:[id])
@@ -575,4 +576,12 @@ model ROC {
   gain           Float?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+}
+
+model Waitlist {
+  id        String   @id @unique @default(uuid())
+  full_name String
+  email     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
