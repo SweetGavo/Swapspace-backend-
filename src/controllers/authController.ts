@@ -9,7 +9,7 @@ import Joi from 'joi';
 import validatePasswordString from '../utils/passwordValidator';
 
 const createUserSchema = Joi.object({
-  email: Joi.string().email().required(),
+  email: Joi.string().email().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/).required(),
   password: Joi.string().required(),
   number: Joi.string().required(),
 });
@@ -28,7 +28,7 @@ const authController = {
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-      const { email, password, number, image } = req.body;
+      const { email, password, number } = req.body;
 
       if (!email && !password && !number) {
         res.status(StatusCodes.BAD_REQUEST).json({

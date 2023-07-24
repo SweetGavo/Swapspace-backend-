@@ -62,7 +62,7 @@ enum Agent_type {
 }
 
 model User {
-  id                 String     @id @unique @default(uuid())
+  id                 Int        @id @default(autoincrement())
   email              String     @unique
   number             String?
   password           String
@@ -76,17 +76,17 @@ model User {
   block              Boolean    @default(false)
   lastLogin          String?
   realtor            Realtor?
-  realtorId          String?    @unique
+  realtorId          Int?       @unique
   ratingsGiven       Rating[]
   favoriteProperties Favorite[] @relation("favorites")
 }
 
 model Profile {
-  id            String   @id @unique @default(uuid())
+  id            Int      @id @default(autoincrement())
   fullname      String
   address       String
   image         String
-  userId        String   @unique
+  userId        Int      @unique
   user          User     @relation(fields: [userId], references: [id])
   createdAt     DateTime @default(now())
   date_modified DateTime @default(now()) @updatedAt
@@ -95,7 +95,7 @@ model Profile {
 }
 
 model Realtor {
-  id                  String       @id @unique @default(uuid())
+  id                  Int          @id @default(autoincrement())
   company_name        String
   address             String
   broker_BRN          String
@@ -111,7 +111,7 @@ model Realtor {
   status              Status_type  @default(PENDING)
   user                User?        @relation(fields: [userId], references: [id])
   teams               Team[]       @relation("RealtorGroups")
-  userId              String?      @unique
+  userId              Int?         @unique
   //otp                Otp[]      @relation("Otpproperties")
   properties          Property[]   @relation("RealtorProperties")
   offers              Offers[]
@@ -126,8 +126,8 @@ model Realtor {
 
 //link realtor id
 model Otp {
-  id            String   @id @unique @default(uuid())
-  userId        String
+  id            Int      @id @default(autoincrement())
+  userId        Int
   user          User?    @relation("Otpproperties", fields: [userId], references: [id])
   // realtorId      String
   // realtor       Realtor?  @relation("Otpproperties", fields: [realtorId], references:[id])
@@ -152,7 +152,7 @@ enum Property_Status {
 }
 
 model Property {
-  id                                  String           @id @unique @default(uuid())
+  id                                  Int              @id @default(autoincrement())
   property_title                      String
   property_type                       PROPERTY_TYPES
   structure                           String
@@ -167,8 +167,8 @@ model Property {
   price_prefix                        String
   payment_frequency                   String
   payment_plan                        String
-  langitude                           Float
-  latitude                            Float
+  langitude                           Float?
+  latitude                            Float?
   country                             String
   street_Number                       String
   locality                            String
@@ -203,17 +203,17 @@ model Property {
   realtor                             Realtor?         @relation("RealtorProperties", fields: [realtorId], references: [id])
   offers                              Offers[]
   view_count                          Int              @default(0)
-  view_by_user                        String[]
-  realtorId                           String?
+  view_by_user                        Int[]
+  realtorId                           Int?
   createdAt                           DateTime         @default(now())
   date_modified                       DateTime         @default(now()) @updatedAt
   favoriteProperties                  Favorite[]       @relation("favorites")
 }
 
 model Team {
-  id            String      @id @unique @default(uuid())
+  id            Int         @id @default(autoincrement())
   name          String
-  realtorId     String
+  realtorId     Int
   status        String      @default("CREATOR")
   members       CoRealtor[] @relation("GroupMembers")
   createdBy     Realtor     @relation("RealtorGroups", fields: [realtorId], references: [id])
@@ -223,12 +223,12 @@ model Team {
 }
 
 model Rating {
-  id        String   @id @unique @default(uuid())
+  id        Int      @id @default(autoincrement())
   value     Int
   comment   String
-  userId    String
+  userId    Int
   user      User     @relation(fields: [userId], references: [id])
-  realtorId String
+  realtorId Int
   realtor   Realtor  @relation(fields: [realtorId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -243,9 +243,9 @@ enum ProgressStatus {
 }
 
 model Offers {
-  id             String         @id @unique @default(uuid())
-  propertyId     String
-  realtorId      String
+  id             Int            @id @default(autoincrement())
+  propertyId     Int
+  realtorId      Int
   realtor        Realtor        @relation(fields: [realtorId], references: [id])
   listingId      String?
   client_name    String
@@ -288,11 +288,11 @@ enum TYPE {
 
 // this task is for Individula task or Personal task 
 model Task {
-  id String @id @unique @default(uuid())
+   id             Int            @id @default(autoincrement())
 
   title           String
   action          Action_Type
-  coRealtorId     String?
+  coRealtorId     Int?
   coRealtor       CoRealtor?     @relation("Tasks", fields: [coRealtorId], references: [id])
   number_of_deals Int
   contact         String[]
@@ -306,28 +306,28 @@ model Task {
   responses       Response[]     @relation("TaskResponses")
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
-  realtorId       String?
+  realtorId       Int?
   realtor         Realtor?       @relation("Tasks", fields: [realtorId], references: [id])
   assignee        CoRealtor?     @relation("AssigneeTasks", fields: [assigneeId], references: [id])
   collaborator    CoRealtor?     @relation("CollaboratorTasks", fields: [collaboratorId], references: [id])
-  assigneeId      String?
-  collaboratorId  String?
+  assigneeId      Int?
+  collaboratorId  Int?
 }
 
 model Response {
-  id        String   @id @unique @default(uuid())
+   id             Int            @id @default(autoincrement())
   outcome   String
   contacts  String
   note      String
   amount    Float
-  taskId    String
+  taskId    Int
   task      Task?    @relation("TaskResponses", fields: [taskId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model CoRealtor {
-  id                String   @id @unique @default(uuid())
+   id             Int            @id @default(autoincrement())
   full_name         String
   email             String   @unique
   number            String
@@ -344,10 +344,10 @@ model CoRealtor {
 }
 
 model Invitation {
-  id        String   @id @unique @default(uuid())
+   id             Int            @id @default(autoincrement())
   email     String   @unique
   realtor   Realtor? @relation("Invitation", fields: [realtorId], references: [id])
-  realtorId String?
+  realtorId Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -460,7 +460,7 @@ enum STYLE {
 }
 
 model PropertyForm {
-  id                 String         @id @unique @default(uuid())
+   id             Int            @id @default(autoincrement())
   property_title     String
   description        String
   rent               RENT
@@ -504,8 +504,8 @@ model PropertyForm {
   total_lessee       String
   price              String
   message            String
-  realtorId          String?
-  userId             String
+  realtorId          Int?
+  userId             Int
 }
 
 model TeamTask {
@@ -519,7 +519,7 @@ model TeamTask {
   due_date   String
   due_time   String
   realtor    Realtor        @relation("TeamTasks", fields: [realtorId], references: [id])
-  realtorId  String
+  realtorId  Int
   status     Completed_Type @default(PENDING)
   createdAt  DateTime       @default(now())
   updatedAt  DateTime       @updatedAt
@@ -535,23 +535,23 @@ model Info {
   teamId     String[]
   teams      Team[]   @relation("InfoTeams")
   realtor    Realtor  @relation("Info", fields: [realtorId], references: [id])
-  realtorId  String
+  realtorId  Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
 
 model Favorite {
-  id         String   @id @default(uuid())
+   id             Int            @id @default(autoincrement())
   user       User[]   @relation("favorites")
   property   Property @relation("favorites", fields: [propertyId], references: [id])
-  userId     String
-  propertyId String
+  userId     Int
+  propertyId Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
 
 model Feedback {
-  id              String         @id @unique @default(uuid())
+   id             Int            @id @default(autoincrement())
   userId          String
   nature          FEEDBACKNATURE
   contact_email   String
@@ -569,7 +569,7 @@ enum FEEDBACKNATURE {
 }
 
 model ROC {
-  id             String   @id @unique @default(uuid())
+   id             Int            @id @default(autoincrement())
   property_price Float
   commissiom     Float
   split          Int
@@ -579,9 +579,10 @@ model ROC {
 }
 
 model Waitlist {
-  id        String   @id @unique @default(uuid())
+ id             Int            @id @default(autoincrement())
   full_name String
   email     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
