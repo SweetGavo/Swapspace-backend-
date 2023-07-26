@@ -3,7 +3,7 @@
 
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+  
 }
 
 datasource db {
@@ -106,8 +106,8 @@ model Realtor {
   language            String[]
   description         String
   license_number      String       @unique
-  broker_card_image   String[]
-  image               String
+  broker_card_image   Json?
+  image               String?
   status              Status_type  @default(PENDING)
   user                User?        @relation(fields: [userId], references: [id])
   teams               Team[]       @relation("RealtorGroups")
@@ -470,7 +470,7 @@ model PropertyForm {
   price_prefix       String
   payment_frequency  String
   payment_plan       PAYMENT_PLAN
-  images             String[]
+  images             Json?
   video_url          String
   video_url_tour     String
   bedroom            String
@@ -501,11 +501,12 @@ model PropertyForm {
   specification      SPECIFICATION
   floor_plan         String
   property_document  String[]
-  total_lessee       String
-  price              String
-  message            String
+  total_lessee       String?
+  price              String?
+  message            String?
   realtorId          Int?
   userId             Int
+  
 }
 
 model TeamTask {

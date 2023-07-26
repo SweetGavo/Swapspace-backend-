@@ -1,4 +1,4 @@
-import { Availablity_Type, PROPERTY_TYPES, Property_Status } from "@prisma/client";
+import { AMENITIES, APPLAINCES, Agent_type, Availablity_Type, CATEGORY, EMIRATE, PAYMENT_PLAN, PET, PROPERTY_TYPES, PROXIMITY, Property_Status, RENT, SPECIFICATION, STRUCTURE, STYLE, Status_type, Type, View } from "@prisma/client";
 
 export type OtpDataType = {
   subject: string;
@@ -103,4 +103,87 @@ export type PropertyDataType = {
   renovation?:string;
   availablity: Availablity_Type
   satus: Property_Status
+}
+
+
+export type AgentDataType = {
+  email: string;
+  number: string;
+  password: string;
+  type: Type
+}
+
+
+export type FavortiteDataType =  {
+  propertyId: number;
+  userId: number; 
+}
+
+
+export type RealtorDataType = {
+  id?: number;
+  userId: number;
+  company_name: string;
+  address: string;
+  broker_BRN: string;
+  agent_ORN: string;
+  years_of_experience: string;
+  specialty: string[];
+  role: Agent_type;
+  language: string[];
+  description: string;
+  license_number: string;
+  broker_card_image: string[];
+  status:Status_type
+  image?:string;
+}
+
+
+export type LandLordDataType = {
+  id?: number;
+        property_title:string;
+        description:string;
+        rent:RENT;
+        property_type:PROPERTY_TYPES
+        structure:STRUCTURE
+        sale_or_rent_price:string;
+        price_prefix:string;
+        payment_frequency:string;
+        payment_plan:PAYMENT_PLAN;
+        video_url:string;
+        video_url_tour:string;
+        bedroom:string;
+        bathroom:string;
+        area_size:string;
+        size_postfix:string;
+        fire_place:string;
+        entry_floor:string;
+        parking_slot:string;
+        parking_lot:string;
+        year_built:string;
+        building_unit:string;
+        available:string;
+        renovation:string;
+        appliance:APPLAINCES;
+        category:CATEGORY;
+        amenities: AMENITIES;
+        additional_details?:string;
+        location:string;
+        emirate:EMIRATE;
+        proximity:PROXIMITY;
+        street_Number:string;
+        locality:string;
+        postal_code:string;
+        style:STYLE;
+        view:View;
+        pet:PET;
+        specification:SPECIFICATION;
+        floor_plan:string;
+        total_lessee?:string;
+        price:string;
+        message?:string;
+        images?: string[] | undefined;
+        userId: number;
+        realtorId?:number;
+        property_document:string[];
 }

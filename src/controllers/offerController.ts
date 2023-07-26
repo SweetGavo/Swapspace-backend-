@@ -65,7 +65,7 @@ const offersControllers = {
     req: Request,
     res: Response
   ): Promise<Response> => {
-    const { id } = req.params;
+    const  id  = parseInt(req.params.id);
 
     const userOffers = await prisma.offers.findMany({
       where: {
@@ -89,7 +89,8 @@ const offersControllers = {
   },
 
   updateOffer: async (req: Request, res: Response): Promise<Response> => {
-    const { offerId } = req.params;
+   
+    const  offerId  = parseInt(req.params.offerId);
 
     const updateResponse = await prisma.offers.update({
       where: {
@@ -111,7 +112,7 @@ const offersControllers = {
   },
 
   getCheckoff: async (req: Request, res: Response): Promise<Response> => {
-    const { offerId } = req.params;
+    const  offerId  = parseInt(req.params.offerId);
 
 
     const checkoff = await prisma.offers.findMany({
@@ -131,8 +132,7 @@ const offersControllers = {
     .json(checkoff)
   },
   getConnected: async (req: Request, res: Response): Promise<Response> => {
-    const { offerId } = req.params;
-
+    const  offerId  = parseInt(req.params.offerId);
 
     const connected = await prisma.offers.findMany({
       where: {
@@ -151,7 +151,7 @@ const offersControllers = {
     .json(connected)
   },
   getClosed: async (req: Request, res: Response): Promise<Response> => {
-    const { offerId } = req.params;
+    const  offerId  = parseInt(req.params.offerId);
 
 
     const sold = await prisma.offers.findMany({

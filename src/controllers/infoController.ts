@@ -44,7 +44,7 @@ const infoController = {
          })
    },
    getAllInfosByRealtor: async(req: Request, res: Response) => {
-       const { id } = req.params;
+       const  id  = parseInt(req.params.id);
 
 
        const realtorsInfos = await prisma.info.findMany({

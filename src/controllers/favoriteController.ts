@@ -1,7 +1,13 @@
 import prisma from '../DB/prisma';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import favoriteRepository from '../respository/favoriteRepository';
+import Joi from 'joi';
 
+const favoriteSchema = Joi.object({
+  userId: Joi.string().required(),
+  propertyId: Joi.string().required(),
+});
 const favouriteController = {
   getAllFavourites: async (req: Request, res: Response) => {
     try {
@@ -15,83 +21,69 @@ const favouriteController = {
   },
 
   createFavourite: async (req: Request, res: Response) => {
-    const { userId, propertyId } = req.body;
-
     try {
-      const newFavourite = await prisma.favorite.create({
-        data: {
-          userId,
-          propertyId,
-        },
-      });
-
-      res.status(StatusCodes.CREATED).json(newFavourite);
+      const favorites = await favoriteRepository.getAllFavorites();
+      res.status(StatusCodes.OK).json(favorites);
     } catch (error) {
-      res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: 'An error occurred while creating the favourite.' });
+      console.error('Error getting favorites:', error);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        error: 'An error occurred while retrieving favorites.',
+      });
     }
   },
 
   getFavouriteById: async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const id = parseInt(req.params.id);
 
     try {
-      const favourite = await prisma.favorite.findUnique({
-        where: { id },
-      });
+      const favorite = await favoriteRepository.getFavoriteById(id);
 
-      if (!favourite) {
-        res
+      if (!favorite) {
+        return res
           .status(StatusCodes.NOT_FOUND)
-          .json({ error: 'Favourite not found.' });
+          .json({ error: 'Favorite not found.' });
       } else {
-        res.json(favourite);
+        return res.json(favorite);
       }
     } catch (error) {
-      res
+      console.error('Error getting the favorite:', error);
+      return res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: 'An error occurred while retrieving the favourite.' });
+        .json({ error: 'An error occurred while retrieving the favorite.' });
     }
   },
 
   updateFavourite: async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const  id  = parseInt(req.params.id) as number;
     const { userId, propertyId } = req.body;
 
     try {
-      const favourite = await prisma.favorite.update({
-        where: { id },
-        data: {
-          userId,
-          propertyId,
-        },
-      });
-
-      res.status(StatusCodes.OK).json(favourite);
+      const favorite = await favoriteRepository.updateFavorite(
+        id,
+        userId,
+        propertyId
+      );
+      res.status(StatusCodes.OK).json(favorite);
     } catch (error) {
+      console.error('Error updating the favorite:', error);
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: 'An error occurred while updating the favourite.' });
+        .json({ error: 'An error occurred while updating the favorite.' });
     }
   },
 
   deleteFavourite: async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const id  = parseInt(req.params.id) as number;
 
-    try {
-      await prisma.favorite.delete({
-        where: { id },
-      });
-
-      res
-        .status(StatusCodes.OK)
-        .json({ message: 'Favourite deleted successfully.' });
-    } catch (error) {
-      res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: 'An error occurred while deleting the favourite.' });
-    }
+  try {
+    await favoriteRepository.deleteFavorite(id);
+    res.status(StatusCodes.OK).json({ message: 'Favorite deleted successfully.' });
+  } catch (error) {
+    console.error('Error deleting the favorite:', error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: 'An error occurred while deleting the favorite.' });
+  }
   },
 };
 

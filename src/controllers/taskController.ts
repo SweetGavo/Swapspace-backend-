@@ -93,7 +93,7 @@ const taskController = {
 
   getAllPersonalTasksByREaltor: async (req: Request, res: Response): Promise<Response> => {
     try {
-      const { id } = req.params;
+      const  id  = parseInt(req.params.id);
       
       const tasks = await prisma.task.findMany({
         where: {
@@ -120,7 +120,7 @@ const taskController = {
   getTasksByAssigneeOrCollaborator: async (req: Request, res: Response): Promise<Response> => {
     try {
       //const  { assigneeId, collaboratorId } = req.query;
-     const { id } = req.params;
+     const   id  = parseInt(req.params.id);
 
            
       
