@@ -5,15 +5,21 @@ const propertyRepository = {
   addProperty: async (propertyDataType: PropertyDataType) => {
     try {
       const newProperty = await prisma.property.create({
-        data: propertyDataType,
+        data: {
+          ...propertyDataType,
+          realtorId: propertyDataType.realtorId, // Make sure realtorId is set
+        },
       });
-
+  
       return newProperty;
     } catch (error) {
       console.error('Error adding a property:', error);
       throw new Error('Failed to add a property');
     }
   },
+  
+  
+  
   getAllProperties: async () => {
     try {
       const properties = await prisma.property.findMany({ take: 10 });

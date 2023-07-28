@@ -4,8 +4,9 @@ import { StatusCodes } from 'http-status-codes';
 
 import propertySchema from '../utils/propertyValidation';
 import { v2 as cloudinary } from 'cloudinary';
-import { PROPERTY_TYPES, Prisma } from '@prisma/client';
 import propertyRepository from '../respository/propertyRepository';
+import realtorRepository from '../respository/realtorRepository';
+import { PropertyDataType } from '../helpers/types';
 //import { getOrSetCache, clearCache } from '../cache/redisClient';
 
 cloudinary.config({
@@ -38,20 +39,120 @@ const propertyController = {
         });
       }
   
-      const { realtorId } = req.body;
-  
+      const {
+       
+        property_title,
+        property_type,
+        structure,
+        listing_type,
+        style,
+        view,
+        utility_payment,
+        year_built,
+        pets_allowed,
+        available,
+        sale_or_rent_price,
+        price_prefix,
+        payment_frequency,
+        payment_plan,
+        langitude,
+        latitude,
+        country,
+        street_Number,
+        locality,
+        postal_code,
+        logistics,
+        parking_lot,
+        parking_slots,
+        fire_place,
+        entry_floor,
+        room_list,
+        bedroom,
+        bathroom,
+        pool,
+        building_unit,
+        unit_amenities,
+        specification,
+        video_url,
+        video_url_tour,
+        utilities,
+        date_posted,
+        property_price,
+        total_lessee,
+        permit,
+        description,
+        additional_details,
+        additional_facilities_and_amenities,
+        proximate_landmark,
+        
+        renovation,
+        availablity,
+        satus,
+      } = req.body
+       
+      const realtorId = parseInt(req.params.realtorId, 10); 
       // Check if realtor exists
-      const userExists = await prisma.realtor.findUnique({
-        where: { id: realtorId },
-      });
+      const userExists = await realtorRepository.getOneRealtor(realtorId)
   
       if (!userExists) {
         return res.status(404).json({
           message: 'User does not exist',
         });
       }
+
+
+      const propData: PropertyDataType = {
+        
+        property_title,
+        property_type,
+        structure,
+        listing_type,
+        style,
+        view,
+        utility_payment,
+        year_built,
+        pets_allowed,
+        available,
+        sale_or_rent_price,
+        price_prefix,
+        payment_frequency,
+        payment_plan,
+        langitude,
+        latitude,
+        country,
+        street_Number,
+        locality,
+        postal_code,
+        logistics,
+        parking_lot,
+        parking_slots,
+        fire_place,
+        entry_floor,
+        room_list,
+        bedroom,
+        bathroom,
+        pool,
+        building_unit,
+        unit_amenities,
+        specification,
+        video_url,
+        video_url_tour,
+        utilities,
+        date_posted,
+        property_price,
+        total_lessee,
+        permit,
+        description,
+        additional_details,
+        additional_facilities_and_amenities,
+        proximate_landmark,
+        realtorId,
+        renovation,
+        availablity,
+        satus,
+      }
   
-      const newProperty = await propertyRepository.addProperty(req.body);
+      const newProperty = await propertyRepository.addProperty(propData);
   
       return res.status(201).json({
         message: 'Property has been added',

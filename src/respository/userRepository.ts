@@ -59,11 +59,22 @@ const userRepository = {
     }
   },
 
-  getUserId: async (id: number) => {
+  getUserId: async (userId: number) => {
+  
+    
+    
     try {
       const user = await prisma.user.findUnique({
-        where: { id: id },
+        where: { 
+          id:userId
+         },
       });
+
+      if (!user) {
+        throw new Error(
+           'User not found.',
+        );
+      }
       return user;
     } catch (error) {
       console.error('Error getting user by number:', error);

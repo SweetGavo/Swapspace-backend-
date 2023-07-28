@@ -79,13 +79,15 @@ const propertyFormController = {
         total_lessee,
         price,
         message,
-        userId,
+        
         property_document
       } = req.body;
 
-      const userExists = await userRepository.getUserId(userId);
+const userId =  parseInt(req.params.id, 10);
 
-      if (!userExists) {
+      const userexit = await userRepository.getUserId(userId);
+
+      if (!userexit) {
         return res.status(StatusCodes.NOT_FOUND).json({
           message: 'User does not exist',
         });

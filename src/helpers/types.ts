@@ -186,4 +186,5 @@ export type LandLordDataType = {
         userId: number;
         realtorId?:number;
         property_document:string[];
+        
 }

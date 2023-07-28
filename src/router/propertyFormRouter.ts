@@ -36,7 +36,7 @@ const upload = multer({
 });
 
 router
-  .route('/')
+  .route('/:id')
   .post(upload.single('property_document'), propertyFormController.addProperty);
 
 router

@@ -1,4 +1,3 @@
-import prisma from '../DB/prisma';
 import { StatusCodes } from 'http-status-codes';
 import { Request, Response } from 'express';
 import userRepository from '../respository/userRepository';

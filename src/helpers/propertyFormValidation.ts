@@ -16,8 +16,8 @@ const propertyFormSchema = Joi.object({
     video_url_tour: Joi.string().required(),                  
     bedroom: Joi.string().required(),                          
     bathroom: Joi.string().required(),                         
-    area_size: Joi.string().required(),                       
-    size_postfix: Joi.string().required(),                     
+    area_size: Joi.required(),                       
+    size_postfix: Joi.required(),                     
     fire_place: Joi.string().required(),                      
     entry_floor: Joi.string().required(),                     
     parking_slot: Joi.string().required(),                     
@@ -45,7 +45,7 @@ const propertyFormSchema = Joi.object({
     price: Joi.string().required(),                           
     message: Joi.string().required(),                          
     realtorId: Joi.string(),
-    userId:Joi.string().required()                  
+                    
     
   });
 

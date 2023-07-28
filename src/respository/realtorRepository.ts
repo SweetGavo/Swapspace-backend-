@@ -48,13 +48,11 @@ const realtorRepository = {
         },
         
          getOneRealtor: async (id:number) => {
-          return prisma.realtor.findFirst({
+          return prisma.realtor.findUnique({
             where: {
               id: id,
             },
-            include: {
-              user: true,
-            },
+            
           });
         },
 

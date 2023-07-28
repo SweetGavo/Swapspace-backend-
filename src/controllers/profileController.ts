@@ -3,6 +3,7 @@ import prisma from '../DB/prisma';
 import { StatusCodes } from 'http-status-codes';
 import { v2 as cloudinary } from 'cloudinary';
 import profileRepository from '../respository/profileRepository';
+import userRepository from '../respository/userRepository';
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -13,28 +14,25 @@ cloudinary.config({
 const profileController = {
   createProfile: async (req: Request, res: Response): Promise<Response> => {
     try {
-      const { fullname, address, userId } = req.body;
+      const { fullname, address } = req.body;
       const file = req.file; // Assuming the image file is uploaded as 'file' in the request
 
-      if (!fullname || !address || !userId || !file) {
+      if (!fullname || !address  || !file) {
         return res.status(StatusCodes.BAD_REQUEST).json({
           message:
             'Please provide all the required details and upload an image.',
         });
       }
+      const userId = parseInt(req.params.id, 10); // Parse userId as a number
+     
+
+
 
       // Check if the user with the provided userId exists
-      const user = await prisma.user.findUnique({
-        where: {
-          id: userId,
-        },
-      });
-
-      if (!user) {
-        return res.status(StatusCodes.NOT_FOUND).json({
-          message: 'User not found.',
-        });
-      }
+      const user = await userRepository.getUserId(userId);
+       
+      
+    
 
       // Upload image to Cloudinary
       const uploadedImage = await cloudinary.uploader.upload(file.path);
@@ -51,7 +49,7 @@ const profileController = {
         profile,
       });
     } catch (error) {
-      console.log(error);
+      console.log(error, ':Error creating profile');
 
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         message: 'Failed to create profile.',

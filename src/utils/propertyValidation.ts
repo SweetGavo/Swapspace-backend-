@@ -1,9 +1,10 @@
+import { PROPERTY_TYPES } from '@prisma/client';
 import Joi from 'joi';
 
 const propertySchema = Joi.object({
   
   property_title: Joi.string().required(),
-  property_type: Joi.string().required(),
+  property_type: Joi.string().valid(...Object.values(PROPERTY_TYPES)).required(),
   structure: Joi.string().required(),
   listing_type: Joi.string().required(),
   style: Joi.string().required(),
@@ -46,7 +47,7 @@ const propertySchema = Joi.object({
   additional_details: Joi.string().required(),
   additional_facilities_and_amenities: Joi.string().required(),
   proximate_landmark: Joi.string().required(),
-  realtorId: Joi.string().uuid().allow(null),
+  
   
 });
 

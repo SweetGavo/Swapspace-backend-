@@ -19,12 +19,12 @@ const createAgentProfileSchema = Joi.object({
   broker_BRN: Joi.string().required(),
   agent_ORN: Joi.string().required(),
   years_of_experience: Joi.string().required(),
-  specialty: Joi.string().required(),
+  specialty: Joi.array().items(Joi.string()).required(),
   role: Joi.string().required(),
   language: Joi.array().items(Joi.string()).required(),
   description: Joi.string().required(),
   license_number: Joi.string().required(),
-  userId: Joi.string().required(),
+  
   addProperty: Joi.array().items(Joi.string()),
   status: Joi.string(),
   image: Joi.string(),
@@ -43,7 +43,7 @@ const rectorController = {
       }
 
       const {
-        userId,
+        
         company_name,
         address,
         broker_BRN,
@@ -55,6 +55,8 @@ const rectorController = {
         description,
         license_number,
       } = req.body;
+
+      const userId = parseInt(req.params.id, 10);
 
       // Check if user exists
       const userExists = await userRepository.getUserId(userId);

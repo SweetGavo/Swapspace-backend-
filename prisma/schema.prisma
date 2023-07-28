@@ -76,23 +76,23 @@ model User {
   block              Boolean    @default(false)
   lastLogin          String?
   realtor            Realtor?
-  realtorId          Int?       @unique
+  realtorId          Int?       
   ratingsGiven       Rating[]
   favoriteProperties Favorite[] @relation("favorites")
 }
-
 model Profile {
   id            Int      @id @default(autoincrement())
   fullname      String
   address       String
   image         String
-  userId        Int      @unique
+  userId        Int        @unique
   user          User     @relation(fields: [userId], references: [id])
   createdAt     DateTime @default(now())
   date_modified DateTime @default(now()) @updatedAt
 
-  @@index([userId])
+  @@index([userId])  // Add an index for userId
 }
+
 
 model Realtor {
   id                  Int          @id @default(autoincrement())
@@ -204,7 +204,7 @@ model Property {
   offers                              Offers[]
   view_count                          Int              @default(0)
   view_by_user                        Int[]
-  realtorId                           Int?
+  realtorId                           Int    
   createdAt                           DateTime         @default(now())
   date_modified                       DateTime         @default(now()) @updatedAt
   favoriteProperties                  Favorite[]       @relation("favorites")

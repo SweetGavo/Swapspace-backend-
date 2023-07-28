@@ -38,7 +38,7 @@ const upload = multer({
 });
 
 router
-  .route('/')
+  .route('/:id/agent-profile')
   .post(
     upload.array('broker_card_image', 2),
     rectorController.createAgentProfile
