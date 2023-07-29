@@ -2,8 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider      = "prisma-client-js"
-  
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -76,23 +75,23 @@ model User {
   block              Boolean    @default(false)
   lastLogin          String?
   realtor            Realtor?
-  realtorId          Int?       
+  realtorId          Int?
   ratingsGiven       Rating[]
   favoriteProperties Favorite[] @relation("favorites")
 }
+
 model Profile {
   id            Int      @id @default(autoincrement())
   fullname      String
   address       String
   image         String
-  userId        Int        @unique
+  userId        Int      @unique
   user          User     @relation(fields: [userId], references: [id])
   createdAt     DateTime @default(now())
   date_modified DateTime @default(now()) @updatedAt
 
-  @@index([userId])  // Add an index for userId
+  @@index([userId]) // Add an index for userId
 }
-
 
 model Realtor {
   id                  Int          @id @default(autoincrement())
@@ -204,7 +203,7 @@ model Property {
   offers                              Offers[]
   view_count                          Int              @default(0)
   view_by_user                        Int[]
-  realtorId                           Int    
+  realtorId                           Int
   createdAt                           DateTime         @default(now())
   date_modified                       DateTime         @default(now()) @updatedAt
   favoriteProperties                  Favorite[]       @relation("favorites")
@@ -288,7 +287,7 @@ enum TYPE {
 
 // this task is for Individula task or Personal task 
 model Task {
-   id             Int            @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   title           String
   action          Action_Type
@@ -315,7 +314,7 @@ model Task {
 }
 
 model Response {
-   id             Int            @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   outcome   String
   contacts  String
   note      String
@@ -327,7 +326,7 @@ model Response {
 }
 
 model CoRealtor {
-   id             Int            @id @default(autoincrement())
+  id                Int      @id @default(autoincrement())
   full_name         String
   email             String   @unique
   number            String
@@ -344,7 +343,7 @@ model CoRealtor {
 }
 
 model Invitation {
-   id             Int            @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   email     String   @unique
   realtor   Realtor? @relation("Invitation", fields: [realtorId], references: [id])
   realtorId Int?
@@ -460,7 +459,7 @@ enum STYLE {
 }
 
 model PropertyForm {
-   id             Int            @id @default(autoincrement())
+  id                 Int            @id @default(autoincrement())
   property_title     String
   description        String
   rent               RENT
@@ -506,7 +505,6 @@ model PropertyForm {
   message            String?
   realtorId          Int?
   userId             Int
-  
 }
 
 model TeamTask {
@@ -542,7 +540,7 @@ model Info {
 }
 
 model Favorite {
-   id             Int            @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   user       User[]   @relation("favorites")
   property   Property @relation("favorites", fields: [propertyId], references: [id])
   userId     Int
@@ -552,7 +550,7 @@ model Favorite {
 }
 
 model Feedback {
-   id             Int            @id @default(autoincrement())
+  id              Int            @id @default(autoincrement())
   userId          String
   nature          FEEDBACKNATURE
   contact_email   String
@@ -570,7 +568,7 @@ enum FEEDBACKNATURE {
 }
 
 model ROC {
-   id             Int            @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   property_price Float
   commissiom     Float
   split          Int
@@ -580,10 +578,9 @@ model ROC {
 }
 
 model Waitlist {
- id             Int            @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   full_name String
   email     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-

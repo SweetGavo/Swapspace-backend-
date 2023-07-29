@@ -4,7 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import { Request, Response } from 'express';
 import generateOTP from '../utils/otpGenerator';
 import getOtpExpiryTime from '../utils/timeGenerator';
-import { prepareMail } from '../utils/sendEmail';
+import { prepareMail } from '../mailer/mailer';
 import request from 'request';
 import cron from 'node-cron';
 import { otptem } from '../mailer/optTemplate';
@@ -95,11 +95,11 @@ const OtpController = {
       const mailBody = await mailBodyPromise;
 
       await prepareMail({
-        mailRecipients: user.email,
-        mailSubject: mailSubject,
-        mailBody: mailBody,
-        senderName: configs.SENDERS_NAME,
-        senderEmail: configs.SENDERS_EMAIL,
+        address: user.email,
+        subject: mailSubject,
+        html: mailBody,
+        displayName: configs.SENDERS_NAME,
+        senderAddress: configs.SENDERS_EMAIL,
       });
 
       return res.status(StatusCodes.OK).json({

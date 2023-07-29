@@ -16,7 +16,7 @@ export type PrepareMailDataType = {
 export type PrepareAzureMailDataType = {
   senderAddress:string;
   subject:string;
-  plainText:string;
+  html:string;
   address:string;
   displayName:string;
 }
@@ -34,7 +34,8 @@ export type SendMailDataType = {
 export type AzureMailDataType = {
   senderAddress: string;
   subject: string;
-  plainText: string;
+  // plainText?: string;
+  html:string;
   address: string;
   displayName:string;
 }

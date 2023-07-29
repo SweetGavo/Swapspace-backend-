@@ -1,9 +1,11 @@
 import { EmailClient } from '@azure/communication-email';
 import { configs } from '../config';
 import { AzureMailDataType, PrepareAzureMailDataType } from '../helpers/types';
+import { DefaultAzureCredential } from "@azure/identity";
+let credential = new DefaultAzureCredential();
 
-const connectionString = configs.AZURE_ENDPOINT;
-const client = new EmailClient(connectionString);
+const connectionString = configs.AZURE_CONNECTION_STRING;
+const client = new EmailClient('endpoint=https://swapcomm.unitedstates.communication.azure.com/;accesskey=NQzmSJC/YRAF5GH1QCDIQYxjDab4QGmv9y+jwHMa0n1dhYzqk3lltA8i8ttB+X+JHnYeGJK/KGWKfhv7lfgfnA==');
 
 const sendEmail = async (data: AzureMailDataType) => {
   try {
@@ -11,7 +13,7 @@ const sendEmail = async (data: AzureMailDataType) => {
       senderAddress: data.senderAddress,
       content: {
         subject: data.subject,
-        plainText: data.plainText,
+        html: data.html,
       },
       recipients: {
         to: [
@@ -43,7 +45,7 @@ export default sendEmail;
 export const prepareMail = async ({
      senderAddress ,
      subject,
-     plainText,
+     html,
      address,
      displayName
 
@@ -51,7 +53,7 @@ export const prepareMail = async ({
      const _sendMail: any = await sendEmail({
           senderAddress ,
           subject,
-          plainText,
+          html,
           address, // users email
           displayName  
      });

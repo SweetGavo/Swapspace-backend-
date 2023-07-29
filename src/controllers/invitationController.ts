@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import prisma from '../DB/prisma';
 import { StatusCodes } from 'http-status-codes';
-import { prepareMail } from '../utils/sendEmail';
+import { prepareMail } from '../mailer/mailer';
 import { configs } from '../config';
 import { InvitationTemp } from '../mailer/invitationTemplate';
 
@@ -11,7 +11,7 @@ const invitationController = {
 
     //check realtorsID
 
-    const ckeckRealtorID = await prisma.realtor.findUnique({
+    const ckeckRealtorID = await prisma.realtor.findFirst({
       where: {
         id: realtorId
       }
@@ -28,7 +28,6 @@ const invitationController = {
         realtorId,
       },
     });
-
     // Generate the invitation link using the invitation token
     const invitationLink = `<a href="${configs.URL}/auth/co-realtor/signup">Click here to start your registration</a>`;
 
@@ -45,12 +44,15 @@ const invitationController = {
     const mailBody = await mailBodyPromise;
 
     await prepareMail({
-      mailRecipients: invite.email,
-      mailSubject: mailSubject,
-      mailBody: mailBody,
-      senderName: configs.SENDERS_NAME,
-      senderEmail: configs.SENDERS_EMAIL,
+      senderAddress:configs.SENDERS_EMAIL,
+      subject: mailSubject,
+      html: mailBody,
+      address:  invite.email,
+      displayName: 'swapspace'
     });
+
+    
+ 
 
     return res.status(StatusCodes.CREATED).json({
       message: 'Invitation sent successfully',
