@@ -18,14 +18,10 @@ router
 .route('/logout')
 .get(authController.logoutUser)
 
-router
-.route('/signup/agent')
-.post(authController.createAgent)
 
 
-router
-.route('/relators/login')
-.post(authController.loginRealtor)
+
+
 
 
 

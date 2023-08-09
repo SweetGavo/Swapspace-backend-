@@ -61,23 +61,39 @@ enum Agent_type {
 }
 
 model User {
-  id                 Int        @id @default(autoincrement())
-  email              String     @unique
-  number             String?
-  password           String
-  profile            Profile?
-  otp                Otp[]      @relation("Otpproperties")
-  type               Type       @default(USER)
-  createdAt          DateTime   @default(now())
-  date_modified      DateTime   @default(now()) @updatedAt
-  verifiedEmail      Boolean    @default(false)
-  verifiedNumber     Boolean    @default(false)
-  block              Boolean    @default(false)
-  lastLogin          String?
-  realtor            Realtor?
-  realtorId          Int?
+  id             Int      @id @default(autoincrement())
+  email          String   @unique
+  number         String?
+  password       String
+  profile        Profile?
+  otp            Otp[]    @relation("Otpproperties")
+  type           Type     @default(USER)
+  createdAt      DateTime @default(now())
+  date_modified  DateTime @default(now()) @updatedAt
+  verifiedEmail  Boolean  @default(false)
+  verifiedNumber Boolean  @default(false)
+  block          Boolean  @default(false)
+  lastLogin      String?
+
   ratingsGiven       Rating[]
   favoriteProperties Favorite[] @relation("favorites")
+}
+
+model Agent {
+  id             Int      @id @default(autoincrement())
+  email          String   @unique
+  number         String?
+  password       String
+  type           Type     @default(AGENT)
+  lastLogin      String?
+  verifiedEmail  Boolean  @default(false)
+  verifiedNumber Boolean  @default(false)
+  block          Boolean  @default(false)
+  otp            Otp[]    @relation("Otpproperties")
+  createdAt      DateTime @default(now())
+  date_modified  DateTime @default(now()) @updatedAt
+  realtor        Realtor?
+  realtorId      Int?
 }
 
 model Profile {
@@ -94,7 +110,7 @@ model Profile {
 }
 
 model Realtor {
-  id                  Int          @id @default(autoincrement())
+  id                  Int         @id @default(autoincrement())
   company_name        String
   address             String
   broker_BRN          String
@@ -104,38 +120,38 @@ model Realtor {
   role                Agent_type
   language            String[]
   description         String
-  license_number      String       @unique
+  license_number      String      @unique
   broker_card_image   Json?
   image               String?
-  status              Status_type  @default(PENDING)
-  user                User?        @relation(fields: [userId], references: [id])
-  teams               Team[]       @relation("RealtorGroups")
-  userId              Int?         @unique
-  //otp                Otp[]      @relation("Otpproperties")
-  properties          Property[]   @relation("RealtorProperties")
-  offers              Offers[]
-  createdAt           DateTime     @default(now())
-  date_modified       DateTime     @default(now()) @updatedAt
-  ratingsReceived     Rating[]
-  task                Task[]       @relation("Tasks")
-  teamTasks           TeamTask[]   @relation("TeamTasks")
-  info                Info[]       @relation("Info")
-  invites             Invitation[] @relation("Invitation")
+  status              Status_type @default(PENDING)
+  agent               Agent?      @relation(fields: [agentId], references: [id])
+  teams               Team[]      @relation("RealtorGroups")
+  agentId             Int?        @unique
+
+  properties      Property[]   @relation("RealtorProperties")
+  offers          Offers[]
+  createdAt       DateTime     @default(now())
+  date_modified   DateTime     @default(now()) @updatedAt
+  ratingsReceived Rating[]
+  task            Task[]       @relation("Tasks")
+  teamTasks       TeamTask[]   @relation("TeamTasks")
+  info            Info[]       @relation("Info")
+  invites         Invitation[] @relation("Invitation")
 }
 
 //link realtor id
 model Otp {
   id            Int      @id @default(autoincrement())
-  userId        Int
+  userId        Int?
   user          User?    @relation("Otpproperties", fields: [userId], references: [id])
-  // realtorId      String
-  // realtor       Realtor?  @relation("Otpproperties", fields: [realtorId], references:[id])
   otp           String
+  agentId       Int?
+  agent         Agent?   @relation("Otpproperties", fields: [agentId], references: [id])
   createdAt     DateTime @default(now())
   otp_expiry    DateTime @default(now())
   date_modified DateTime @default(now()) @updatedAt
 
-  @@index([userId])
+  @@index([userId, agentId])
 }
 
 enum Availablity_Type {

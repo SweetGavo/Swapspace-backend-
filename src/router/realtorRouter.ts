@@ -45,7 +45,7 @@ router
   );
 
 router
-  .route('/image-upload')
+  .route('/:realtorId/image-upload')
   .post(upload.single('image'), rectorController.updateAgentProfileImage);
 
 router.route('/').get(rectorController.getAllRealtor);

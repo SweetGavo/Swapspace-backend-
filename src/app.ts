@@ -35,6 +35,9 @@ import InfoRouter from './router/infoRouter';
 import FavoriteRouter from './router/favouriteRouter';
 import FeedbackRouter from './router/feedbackRouter';
 import WailistRouter from './router/waitlistRouter';
+import AgentRouter from './router/agentRouter';
+import GetAgentRouter from './router/getAgentRouter';
+import AgentOTP from './router/OtpAgentRouter';
 
 app.use(cors());
 app.use(morgan('dev'));
@@ -72,6 +75,7 @@ app.use('/api/v1/auth', AuthRouter);
 app.use('/api/v1/profiles', ProfileRouters);
 app.use('/api/v1/agents', RealtorRouter);
 app.use('/api/v1/otp', OtpRouters);
+app.use('/api/v1/otp/realtor', AgentOTP);
 app.use('/api/v1/users', UserRouter);
 app.use('/api/v1/auth/password', resetPasswordRouter);
 app.use('/api/v1/properties', PropertyRouter);
@@ -88,6 +92,8 @@ app.use('/api/v1/meetings', InfoRouter);
 app.use('/api/v1/favorites', FavoriteRouter);
 app.use('/api/v1/feedbacks', FeedbackRouter);
 app.use('/api/v1/waitlist', WailistRouter);
+app.use('/api/v1/auth', AgentRouter);
+app.use('/api/v1/realtors', GetAgentRouter);
 
 //ErrorHandlerMiddleware
 import notFoundMiddleware from './middleware/not-found';

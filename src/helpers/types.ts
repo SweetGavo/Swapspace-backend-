@@ -123,7 +123,7 @@ export type FavortiteDataType =  {
 
 export type RealtorDataType = {
   id?: number;
-  userId: number;
+  agentId: number;
   company_name: string;
   address: string;
   broker_BRN: string;

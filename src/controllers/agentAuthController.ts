@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import prisma from '../DB/prisma';
 import { format, parseISO } from 'date-fns';
 
 import { StatusCodes } from 'http-status-codes';
@@ -7,10 +6,12 @@ import { hashPassword, comparePassword } from '../utils/password';
 import jwt from 'jsonwebtoken';
 import Joi from 'joi';
 import validatePasswordString from '../utils/passwordValidator';
-import userRepository from '../respository/userRepository';
 
+import agentRepository from '../respository/agentRepository';
+import { Agent } from '@prisma/client';
+import prisma from '../DB/prisma';
 
-const createUserSchema = Joi.object({
+const createAgentSchema = Joi.object({
   email: Joi.string()
     .email()
     .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
@@ -19,10 +20,16 @@ const createUserSchema = Joi.object({
   number: Joi.string().required(),
 });
 
-const authController = {
-  createUser: async (req: Request, res: Response): Promise<Response> => {
+interface CreateAgentRequestBody {
+  email: string;
+  password: string;
+  number: string;
+}
+
+const agentController = {
+  createAgent: async (req: Request, res: Response): Promise<Response> => {
     try {
-      const { error } = createUserSchema.validate(req.body);
+      const { error } = createAgentSchema.validate(req.body);
 
       if (error) {
         return res.status(StatusCodes.BAD_REQUEST).json({
@@ -31,17 +38,17 @@ const authController = {
         });
       }
 
-      const { email, password, number } = req.body;
+      const { email, password, number } = req.body as CreateAgentRequestBody;
 
-      const emailAlreadyExists = await userRepository.getUserByEmail(email);
-      if (emailAlreadyExists) {
+      const checkAgent : Agent | null = await agentRepository.getAgentByEmail(email);
+
+      if (checkAgent) {
         return res.status(StatusCodes.CONFLICT).json({
           message: 'Email already exists',
         });
       }
 
-      const numberAlreadyExists = await userRepository.getUserByNumber(number);
-      if (numberAlreadyExists) {
+      if (checkAgent && checkAgent[number]) {
         return res.status(StatusCodes.CONFLICT).json({
           message: 'Number already exists',
         });
@@ -57,7 +64,7 @@ const authController = {
       const hashedPassword = await hashPassword(password);
 
       if (passwordValidationResult) {
-        const createdUser = await userRepository.createUser(
+        const createdGent = await agentRepository.createAgent(
           email,
           hashedPassword,
           number
@@ -66,11 +73,11 @@ const authController = {
         return res.status(StatusCodes.CREATED).json({
           message: 'User created successfully',
           user: {
-            id: createdUser.id,
-            email: createdUser.email,
-            number: createdUser.number,
-            type: createdUser.type,
-            createdAt: createdUser.createdAt,
+            id: createdGent.id,
+            email: createdGent.email,
+            number: createdGent.number,
+            type: createdGent.type,
+            createdAt: createdGent.createdAt,
           },
         });
       } else {
@@ -79,32 +86,34 @@ const authController = {
         });
       }
     } catch (error) {
-      console.error('Error creating user:', error);
+      console.error('Error creating agent:', error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         message: 'Failed to create user',
       });
     }
   },
-  //Regulare users Login Function
-  loginUser: async (req: Request, res: Response): Promise<Response> => {
+
+   //Realtor  Login Function
+  loginRealtor: async (req: Request, res: Response): Promise<Response> => {
     const { email, password } = req.body;
 
     try {
-      const user = await userRepository.getUserByEmail(email);
+      const realtor = await agentRepository.getAgentByEmail(email);
 
-      if (user && user.type !== 'USER') {
+      if (realtor && realtor.type !== 'AGENT' ) {
         return res.status(StatusCodes.BAD_REQUEST).json({
-          message: 'Buyers and Landlord Logins',
+          message: 'Realtors Login',
         });
       }
-
-      if (!user) {
+      
+      if (!realtor) {
         return res.status(StatusCodes.UNAUTHORIZED).json({
           message: 'Invalid email or password',
         });
       }
 
-      const isPasswordValid = await comparePassword(password, user.password);
+
+      const isPasswordValid = await comparePassword(password, realtor.password);
 
       if (!isPasswordValid) {
         return res.status(StatusCodes.UNAUTHORIZED).json({
@@ -114,7 +123,11 @@ const authController = {
 
       // Generate a JWT token
       const token = jwt.sign(
-        { userId: user.id, type: user.type },
+        {
+         
+          type: realtor.type,
+          agentId: realtor.id,
+        },
         process.env.JWT_SECRET || '', // Provide a default value if process.env.JWT_SECRET is undefined
         { expiresIn: '1h' }
       );
@@ -122,46 +135,26 @@ const authController = {
       // Format the lastLogin value
       const formattedLastLogin = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
 
-      await userRepository.updateUserLastLogin(user.id, formattedLastLogin);
+      await agentRepository.updateAgentLastLogin(realtor.id, formattedLastLogin)
 
       return res.status(StatusCodes.OK).json({
-        message: 'Login successful',
+        message: 'Login successfully',
         user: {
-          id: user.id,
-          email: user.email,
-          number: user.number,
-          type: user.type,
-          lastLogin: formattedLastLogin,
+          id: realtor.id,
+          email: realtor.email,
+          number: realtor.number,
+          type: realtor.type,
+          lastLogin: realtor.lastLogin,
         },
         token: token,
       });
     } catch (error) {
-      console.error('Error logging in:', error);
+      console.error('Error during login:', error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         message: 'Failed to login',
       });
     }
   },
-
-  logoutUser: async (req: Request, res: Response): Promise<Response> => {
-    try {
-      res.clearCookie('token');
-
-      return res.status(StatusCodes.OK).json({
-        message: 'Logout successful',
-      });
-    } catch (error) {
-      console.log(error);
-
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: 'Failed to logout',
-      });
-    }
-  },
-
-
-  
-
 };
 
-export default authController;
+export default agentController;

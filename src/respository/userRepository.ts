@@ -98,58 +98,28 @@ const userRepository = {
     }
   },
 
-  updateUserId: async (userId: number) => {
-    try {
-      await prisma.user.update({
-        where: {
-          id: userId,
-        },
-        data: {
-          realtorId: userId,
-        },
+  // updateUserId: async (userId: number) => {
+  //   try {
+  //     await prisma.user.update({
+  //       where: {
+  //         id: userId,
+  //       },
+  //       data: {
+  //         realtorId: userId,
+  //       },
         
-      });
-    } catch (error) {
-      console.error('Error updating user last login:', error);
-      throw error;
-    }
-  },
+  //     });
+  //   } catch (error) {
+  //     console.error('Error updating user last login:', error);
+  //     throw error;
+  //   }
+  // },
 
    getAllUsers: async () => {
   return prisma.user.findMany();
 },
 
- getAgentUsers: async () => {
-  return prisma.user.findMany({
-    where: {
-      type: 'AGENT',
-    },
-    select: {
-      id: true,
-      number: true,
-      email: true,
-      type: true,
-      realtor: {
-        select: {
-          id: true,
-          company_name: true,
-          address: true,
-          broker_BRN: true,
-          agent_ORN: true,
-          years_of_experience: true,
-          specialty: true,
-          role: true,
-          language: true,
-          description: true,
-          license_number: true,
-          broker_card_image: true,
-          image: true,
-          status: true,
-        },
-      },
-    },
-  });
-},
+
 
  getUsersWhichAreUsers: async () => {
    const users = await prisma.user.findMany({
@@ -197,31 +167,8 @@ const userRepository = {
   });
 },
 
- getOneAgent: async (id:number) => {
-  return prisma.user.findFirst({
-    where: {
-      id,
-      type: 'AGENT',
-    },
-    select: {
-      id: true,
-      email: true,
-      number: true,
-      type: true,
-      realtor: true,
-    },
-  });
-},
 
- getAgentCount: async () => {
-   const agentCount = await prisma.user.aggregate({
-    where: {
-      type: 'AGENT',
-    },
-    _count: true,
-  });
-  return agentCount._count;
-},
+
 
  getUserCount: async () => {
    const userCount = await prisma.user.aggregate({

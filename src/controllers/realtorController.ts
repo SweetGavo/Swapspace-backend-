@@ -6,6 +6,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import realtorRepository from '../respository/realtorRepository';
 import userRepository from '../respository/userRepository';
 import { RealtorDataType } from '../helpers/types';
+import agentRepository from '../respository/agentRepository';
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -54,12 +55,13 @@ const rectorController = {
         language,
         description,
         license_number,
+        
       } = req.body;
 
-      const userId = parseInt(req.params.id, 10);
+      const agentId = parseInt(req.params.id, 10);
 
       // Check if user exists
-      const userExists = await userRepository.getUserId(userId);
+      const userExists = await agentRepository.getOneAgent(agentId);
 
       if (!userExists) {
         return res.status(StatusCodes.NOT_FOUND).json({
@@ -95,14 +97,14 @@ const rectorController = {
         description,
         license_number,
         broker_card_image: brokerCardImages,
-        userId,
+        agentId,
         status: 'PENDING',
         image: '',
       };
 
       const agent = await realtorRepository.createAgentProfile(agentData);
 
-      await realtorRepository.updateUserWithRealtorId(userId, agent.id);
+      
 
       //Send Notification
 
@@ -126,7 +128,9 @@ const rectorController = {
     res: Response
   ): Promise<Response> => {
     try {
-      const { userId } = req.body;
+      const  realtorId  = parseInt(req.params.realtorId, 10);
+      
+      
       const imageFile = req.file;
 
       if (!imageFile) {
@@ -136,11 +140,11 @@ const rectorController = {
       }
 
       // Check if user exists
-      const userExists = await realtorRepository.getOneRealtor(userId);
+      const userExists = await realtorRepository.getOneRealtor(realtorId);
 
       if (!userExists) {
         return res.status(StatusCodes.BAD_REQUEST).json({
-          message: 'User does not exist',
+          message: 'Agent does not exist',
         });
       }
 
@@ -149,7 +153,7 @@ const rectorController = {
 
       // Update agent profile image with the Cloudinary URL
       const updatedAgent = await realtorRepository.updateAgentProfileImage(
-        userId,
+        realtorId,
         result.secure_url
       );
 

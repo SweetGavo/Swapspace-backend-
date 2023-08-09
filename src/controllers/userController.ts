@@ -17,19 +17,7 @@ const userController = {
   },
   
 
-  getAgentUsers: async (req: Request, res: Response) => {
-    try {
-      const agents = await userRepository.getAgentUsers();
 
-      res.status(StatusCodes.OK).json({
-        count: agents.length,
-        user: agents,
-      });
-    } catch (error) {
-      console.error('Error retrieving agents:', error);
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to retrieve agents' });
-    }
-  },
 
   getUsersWhichAreUsers: async (req: Request, res: Response) => {
     try {
@@ -64,41 +52,9 @@ const userController = {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to retrieve user' });
     }
   },
-  getOneAgent: async (req: Request, res: Response): Promise<Response> => {
-    try {
-      const  id  = parseInt(req.params.id);
 
-      const oneAgent = await userRepository.getOneAgent(id);
 
-      if (!oneAgent) {
-        return res.status(StatusCodes.NOT_FOUND).json({
-          message: 'Agent not found',
-        });
-      }
-      return res.status(StatusCodes.OK).json({
-        user: oneAgent,
-      });
-    } catch (error) {
-      console.error('Error retrieving agent:', error);
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to retrieve agent' });
-    }
-  },
-
-  getAgentAggregate: async (req: Request, res: Response) => {
-    try {
-      const agentCount = await userRepository.getAgentCount();
-
-      res.status(StatusCodes.OK).json({
-        message: 'Agent users retrieved successfully',
-        count: agentCount,
-      });
-    } catch (error) {
-      console.error('Error retrieving agents:', error);
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: 'Failed to retrieve agent users',
-      });
-    }
-  },
+ 
   getUsertAggregate: async (req: Request, res: Response) => {
     try {
       const userCount = await userRepository.getUserCount();

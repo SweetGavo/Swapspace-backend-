@@ -14,22 +14,22 @@ const realtorRepository = {
           }
         },
         
-        updateUserWithRealtorId: async (userId: number, realtorId: number) => {
-          try {
-            return prisma.user.update({
-              where: { id: userId },
-              data: { realtorId },
-            });
-          } catch (error) {
-            console.error('Error updating user with realtorId:', error);
-            throw error;
-          }
-        },
+        // updateUserWithRealtorId: async (userId: number, realtorId: number) => {
+        //   try {
+        //     return prisma.user.update({
+        //       where: { id: userId },
+        //       data: { realtorId },
+        //     });
+        //   } catch (error) {
+        //     console.error('Error updating user with realtorId:', error);
+        //     throw error;
+        //   }
+        // },
         
         
-         updateAgentProfileImage:async (userId:number, imageUrl: string) => {
+         updateAgentProfileImage:async (realtorId:number, imageUrl: string) => {
           return prisma.realtor.update({
-            where: { userId },
+            where: { id: realtorId },
             data: { image: imageUrl },
           });
         },
@@ -57,9 +57,9 @@ const realtorRepository = {
         },
 
          
-          getRealtorByUserId: async (userId: number) => {
+          getRealtorByUserId: async (agentId: number) => {
             return prisma.realtor.findUnique({
-              where: { userId },
+              where: { agentId },
             });
           },
         
