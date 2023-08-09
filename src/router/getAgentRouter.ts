@@ -8,7 +8,7 @@ import getAgentController from  '../controllers/getAgentController';
 
 router.route('/').get(getAgentController.getAllAgent);
 
-router.route('/:id').get(getAgentController.getOneAgent);
+router.route('/:agentId').get(getAgentController.getOneAgent);
 
 
 router.route('/total/agent').get(getAgentController.getAgentAggregate);

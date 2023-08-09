@@ -28,17 +28,15 @@ const getAgentController = {
         
         getOneAgent: async (req: Request, res: Response): Promise<Response> => {
           try {
-            const  id  = parseInt(req.params.id);
+            const  id  = parseInt(req.params.agentId);
+
+            
+            //const id = agentId.id;
       
-            const oneAgent = await agentRepository.getAgentId(id);
+            const result = await agentRepository.getAgentId(id);
       
-            if (!oneAgent) {
-              return res.status(StatusCodes.NOT_FOUND).json({
-                message: 'Agent not found',
-              });
-            }
             return res.status(StatusCodes.OK).json({
-              user: oneAgent,
+              agent: result,
             });
           } catch (error) {
             console.error('Error retrieving agent:', error);
@@ -63,9 +61,9 @@ const getAgentController = {
       
       
         blockAgent: async (req: Request, res: Response): Promise<Response> => {
-          const { userId } = req.body;
+          const  agentId  = parseInt(req.params.agentId);
           try {
-            await agentRepository.blockUser(userId);
+            await agentRepository.blockUser(agentId);
       
             return res.status(StatusCodes.OK).json({ message: 'User blocked successfully' });
           } catch (error) {
@@ -75,9 +73,9 @@ const getAgentController = {
         },
       
         unBlockAgent: async (req: Request, res: Response): Promise<Response> => {
-          const { userId } = req.body;
+          const  agentId  = parseInt(req.params.agentId);
           try {
-            await agentRepository.unBlockUser(userId);
+            await agentRepository.unBlockUser(agentId);
       
             return res.status(StatusCodes.OK).json({ message: 'User unblocked successfully' });
           } catch (error) {

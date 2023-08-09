@@ -94,6 +94,8 @@ model Agent {
   date_modified  DateTime @default(now()) @updatedAt
   realtor        Realtor?
   realtorId      Int?
+   invites         Invitation[] @relation("Invitation")
+   properties      Property[]   @relation("RealtorProperties")
 }
 
 model Profile {
@@ -128,7 +130,7 @@ model Realtor {
   teams               Team[]      @relation("RealtorGroups")
   agentId             Int?        @unique
 
-  properties      Property[]   @relation("RealtorProperties")
+  
   offers          Offers[]
   createdAt       DateTime     @default(now())
   date_modified   DateTime     @default(now()) @updatedAt
@@ -136,7 +138,7 @@ model Realtor {
   task            Task[]       @relation("Tasks")
   teamTasks       TeamTask[]   @relation("TeamTasks")
   info            Info[]       @relation("Info")
-  invites         Invitation[] @relation("Invitation")
+ 
 }
 
 //link realtor id
@@ -215,11 +217,11 @@ model Property {
   proximate_landmark                  String
   availablity                         Availablity_Type @default(AVAILABLE)
   status                              Property_Status  @default(REVIWING)
-  realtor                             Realtor?         @relation("RealtorProperties", fields: [realtorId], references: [id])
+  agent                             Agent?         @relation("RealtorProperties", fields: [agentId], references: [id])
   offers                              Offers[]
   view_count                          Int              @default(0)
   view_by_user                        Int[]
-  realtorId                           Int
+  agentId                           Int
   createdAt                           DateTime         @default(now())
   date_modified                       DateTime         @default(now()) @updatedAt
   favoriteProperties                  Favorite[]       @relation("favorites")
@@ -361,8 +363,8 @@ model CoRealtor {
 model Invitation {
   id        Int      @id @default(autoincrement())
   email     String   @unique
-  realtor   Realtor? @relation("Invitation", fields: [realtorId], references: [id])
-  realtorId Int?
+  agent   Agent? @relation("Invitation", fields: [agentId], references: [id])
+  agentId Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

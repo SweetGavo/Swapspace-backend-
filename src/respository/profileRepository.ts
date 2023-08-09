@@ -69,7 +69,7 @@ const profileRepository = {
       // Delete other related properties associated with the user
       await prisma.property.deleteMany({
         where: {
-          realtorId: profileId,
+          agentId: profileId,
         },
       });
 

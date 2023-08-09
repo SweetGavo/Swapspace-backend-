@@ -7,7 +7,7 @@ const propertyRepository = {
       const newProperty = await prisma.property.create({
         data: {
           ...propertyDataType,
-          realtorId: propertyDataType.realtorId, // Make sure realtorId is set
+          agentId: propertyDataType.agentId, 
         },
       });
   
@@ -115,10 +115,10 @@ const propertyRepository = {
       // TODO: Email & Notifications
     }
   },
-   getLeads: async (realtorId: number)=> {
+   getLeads: async (agentId: number)=> {
     const realtorLeads = await prisma.property.findMany({
       where: {
-        realtorId: realtorId,
+        agentId: agentId,
       },
       select: {
         id: true,

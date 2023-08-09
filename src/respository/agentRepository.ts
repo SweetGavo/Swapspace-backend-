@@ -17,10 +17,10 @@ const agentRepository = {
     return creatAgent;
   },
 
-  getAgentId: async (agentId: number) => {
+  getAgentId: async (id: number) => {
     const agent = await prisma.agent.findUnique({
       where: {
-        id: agentId,
+        id: id,
       },
     });
 
@@ -77,10 +77,10 @@ const agentRepository = {
     });
   },
 
-  getOneAgent: async (id: number) => {
+  getOneAgent: async (agentId: number) => {
     return prisma.agent.findFirst({
       where: {
-        id,
+        id: agentId,
         type: 'AGENT',
       },
       select: {

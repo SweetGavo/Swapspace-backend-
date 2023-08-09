@@ -70,7 +70,7 @@ const offersControllers = {
     const userOffers = await prisma.offers.findMany({
       where: {
         property: {
-          realtorId: id,
+          agentId: id,
         },
       },
     });

@@ -7,6 +7,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import propertyRepository from '../respository/propertyRepository';
 import realtorRepository from '../respository/realtorRepository';
 import { PropertyDataType } from '../helpers/types';
+import agentRepository from '../respository/agentRepository';
 //import { getOrSetCache, clearCache } from '../cache/redisClient';
 
 cloudinary.config({
@@ -17,7 +18,7 @@ cloudinary.config({
 
 interface PropertyData {
   count: number;
-  properties: Array<any>; // Adjust this type as per the structure of your properties array
+  properties: Array<any>; 
 }
 
 // Function to fetch fresh data from the database
@@ -90,15 +91,11 @@ const propertyController = {
         satus,
       } = req.body
        
-      const realtorId = parseInt(req.params.realtorId, 10); 
+      const agentId = parseInt(req.params.agentId, 10); 
       // Check if realtor exists
-      const userExists = await realtorRepository.getOneRealtor(realtorId)
+      await agentRepository.getAgentId(agentId)
   
-      if (!userExists) {
-        return res.status(404).json({
-          message: 'User does not exist',
-        });
-      }
+      
 
 
       const propData: PropertyDataType = {
@@ -146,7 +143,7 @@ const propertyController = {
         additional_details,
         additional_facilities_and_amenities,
         proximate_landmark,
-        realtorId,
+        agentId,
         renovation,
         availablity,
         satus,
@@ -154,7 +151,7 @@ const propertyController = {
   
       const newProperty = await propertyRepository.addProperty(propData);
   
-      return res.status(201).json({
+      return res.status(StatusCodes.OK).json({
         message: 'Property has been added',
         data: newProperty,
       });

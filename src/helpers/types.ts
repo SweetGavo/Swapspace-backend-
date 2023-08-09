@@ -100,7 +100,7 @@ export type PropertyDataType = {
   additional_details: string;
   additional_facilities_and_amenities: string;
   proximate_landmark: string;
-  realtorId: number;
+  agentId: number;
   renovation?:string;
   availablity: Availablity_Type
   satus: Property_Status
