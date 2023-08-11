@@ -12,6 +12,7 @@ import bodyParser from 'body-parser';
 
 import prisma from './DB/prisma';
 import jwt from 'jsonwebtoken';
+
 const passport = require('passport');
 import AppleStrategy from 'passport-apple';
 
@@ -142,23 +143,22 @@ import errorHandlerMiddleware from './middleware/error-handler';
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
-// passport.use(new AppleStrategy({
-//   clientID:  process.env.APPLE_ID  || " ",
-//   teamID: "",
-//   callbackURL: "",
-//   keyID: "",
-//   privateKeyLocation: "",
-//   passReqToCallback: true
-// }, function(req, accessToken, refreshToken, idToken, profile, cb) {
-//   if (req.body && req.body.user) {
-//     // Register your user here!
-// console.log(req.body.user);
-// }
-//   cb(null, idToken);
-// }));
+passport.use(new AppleStrategy({
+  clientID:  process.env.APPLE_ID  || " ",
+  teamID: process.env.TEAM_ID || "",
+  callbackURL: process.env.CALLBACK_URL,
+  keyID: process.env.KEY_ID || "",
+  privateKeyLocation: "",
+  passReqToCallback: true
+}, function(req, accessToken, refreshToken, idToken, profile, cb) {
+ 
+
+  cb(null, idToken);
+}));
 
 //port
 const port = process.env.PORT || 6001;
+
 const start = async () => {
   try {
     app.listen(port, () => {
