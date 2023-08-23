@@ -4,11 +4,26 @@ import { StatusCodes } from 'http-status-codes';
 import { Request, Response } from 'express';
 import generateOTP from '../utils/otpGenerator';
 import getOtpExpiryTime from '../utils/timeGenerator';
-import { prepareMail } from '../utils/sendEmail';
+import { prepareMail } from '../mailer/mailer';
 import request from 'request';
 import cron from 'node-cron';
 import { otptem } from '../mailer/optTemplate';
 import { configs } from '../config';
+
+// import { AzureCommunicationTokenCredential } from '@azure/communication-common';
+// import { SmsClient } from '@azure/communication-sms';
+
+// const endpoint = configs.AZURE_ENDPOINT;
+// const connectionString = configs.AZURE_CONNECTION_STRING;
+
+// if (!connectionString || !endpoint) {
+//   throw new Error('Connection string or endpoint is not provided.');
+// }
+
+// console.log(connectionString);
+
+// Create an instance of AzureCommunicationTokenCredential
+//const credential = new AzureCommunicationTokenCredential(connectionString);
 
 const checkIfOtpHasExpired = (otp_expiry: Date): boolean => {
   const currentTime = new Date().getTime();
@@ -80,11 +95,11 @@ const OtpController = {
       const mailBody = await mailBodyPromise;
 
       await prepareMail({
-        mailRecipients: user.email,
-        mailSubject: mailSubject,
-        mailBody: mailBody,
-        senderName: configs.SENDERS_NAME,
-        senderEmail: configs.SENDERS_EMAIL,
+        address: user.email,
+        subject: mailSubject,
+        html: mailBody,
+        displayName: configs.SENDERS_NAME,
+        senderAddress: configs.SENDERS_EMAIL,
       });
 
       return res.status(StatusCodes.OK).json({
@@ -206,9 +221,7 @@ const OtpController = {
 
       console.log('Phone OTP:', createdOtp);
       console.log(otp);
-      // Send the OTP to PHONE NUMBER (implementation not included).
-
-      var options = {
+       var options = {
         method: 'POST',
         url: 'https://api.sendchamp.com/api/v1/sms/send',
         headers: {
@@ -234,6 +247,23 @@ const OtpController = {
         }
         console.log(response.body);
       });
+
+      // const smsClient = new SmsClient(endpoint, credential);
+
+      // const toPhoneNumbers = [user.number]; // Array of recipient phone numbers
+      // const fromPhoneNumber = '+0987654321'; // Your phone number or a phone number you have acquired from Azure Communication Services
+      // const message = `Hi, this is your OTP: ${otp}. It expires in 5 minutes.`;
+
+      // // Filter out null values from toPhoneNumbers array
+      // const validPhoneNumbers = toPhoneNumbers.filter(
+      //   (phoneNumber) => phoneNumber !== null
+      // ) as string[];
+
+      // await smsClient.send({
+      //   from: fromPhoneNumber,
+      //   to: validPhoneNumbers,
+      //   message: message,
+      // });
 
       return res.status(StatusCodes.OK).json({
         message: 'OTP sent to your phone number',

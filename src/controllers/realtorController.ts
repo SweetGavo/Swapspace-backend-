@@ -3,6 +3,10 @@ import prisma from '../DB/prisma';
 import Joi from 'joi';
 import { StatusCodes } from 'http-status-codes';
 import { v2 as cloudinary } from 'cloudinary';
+import realtorRepository from '../respository/realtorRepository';
+import userRepository from '../respository/userRepository';
+import { RealtorDataType } from '../helpers/types';
+import agentRepository from '../respository/agentRepository';
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -16,22 +20,19 @@ const createAgentProfileSchema = Joi.object({
   broker_BRN: Joi.string().required(),
   agent_ORN: Joi.string().required(),
   years_of_experience: Joi.string().required(),
-  specialty: Joi.string().required(),
+  specialty: Joi.array().items(Joi.string()).required(),
   role: Joi.string().required(),
   language: Joi.array().items(Joi.string()).required(),
   description: Joi.string().required(),
   license_number: Joi.string().required(),
-  userId: Joi.string().required(),
+  
   addProperty: Joi.array().items(Joi.string()),
   status: Joi.string(),
   image: Joi.string(),
 });
 
 const rectorController = {
-  createAgentProfile: async (
-    req: Request,
-    res: Response
-  ): Promise<Response> => {
+  createAgentProfile: async (req: Request, res: Response): Promise<Response> => {
     try {
       const { error } = createAgentProfileSchema.validate(req.body);
 
@@ -43,7 +44,7 @@ const rectorController = {
       }
 
       const {
-        userId,
+        
         company_name,
         address,
         broker_BRN,
@@ -54,12 +55,13 @@ const rectorController = {
         language,
         description,
         license_number,
+        
       } = req.body;
 
+      const agentId = parseInt(req.params.id, 10);
+
       // Check if user exists
-      const userExists = await prisma.user.findUnique({
-        where: { id: userId },
-      });
+      const userExists = await agentRepository.getOneAgent(agentId);
 
       if (!userExists) {
         return res.status(StatusCodes.NOT_FOUND).json({
@@ -67,52 +69,42 @@ const rectorController = {
         });
       }
 
-      if (userExists.type != 'AGENT') {
+      if (userExists.type !== 'AGENT') {
         return res.status(StatusCodes.UNAUTHORIZED).json({
-          message: 'You are not allowed to Create AN AGENT Profile',
+          message: 'You are not allowed to create an agent profile',
         });
       }
 
       // Upload broker card images to Cloudinary
-      const brokerCardImages: string[] = [];
+      const brokerCardImages = [];
       if (req.files && Array.isArray(req.files) && req.files.length > 0) {
-        const uploadPromises = req.files.map((file: Express.Multer.File) =>
+        const uploadPromises = req.files.map((file) =>
           cloudinary.uploader.upload(file.path)
         );
         const uploadedImages = await Promise.all(uploadPromises);
-        brokerCardImages.push(
-          ...uploadedImages.map((image) => image.secure_url)
-        );
+        brokerCardImages.push(...uploadedImages.map((image) => image.secure_url));
       }
 
-      // Create agent profile
-      const agent = await prisma.realtor.create({
-        data: {
-          company_name,
-          address,
-          broker_BRN,
-          agent_ORN,
-          years_of_experience,
-          specialty,
-          role,
-          language,
-          description,
-          license_number,
-          broker_card_image: brokerCardImages,
-          userId,
-          status: 'PENDING',
-          image: '',
-        },
-      });
+      const agentData: RealtorDataType = {
+        company_name,
+        address,
+        broker_BRN,
+        agent_ORN,
+        years_of_experience,
+        specialty,
+        role,
+        language,
+        description,
+        license_number,
+        broker_card_image: brokerCardImages,
+        agentId,
+        status: 'PENDING',
+        image: '',
+      };
 
-      await prisma.user.update({
-        where: {
-          id: userId,
-        },
-        data: {
-          realtorId: agent.id,
-        },
-      });
+      const agent = await realtorRepository.createAgentProfile(agentData);
+
+      
 
       //Send Notification
 
@@ -121,7 +113,6 @@ const rectorController = {
         agent,
       });
     } catch (error) {
-      console.log(error);
       console.error('Error creating agent profile:', error);
 
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -129,14 +120,18 @@ const rectorController = {
       });
     }
   },
+    
+  
 
   updateAgentProfileImage: async (
     req: Request,
     res: Response
   ): Promise<Response> => {
     try {
-      const { userId } = req.body;
-      const imageFile = req.file; // Assuming the image file is uploaded as 'file' in the request
+      const  realtorId  = parseInt(req.params.realtorId, 10);
+      
+      
+      const imageFile = req.file;
 
       if (!imageFile) {
         return res.status(StatusCodes.BAD_REQUEST).json({
@@ -145,13 +140,11 @@ const rectorController = {
       }
 
       // Check if user exists
-      const userExists = await prisma.user.findUnique({
-        where: { id: userId },
-      });
+      const userExists = await realtorRepository.getOneRealtor(realtorId);
 
       if (!userExists) {
         return res.status(StatusCodes.BAD_REQUEST).json({
-          message: 'User does not exist',
+          message: 'Agent does not exist',
         });
       }
 
@@ -159,10 +152,10 @@ const rectorController = {
       const result = await cloudinary.uploader.upload(imageFile.path);
 
       // Update agent profile image with the Cloudinary URL
-      const updatedAgent = await prisma.realtor.update({
-        where: { userId },
-        data: { image: result.secure_url },
-      });
+      const updatedAgent = await realtorRepository.updateAgentProfileImage(
+        realtorId,
+        result.secure_url
+      );
 
       return res.status(StatusCodes.OK).json({
         message: 'Agent profile image updated successfully',
@@ -175,83 +168,82 @@ const rectorController = {
         message: 'Failed to update agent profile image',
       });
     }
+  
   },
 
   getAllRealtor: async (req: Request, res: Response) => {
-    try {
-      const ITEMS_PER_PAGE = 10;
-      const page = parseInt(req.query.page as string) || 1;
-
-      const skip = (page - 1) * ITEMS_PER_PAGE;
-      const realtors = await prisma.realtor.findMany({
-        skip: skip,
-        take: ITEMS_PER_PAGE,
-      });
-
-      const totalCount = await prisma.realtor.count();
-
-      const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
-
-      return res.status(StatusCodes.OK).json({
-        count: realtors.length,
-        message: 'Fetched ',
-        currentPage: page,
-        totalPages: totalPages,
-        realtors,
-      });
-    } catch (error) {
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: 'Failed to fetch all agents profile ',
-      });
-    }
+    
+      try {
+        const ITEMS_PER_PAGE = 10;
+        const page = parseInt(req.query.page as string) || 1;
+  
+        const { realtors, totalPages } = await realtorRepository.getAllRealtors(
+          page,
+          ITEMS_PER_PAGE
+        );
+  
+        return res.status(StatusCodes.OK).json({
+          count: realtors.length,
+          message: 'Fetched ',
+          currentPage: page,
+          totalPages: totalPages,
+          realtors,
+        });
+      } catch (error) {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+          message: 'Failed to fetch all agents profile ',
+        });
+      }
+    
   },
   getOneRealtor: async (req: Request, res: Response) => {
     try {
-      const { id } = req.params;
+      const id  = parseInt(req.params.id);
 
-      const realtor = await prisma.realtor.findFirst({
-        where: {
-          id: id,
-        },
-        include: {
-          user: true,
-        },
-      });
-      // Exclude password and broker id
+      const realtor = await realtorRepository.getOneRealtor(id);
+
       if (!realtor) {
         return res.status(StatusCodes.NOT_FOUND).json({
           message: 'Realtor not found ',
         });
       }
 
+     
       return res.status(StatusCodes.OK).json({
-        message: 'Fatched',
+        message: 'Fetched',
         realtor,
       });
     } catch (error) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: 'Failed to fetch  agent profile ',
+        message: 'Failed to fetch agent profile ',
+      });
+    }
+  },
+  
+
+  deleteRealtor: async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const id  = parseInt(req.params.id);
+
+      const deleteRealtor = await realtorRepository.deleteRealtor(id);
+
+      if (!deleteRealtor) {
+        return res.status(StatusCodes.NOT_FOUND).json({ message: `Realtor not found` });
+      }
+
+      return res.status(StatusCodes.OK).json({ message: `Profile deleted` });
+    } catch (error) {
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: 'Failed to delete agent profile',
       });
     }
   },
 
-  deleteRealtor: async (req: Request, res: Response): Promise<Response> => {
-    const { id } = req.params;
 
-    const deleteRealtor = await prisma.realtor.delete({
-      where: {
-        id: id,
-      },
-    });
 
-    if (!deleteRealtor) {
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .json({ message: `realtor not found` });
-    }
+ 
 
-    return res.status(StatusCodes.OK).json({ message: `Profile deleted` });
-  },
+
 
   //TODO:  DELETE AND UPDATE,
 };

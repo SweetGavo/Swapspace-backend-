@@ -7,9 +7,17 @@ import invitationController from '../controllers/invitationController';
 
 
 router
-.route('/')
+.route('/:agentId')
 .post(invitationController.inviteTeamMember);
 
+
+router
+.route('/')
+.get(invitationController.getAllIvites);
+
+router
+.route('/:inviteId')
+.delete(invitationController.deleteInvitation);
 
 
 export default router;

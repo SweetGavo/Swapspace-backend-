@@ -4,8 +4,11 @@ import { StatusCodes } from 'http-status-codes';
 
 import propertySchema from '../utils/propertyValidation';
 import { v2 as cloudinary } from 'cloudinary';
-import { PROPERTY_TYPES, Prisma } from '@prisma/client';
-import { getOrSetCache, clearCache } from '../cache/redisClient';
+import propertyRepository from '../respository/propertyRepository';
+import realtorRepository from '../respository/realtorRepository';
+import { PropertyDataType } from '../helpers/types';
+import agentRepository from '../respository/agentRepository';
+//import { getOrSetCache, clearCache } from '../cache/redisClient';
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -15,7 +18,7 @@ cloudinary.config({
 
 interface PropertyData {
   count: number;
-  properties: Array<any>; // Adjust this type as per the structure of your properties array
+  properties: Array<any>; 
 }
 
 // Function to fetch fresh data from the database
@@ -26,17 +29,19 @@ async function fetchData(): Promise<PropertyData> {
 
 const propertyController = {
   addProperty: async (req: Request, res: Response): Promise<Response> => {
+    
     try {
       const { error } = propertySchema.validate(req.body);
-
+  
       if (error) {
-        return res.status(StatusCodes.BAD_REQUEST).json({
+        return res.status(400).json({
           message: 'Invalid request body',
           error: error.details[0].message,
         });
       }
-
+  
       const {
+       
         property_title,
         property_type,
         structure,
@@ -80,129 +85,142 @@ const propertyController = {
         additional_details,
         additional_facilities_and_amenities,
         proximate_landmark,
-        realtorId,
-      } = req.body;
-
+        
+        renovation,
+        availablity,
+        satus,
+      } = req.body
+       
+      const agentId = parseInt(req.params.agentId, 10); 
       // Check if realtor exists
-      const userExists = await prisma.realtor.findUnique({
-        where: { id: realtorId },
-      });
+      await agentRepository.getAgentId(agentId)
+  
+      
 
-      if (!userExists) {
-        return res.status(StatusCodes.NOT_FOUND).json({
-          message: 'User does not exist',
-        });
+
+      const propData: PropertyDataType = {
+        
+        property_title,
+        property_type,
+        structure,
+        listing_type,
+        style,
+        view,
+        utility_payment,
+        year_built,
+        pets_allowed,
+        available,
+        sale_or_rent_price,
+        price_prefix,
+        payment_frequency,
+        payment_plan,
+        langitude,
+        latitude,
+        country,
+        street_Number,
+        locality,
+        postal_code,
+        logistics,
+        parking_lot,
+        parking_slots,
+        fire_place,
+        entry_floor,
+        room_list,
+        bedroom,
+        bathroom,
+        pool,
+        building_unit,
+        unit_amenities,
+        specification,
+        video_url,
+        video_url_tour,
+        utilities,
+        date_posted,
+        property_price,
+        total_lessee,
+        permit,
+        description,
+        additional_details,
+        additional_facilities_and_amenities,
+        proximate_landmark,
+        agentId,
+        renovation,
+        availablity,
+        satus,
       }
-
-      // Add the property
-      const newProperty = await prisma.property.create({
-        data: {
-          property_type,
-          property_title,
-          structure,
-          listing_type,
-          style,
-          view,
-          utility_payment,
-          year_built,
-          pets_allowed,
-          available,
-          sale_or_rent_price,
-          price_prefix,
-          payment_frequency,
-          payment_plan,
-          langitude,
-          latitude,
-          country,
-          street_Number,
-          locality,
-          postal_code,
-          logistics,
-          parking_lot,
-          parking_slots,
-          fire_place,
-          entry_floor,
-          room_list,
-          bedroom,
-          bathroom,
-          pool,
-          building_unit,
-          unit_amenities,
-          specification,
-          video_url,
-          video_url_tour,
-          utilities,
-          date_posted,
-          property_price,
-          total_lessee,
-          permit,
-          description,
-          additional_details,
-          additional_facilities_and_amenities,
-          proximate_landmark,
-          realtorId,
-        },
-      });
-
-      return res.status(StatusCodes.CREATED).json({
+  
+      const newProperty = await propertyRepository.addProperty(propData);
+  
+      return res.status(StatusCodes.OK).json({
         message: 'Property has been added',
         data: newProperty,
       });
     } catch (error) {
       console.error('Error adding a property:', error);
-
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+  
+      return res.status(500).json({
         message: 'Failed to add a property',
       });
     }
+        
+
+     
   },
 
   // Usage in getAllProperty function
   getAllProperty: async (req: Request, res: Response): Promise<Response> => {
     
     try {
-      const cacheKey = 'allProperties';
+      // const cacheKey = 'allProperties';
 
-      const cachedData = (await getOrSetCache(
-        cacheKey,
-        fetchData
-      )) as PropertyData; // Type assertion
+      // const cachedData = (await getOrSetCache(
+      //   cacheKey,
+      //   fetchData
+      // )) as PropertyData; // Type assertion
 
-      if (cachedData.properties.length === 0) {
-        // The cache is empty, so fetch fresh data from the database
-        const freshData = await fetchData();
+      // if (cachedData.properties.length === 0) {
+      //   // The cache is empty, so fetch fresh data from the database
+      //   const freshData = await fetchData();
 
-        // Store the fresh data in the cache
-        await getOrSetCache(cacheKey, () => freshData);
+      //   // Store the fresh data in the cache
+      //   await getOrSetCache(cacheKey, () => freshData);
 
-        // Return the fresh data
-        return res.status(StatusCodes.OK).json(freshData);
-      } else {
-        // The cache is not empty, so return the cached data
-        return res.status(StatusCodes.OK).json(cachedData);
+      //   // Return the fresh data
+      //   return res.status(StatusCodes.OK).json(freshData);
+      // } else {
+      //   // The cache is not empty, so return the cached data
+      //   return res.status(StatusCodes.OK).json(cachedData);
+      // }
+
+      
+        const properties = await propertyRepository.getAllProperties();
+    
+        if (properties.length === 0) {
+          return res.status(StatusCodes.NOT_FOUND).json(`properties not found`);
+        }
+    
+        return res.status(StatusCodes.OK).json(properties);
+      } catch (error) {
+        console.error('Error retrieving properties:', error);
+        return res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .json({ error: 'Failed to retrieve properties' });
       }
-    } catch (error) {
-      return res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: 'Failed to retrieve properties' });
-    }
   },
 
-  uploadImages: async (req: Request, res: Response): Promise<Response> => {
+   uploadImages: async (req: Request, res: Response) => {
     try {
-      const propertyId = req.params.propertyId;
-
+      const propertyId = parseInt(req.params.propertyId);
+  
       // Check if the property exists
-      const property = await prisma.property.findUnique({
-        where: { id: propertyId },
-      });
-
+      const property = await propertyRepository.getPropertyById(propertyId);
+  
       if (!property) {
         return res.status(StatusCodes.NOT_FOUND).json({
           message: 'Property not found',
         });
       }
-
+  
       // Upload property images to Cloudinary
       const propertyImages: string[] = [];
       if (req.files && Array.isArray(req.files) && req.files.length > 0) {
@@ -212,17 +230,10 @@ const propertyController = {
         const uploadedImages = await Promise.all(uploadPromises);
         propertyImages.push(...uploadedImages.map((image) => image.secure_url));
       }
-
+  
       // Add the uploaded images to the property
-      const updatedProperty = await prisma.property.update({
-        where: { id: propertyId },
-        data: {
-          images: {
-            push: propertyImages,
-          },
-        },
-      });
-
+      const updatedProperty = await propertyRepository.updatePropertyImages(propertyId, propertyImages);
+  
       return res.status(StatusCodes.OK).json({
         message: 'Images have been uploaded',
         data: {
@@ -231,14 +242,14 @@ const propertyController = {
       });
     } catch (error) {
       console.error('Error uploading images:', error);
-
+  
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         message: 'Failed to upload images',
       });
     }
-  },
+   },
 
-  filterProperties: async (req: Request, res: Response): Promise<Response> => {
+   filterProperties: async (req: Request, res: Response) => {
     const {
       property_type,
       sale_or_rent_price,
@@ -253,83 +264,21 @@ const propertyController = {
       proximate_landmark,
       limit,
     } = req.query;
-
+  
     const ITEMS_PER_PAGE = 10;
     const page = parseInt(req.query.page as string) || 1;
     const skip = (page - 1) * ITEMS_PER_PAGE;
-
-    const filters: any = {};
-
-    if (sale_or_rent_price) {
-      const [minPrice, maxPrice] = (sale_or_rent_price as string)
-        .split('-')
-        .map(Number)
-        .toString();
-      filters.price = {
-        gte: minPrice,
-        lte: maxPrice,
-      };
-    }
-
-    if (sale_or_rent_price) {
-      const price = parseInt(sale_or_rent_price as string, 10);
-      filters.price = { equals: price };
-    }
-
-    if (bedroom) {
-      filters.bedroom = parseInt(bedroom as string, 10).toString();
-    }
-
-    if (bathroom) {
-      filters.bathroom = parseInt(bathroom as string, 10).toString();
-    }
-
-    if (property_type) {
-      filters[PROPERTY_TYPES[property_type as keyof typeof PROPERTY_TYPES]] =
-        true;
-    }
-
-    if (pets_allowed) {
-      filters.pets_allowed = pets_allowed === 'yes' ? 'yes' : 'no';
-    }
-
-    if (payment_frequency) {
-      filters.payment_frequency = parseInt(payment_frequency as string, 10);
-    }
-
-    if (renovation) {
-      filters.renovation = renovation === 'yes' ? 'yes' : 'no';
-    }
-
-    if (proximate_landmark) {
-      filters.proximate_landmark = parseInt(proximate_landmark as string, 10);
-    }
-
-    if (views) {
-      filters.views = parseInt(views as string, 10);
-    }
-
-    if (specification) {
-      filters.specification = specification;
-    }
-
-    if (location) {
-      filters.location = parseInt(location as string, 10);
-    }
-
+  
+    const filters: any = {
+      // Apply your filters here based on the query parameters
+    };
+  
     try {
-      const totalProperty = await prisma.property.count({
-        where: filters,
-      });
-
+      const totalProperty = await propertyRepository.getTotalFilteredProperties(filters);
       const totalPages = Math.ceil(totalProperty / ITEMS_PER_PAGE);
-
-      const properties = await prisma.property.findMany({
-        where: filters,
-        skip: skip,
-        take: ITEMS_PER_PAGE,
-      });
-      console.log(filters);
+  
+      const properties = await propertyRepository.getFilteredProperties(filters, skip, ITEMS_PER_PAGE);
+  
       return res.status(StatusCodes.OK).json({
         count: properties.length,
         properties,
@@ -348,27 +297,29 @@ const propertyController = {
 
   
   getOneProperty: async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const  id  = parseInt(req.params.id);
+
+    
   
     try {
-      const propertyId = await prisma.property.findFirst({
-        where: {
-          id: id,
-        },
-      });
+      const property = await propertyRepository.getPropertyById(id)
   
-      if (!propertyId) {
+      if (!property) {
         return res.status(StatusCodes.NOT_FOUND).json({
           message: 'Property not found',
         });
       }
   
-      const property = await getOrSetCache(id, async () => {
-        const data = await prisma.property.findUnique({
-          where: { id: id },
-        });
-        return data;
-      });
+      // const property = await getOrSetCache(id, async () => {
+      //   const data = await prisma.property.findUnique({
+      //     where: { id: id },
+      //   });
+      //   return data;
+      // });
+
+      // const property = await prisma.property.findUnique({
+      //      where: { id: id },
+      //     });
   
       return res.status(StatusCodes.OK).json({
         message: 'Fetched',
@@ -384,13 +335,9 @@ const propertyController = {
 
   deleteProperty: async (req: Request, res: Response) => {
     try {
-      const { id } = req.params;
+      const  id  = parseInt(req.params.id);
 
-      const deletedProperty = await prisma.property.delete({
-        where: {
-          id: id,
-        },
-      });
+      const deletedProperty =  propertyRepository.getPropertyById(id)
 
       return res.status(StatusCodes.OK).json({
         message: 'Property deleted',
@@ -404,15 +351,10 @@ const propertyController = {
 
   updateProperty: async (req: Request, res: Response) => {
     try {
-      const { id } = req.params;
+      const  id  = parseInt(req.params.id);
 
-      const updatedProperty = await prisma.property.update({
-        where: {
-          id: id,
-        },
-        data: req.body,
-      });
-
+      const updatedProperty = await propertyRepository.updateProperty(id, req.body);
+    
       return res.status(StatusCodes.OK).json({
         message: 'Property updated successfully.',
         updatedProperty,
@@ -425,89 +367,33 @@ const propertyController = {
   },
 
   updateLeads: async (req: Request, res: Response): Promise<Response> => {
-    try {
+   
       const { userId, propertyId } = req.body;
-
-      const checkUserId = await prisma.user.findUnique({
-        where: {
-          id: userId,
-        },
-      });
-
-      if (!checkUserId) {
-        return res
-          .status(StatusCodes.NOT_FOUND)
-          .json({ message: 'User not found' });
-      }
-
-      const existingProperty = await prisma.property.findUnique({
-        where: {
-          id: propertyId,
-        },
-      });
-
-      if (!existingProperty) {
-        return res
-          .status(StatusCodes.NOT_FOUND)
-          .json({ message: 'Property not found' });
-      }
-
-      // Check if the user has already viewed the property
-      const hasViewed = existingProperty.view_by_user.includes(userId);
-      if (!hasViewed) {
-        // Update the view_count and view_by_user fields
-        const updateViewAndCount = await prisma.property.update({
-          where: {
-            id: propertyId,
-          },
-          data: {
-            view_count: { increment: 1 },
-            view_by_user: { push: userId },
-          },
+    
+      try {
+        await propertyRepository.updateLeads(userId, propertyId);
+    
+        return res.status(StatusCodes.OK).json({
+          message: 'Property count has been updated',
         });
-
-        // TODO: Email & Notifications
+      } catch (error) {
+        console.error('Error updating leads:', error);
+        return res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .json({ message: 'Failed to update leads' });
       }
-
-      return res.status(StatusCodes.OK).json({
-        message: 'Property count has been updated',
-      });
-    } catch (error) {
-      console.error('Error updating leads:', error);
-      return res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ message: 'Failed to update leads' });
-    }
+    
   },
 
-  leads: async (req: Request, res: Response): Promise<Response> => {
+  leads: async (req: Request, res: Response) => {
+    const  realtorId  = parseInt(req.params.realtorId)
+  
     try {
-      const { realtorId } = req.params;
-
-      const realtorLeads = await prisma.property.findMany({
-        where: {
-          realtorId: realtorId,
-        },
-        select: {
-          id: true,
-          view_count: true,
-          view_by_user: true,
-        },
-      });
-
-      let result = realtorLeads.filter(
-        (lead) => lead.view_count !== null || lead.view_by_user !== null
-      );
-
-      if (!realtorLeads || realtorLeads.length === 0) {
-        return res.status(StatusCodes.NOT_FOUND).json({
-          message: `Leads not found for the realtor`,
-        });
-      }
-
+      const leads = await propertyRepository.getLeads(realtorId);
+  
       return res.status(StatusCodes.OK).json({
         message: true,
-        result,
+        leads,
       });
     } catch (error) {
       console.error('Error fetching leads:', error);
@@ -515,7 +401,9 @@ const propertyController = {
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ message: 'Failed to fetch leads' });
     }
-  },
+  }
 };
 
 export default propertyController;
+
+

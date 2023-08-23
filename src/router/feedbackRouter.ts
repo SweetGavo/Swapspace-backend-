@@ -4,7 +4,7 @@ import feedbackController from '../controllers/feedbackController';
 
 router
 .route('/add')
-.post(feedbackController.addFeedback)
+.post(feedbackController)
 
 
 router
@@ -14,4 +14,6 @@ router
 
 
 export default router;
+
+
 

@@ -1,5 +1,5 @@
 import express from 'express';
-import favouriteController from '../controllers/favoriteController';
+import favouriteController from '../controllers/favouriteController';
 
 const router = express.Router();
 

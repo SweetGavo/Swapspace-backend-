@@ -38,14 +38,14 @@ const upload = multer({
 });
 
 router
-  .route('/')
+  .route('/:id/agent-profile')
   .post(
     upload.array('broker_card_image', 2),
     rectorController.createAgentProfile
   );
 
 router
-  .route('/image-upload')
+  .route('/:realtorId/image-upload')
   .post(upload.single('image'), rectorController.updateAgentProfileImage);
 
 router.route('/').get(rectorController.getAllRealtor);

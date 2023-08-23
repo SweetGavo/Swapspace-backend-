@@ -83,7 +83,8 @@ const teamTaskController = {
 // Get all tasks by realtor
  getTasksByRealtor: async (req: Request, res: Response): Promise<Response> => {
   try {
-    const { realtorId } = req.params;
+    
+    const  realtorId  = parseInt(req.params.realtorId);
 
     const tasks = await prisma.teamTask.findMany({
       where: {

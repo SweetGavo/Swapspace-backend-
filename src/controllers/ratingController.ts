@@ -88,7 +88,8 @@ const ratingController = {
 
   updateRating: async (req: Request, res: Response) => {
     try {
-      const { id: ratingId } = req.params;
+      const ratingId  = parseInt(req.params.ratingId);
+    
 
       const { value, comment } = req.body;
 
@@ -119,7 +120,7 @@ const ratingController = {
   },
   deleteRating: async (req: Request, res: Response) => {
     try {
-      const ratingId = req.params.ratingId;
+      const ratingId = parseInt(req.params.ratingId);
 
       const deleteRating = await prisma.rating.delete({
         where: {
@@ -140,7 +141,9 @@ const ratingController = {
 
   averageRating: async (req: Request, res: Response) => {
     try {
-      const { realtorId } = req.params;
+      
+
+      const realtorId = parseInt(req.params.ratingId);
 
       const ratings = await prisma.rating.findMany({
         where: {
@@ -176,7 +179,7 @@ const ratingController = {
 
   getComment: async (req: Request, res: Response) => {
     try {
-      const { id: realtorId } = req.params;
+      const realtorId = parseInt(req.params.ratingId);
   
       const comments = await prisma.rating.findMany({
         where: {

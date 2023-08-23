@@ -23,7 +23,7 @@ const upload = multer({ storage, fileFilter, limits: { fileSize: 1024 * 1024 * 5
 
 
 // Routes
-router.post('/', upload.single('file'), profileController.createProfile);
+router.post('/:id', upload.single('file'), profileController.createProfile);
 
 
 router

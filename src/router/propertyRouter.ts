@@ -34,7 +34,7 @@ const upload = multer({
   limits: { fileSize: 1024 * 1024 * 5 },
 });
 
-router.route('/').post(propertyController.addProperty);
+router.route('/:agentId/add').post(propertyController.addProperty);
 
 router
   .route('/:propertyId/images')
