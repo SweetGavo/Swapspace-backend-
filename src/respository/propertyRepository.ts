@@ -67,6 +67,7 @@ const propertyRepository = {
   }
   ,
 
+  
   updateProperty: async(id: number, data: any) => {
     const updatedProperty = await prisma.property.update({
       where: {

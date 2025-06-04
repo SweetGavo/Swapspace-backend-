@@ -9,6 +9,9 @@ import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
+import swaggerUi from 'swagger-ui-express';
+import { specs } from './config/swagger';
+import session from 'express-session';
 
 import prisma from './DB/prisma';
 import jwt from 'jsonwebtoken';
@@ -51,9 +54,28 @@ app.use(bodyParser.json());
 app.use(cookieParser(process.env.JWT_COOKIE));
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Add session middleware before passport
+app.use(session({
+  secret: process.env.JWT_SECRET || 'your-secret-key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Configure passport serialization
+passport.serializeUser((user: any, done: any) => {
+  done(null, user);
+});
+
+passport.deserializeUser((user: any, done: any) => {
+  done(null, user);
+});
 
 interface UserInfo {
   id: string;
@@ -113,6 +135,9 @@ app.post("/auth", function(req, res, next) {
 	})(next);
 });
 
+// Add Swagger UI route before your API routes
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+
 // USE ROUTES
 
 app.use('/api/v1/auth', AuthRouter);
@@ -138,6 +163,7 @@ app.use('/api/v1/feedbacks', FeedbackRouter);
 app.use('/api/v1/waitlist', WailistRouter);
 app.use('/api/v1/auth', AgentRouter);
 app.use('/api/v1/realtors', GetAgentRouter);
+
 
 //ErrorHandlerMiddleware
 import notFoundMiddleware from './middleware/not-found';

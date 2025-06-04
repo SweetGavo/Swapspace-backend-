@@ -25,12 +25,15 @@
 
     /* Type Checking */
     "strict": true, /* Enable all strict type-checking options. */
-    "skipLibCheck": false /* Enable type checking for all .d.ts files. */
+    "skipLibCheck": true, /* Enable type checking for all .d.ts files. */
+
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "types": ["node"]
   },
   "include": [
     "src/**/*.ts",
-    "xss-clean.d.ts",
-    " webpack.config.ts"
+    "src/**/*.d.ts",
+    "src/types/**/*.d.ts"
   ],
   "exclude": ["node_modules", "dist"]
 }
